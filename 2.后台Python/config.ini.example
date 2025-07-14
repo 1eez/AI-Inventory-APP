@@ -1,0 +1,17 @@
+# FastAPI 后台服务配置段落
+[fastapi]
+title=广州公有云 - 个人物品收纳整理
+description=这里是私有化的后台回调函数，有问题请联系：Lord
+version=1.0.0
+docs_url=/docs
+redoc_url=/redocs
+debug=False
+timeout=600
+
+# AI大模型配置段落
+[zhipu]
+zhipu_api_key = YOUR API KEY
+model = glm-4-flash
+temperature = 1.0
+# 模型输出的最大token数，最大输出为4095，默认值为10
+max_completion_tokens = 10
