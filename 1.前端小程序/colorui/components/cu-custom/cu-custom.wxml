@@ -15,7 +15,6 @@
     </view>
     <view class="action" wx:if="{{isTop}}">
       <!-- <text class="cuIcon-{{icon}}" style="font-size: 56rpx;"></text> -->
-      <image src="/images/logo.png" style="height: 52rpx; width: 52rpx; border-radius: 200rpx;" />
     </view>
     <view class="content" style="top:{{StatusBar}}px">
       <slot name="content"></slot>
@@ -37,7 +36,6 @@
     </view>
     <view class="action" wx:if="{{isTop}}">
       <!-- <text class="cuIcon-{{icon}}" style="font-size: 56rpx;"></text> -->
-      <image src="/images/logo.png" style="height: 52rpx; width: 52rpx; border-radius: 200rpx;" />
     </view>
     <view class="content text-center text-lg text-cut" style="top:{{StatusBar}}px; width: 320rpx;">
       <slot name="content"></slot>

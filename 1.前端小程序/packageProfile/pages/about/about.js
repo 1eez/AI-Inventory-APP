@@ -15,8 +15,7 @@ Page({
       version: '1.0.0',
       buildNumber: '2024010101',
       releaseDate: '2024-01-01',
-      description: '一款智能的个人物品收纳整理应用，帮助您轻松管理和查找物品。',
-      logo: '/images/logo.png'
+      description: '一款智能的个人物品收纳整理应用，帮助您轻松管理和查找物品。'
     },
     
     // 开发团队
