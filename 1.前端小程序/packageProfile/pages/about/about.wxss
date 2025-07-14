@@ -1,0 +1,602 @@
+/* packageProfile/pages/about/about.wxss */
+
+/* 页面容器 */
+.about-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding-bottom: 40rpx;
+}
+
+/* 主要内容容器 */
+.main-container {
+  padding: 20rpx;
+}
+
+/* 应用信息区域 */
+.app-info-section {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 应用Logo */
+.app-logo {
+  margin-bottom: 30rpx;
+}
+
+.logo-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 应用详情 */
+.app-details {
+  margin-bottom: 40rpx;
+}
+
+.app-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.app-version {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+  padding: 8rpx 16rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  display: inline-block;
+}
+
+.app-description {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 统计信息 */
+.statistics {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1rpx solid #f0f0f0;
+  padding-top: 30rpx;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-number {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 通用分组标题 */
+.section-title {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  margin-bottom: 20rpx;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.section-title text:first-child {
+  margin-right: 20rpx;
+  font-size: 36rpx;
+}
+
+/* 通用卡片样式 */
+.features-section,
+.team-section,
+.tech-section,
+.version-section,
+.libs-section,
+.legal-section {
+  margin-bottom: 40rpx;
+}
+
+.team-card,
+.tech-card,
+.version-card,
+.libs-card,
+.legal-card {
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* 功能特性 */
+.features-grid {
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+.feature-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.feature-icon text {
+  font-size: 32rpx;
+}
+
+.feature-content {
+  flex: 1;
+}
+
+.feature-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.feature-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 开发团队 */
+.team-info {
+  padding: 30rpx;
+  text-align: center;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.company-name {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.company-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.contact-list {
+  padding: 0;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  padding: 25rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-item:active {
+  background-color: #f8f9fa;
+}
+
+.contact-item text:first-child {
+  margin-right: 20rpx;
+  color: #667eea;
+  font-size: 32rpx;
+}
+
+.contact-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.contact-item text:last-child {
+  color: #ccc;
+  font-size: 24rpx;
+}
+
+/* 技术栈 */
+.tech-list {
+  padding: 20rpx 0;
+}
+
+.tech-item {
+  padding: 20rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tech-item:last-child {
+  border-bottom: none;
+}
+
+.tech-name {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.tech-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 版本历史 */
+.version-list {
+  padding: 20rpx 0;
+}
+
+.version-item {
+  padding: 25rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.version-item:last-child {
+  border-bottom: none;
+}
+
+.version-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.version-number {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.version-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.version-changes {
+  padding-left: 20rpx;
+}
+
+.change-item {
+  margin-bottom: 8rpx;
+}
+
+.change-text {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 第三方库 */
+.libs-list {
+  padding: 20rpx 0;
+}
+
+.lib-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.lib-item:last-child {
+  border-bottom: none;
+}
+
+.lib-info {
+  flex: 1;
+}
+
+.lib-name {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.lib-version {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.lib-license {
+  font-size: 24rpx;
+  color: #667eea;
+  background: #f0f4ff;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+/* 操作按钮 */
+.actions-section {
+  margin-bottom: 40rpx;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.action-buttons .cu-btn {
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 28rpx;
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-buttons .cu-btn text {
+  margin-right: 12rpx;
+}
+
+/* 法律信息 */
+.legal-list {
+  padding: 0;
+}
+
+.legal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.legal-item:last-child {
+  border-bottom: none;
+}
+
+.legal-item:active {
+  background-color: #f8f9fa;
+}
+
+.legal-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.legal-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.legal-item text:last-child {
+  color: #ccc;
+  font-size: 24rpx;
+}
+
+/* 版权信息 */
+.copyright-section {
+  text-align: center;
+  padding: 30rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  margin-top: 20rpx;
+}
+
+.copyright-text {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8rpx;
+}
+
+.build-info {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 10rpx;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .main-container {
+    padding: 15rpx;
+  }
+  
+  .app-info-section {
+    padding: 30rpx 20rpx;
+  }
+  
+  .statistics {
+    flex-wrap: wrap;
+    gap: 20rpx;
+  }
+  
+  .stat-item {
+    flex: 1;
+    min-width: 120rpx;
+  }
+  
+  .feature-item {
+    padding: 25rpx 20rpx;
+  }
+  
+  .feature-icon {
+    width: 60rpx;
+    height: 60rpx;
+    border-radius: 30rpx;
+    margin-right: 20rpx;
+  }
+  
+  .feature-icon text {
+    font-size: 28rpx;
+  }
+  
+  .action-buttons .cu-btn {
+    height: 70rpx;
+    line-height: 70rpx;
+    font-size: 26rpx;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .about-page {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  }
+  
+  .app-info-section,
+  .team-card,
+  .tech-card,
+  .version-card,
+  .libs-card,
+  .legal-card,
+  .features-grid {
+    background: #2c3e50;
+    color: #fff;
+  }
+  
+  .app-name,
+  .stat-number,
+  .feature-title,
+  .company-name,
+  .contact-text,
+  .tech-name,
+  .version-number,
+  .lib-name,
+  .legal-title {
+    color: #fff;
+  }
+  
+  .app-description,
+  .feature-desc,
+  .company-desc,
+  .tech-desc,
+  .change-text,
+  .legal-desc {
+    color: #bdc3c7;
+  }
+  
+  .app-version,
+  .stat-label,
+  .version-date,
+  .lib-version {
+    color: #95a5a6;
+  }
+  
+  .feature-item,
+  .contact-item,
+  .tech-item,
+  .version-item,
+  .lib-item,
+  .legal-item {
+    border-bottom-color: #34495e;
+  }
+  
+  .contact-item:active,
+  .legal-item:active {
+    background-color: #34495e;
+  }
+  
+  .app-version {
+    background: #34495e;
+  }
+}
+
+/* 动画效果 */
+.app-info-section,
+.team-card,
+.tech-card,
+.version-card,
+.libs-card,
+.legal-card,
+.features-grid {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 图标颜色 */
+.text-blue {
+  color: #007aff !important;
+}
+
+.text-orange {
+  color: #ff9500 !important;
+}
+
+.text-green {
+  color: #34c759 !important;
+}
+
+.text-purple {
+  color: #af52de !important;
+}
+
+.text-cyan {
+  color: #5ac8fa !important;
+}
+
+.text-red {
+  color: #ff3b30 !important;
+}
+
+.text-white {
+  color: #ffffff !important;
+}

@@ -1,0 +1,249 @@
+<!--packageSearch/pages/search/search.wxml-->
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <cu-custom bgColor="bg-white">
+    <view slot="content" class="nav-content">
+      <view class="search-nav-box">
+        <text class="cuIcon-search search-nav-icon"></text>
+        <input 
+          class="search-nav-input" 
+          placeholder="搜索箱子、袋子或物品" 
+          value="{{searchKeyword}}"
+          bindinput="onSearchInput"
+          bindconfirm="onSearch"
+          confirm-type="search"
+          focus="{{true}}"
+        />
+        <text 
+          wx:if="{{searchKeyword}}"
+          class="cuIcon-close search-clear"
+          bindtap="onClearSearch"
+        ></text>
+      </view>
+    </view>
+    <view slot="right" class="nav-right">
+      <text class="search-btn" bindtap="onSearch">搜索</text>
+    </view>
+  </cu-custom>
+
+  <!-- 主要内容区域 -->
+  <view class="container">
+    <!-- 搜索建议 -->
+    <view wx:if="{{showSuggestions && searchSuggestions.length > 0}}" class="suggestions-container">
+      <view class="suggestions-list">
+        <view 
+          wx:for="{{searchSuggestions}}" 
+          wx:key="index" 
+          class="suggestion-item"
+          bindtap="onSuggestionTap"
+          data-suggestion="{{item}}"
+        >
+          <text class="cuIcon-search suggestion-icon"></text>
+          <text class="suggestion-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搜索前的内容 -->
+    <view wx:if="{{!hasSearched && !searching}}" class="search-home">
+      <!-- 搜索历史 -->
+      <view wx:if="{{searchHistory.length > 0}}" class="history-section">
+        <view class="section-header">
+          <text class="section-title">搜索历史</text>
+          <text class="clear-btn" bindtap="clearSearchHistory">清空</text>
+        </view>
+        <view class="history-list">
+          <view 
+            wx:for="{{searchHistory}}" 
+            wx:key="index" 
+            class="history-item"
+            bindtap="onHistoryTap"
+            data-keyword="{{item}}"
+          >
+            <text class="cuIcon-time history-icon"></text>
+            <text class="history-text">{{item}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 热门搜索 -->
+      <view class="hot-section">
+        <view class="section-header">
+          <text class="section-title">热门搜索</text>
+        </view>
+        <view class="hot-list">
+          <text 
+            wx:for="{{hotSearches}}" 
+            wx:key="index" 
+            class="hot-item"
+            bindtap="onHotSearchTap"
+            data-keyword="{{item}}"
+          >
+            {{item}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搜索中的骨架屏 -->
+    <view wx:if="{{skeletonLoading}}" class="skeleton-container">
+      <view class="skeleton-filters">
+        <view class="skeleton skeleton-filter"></view>
+        <view class="skeleton skeleton-filter"></view>
+        <view class="skeleton skeleton-filter"></view>
+      </view>
+      
+      <view wx:for="{{skeletonItems}}" wx:key="index" class="skeleton-result-item">
+        <view class="skeleton skeleton-avatar"></view>
+        <view class="skeleton-content">
+          <view class="skeleton skeleton-title"></view>
+          <view class="skeleton skeleton-text" style="width: 80%;"></view>
+          <view class="skeleton skeleton-text" style="width: 60%;"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搜索结果 -->
+    <view wx:if="{{hasSearched && !searching}}" class="search-results">
+      <!-- 筛选和排序 -->
+      <view class="filter-bar">
+        <view class="filter-tabs">
+          <text 
+            class="filter-tab {{filterType === 'all' ? 'active' : ''}}"
+            bindtap="onFilterTypeChange"
+            data-type="all"
+          >
+            全部
+          </text>
+          <text 
+            class="filter-tab {{filterType === 'box' ? 'active' : ''}}"
+            bindtap="onFilterTypeChange"
+            data-type="box"
+          >
+            箱子({{searchResults.boxes.length}})
+          </text>
+          <text 
+            class="filter-tab {{filterType === 'bag' ? 'active' : ''}}"
+            bindtap="onFilterTypeChange"
+            data-type="bag"
+          >
+            袋子({{searchResults.bags.length}})
+          </text>
+          <text 
+            class="filter-tab {{filterType === 'item' ? 'active' : ''}}"
+            bindtap="onFilterTypeChange"
+            data-type="item"
+          >
+            物品({{searchResults.items.length}})
+          </text>
+        </view>
+        
+        <view class="sort-btn" bindtap="onSortTypeChange">
+          <text class="cuIcon-sort sort-icon"></text>
+          <text class="sort-text">
+            {{sortType === 'relevance' ? '相关度' : sortType === 'time' ? '时间' : '价值'}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 搜索结果列表 -->
+      <view class="results-container">
+        <!-- 箱子结果 -->
+        <view wx:if="{{(filterType === 'all' || filterType === 'box') && searchResults.boxes.length > 0}}" class="result-section">
+          <view class="result-title" wx:if="{{filterType === 'all'}}">箱子</view>
+          <view class="box-results">
+            <view 
+              wx:for="{{searchResults.boxes}}" 
+              wx:key="id" 
+              class="box-result-item result-item"
+              bindtap="onBoxTap"
+              data-id="{{item.id}}"
+            >
+              <view class="result-icon" style="background-color: {{item.color}};">
+                <text class="{{item.icon}}"></text>
+              </view>
+              <view class="result-content">
+                <view class="result-name">{{item.name}}</view>
+                <view class="result-description">{{item.description}}</view>
+                <view class="result-meta">
+                  <text class="meta-item">{{item.totalBags}}个袋子</text>
+                  <text class="meta-item">{{item.totalItems}}件物品</text>
+                  <text class="meta-item">{{item.location}}</text>
+                </view>
+              </view>
+              <text class="cuIcon-right result-arrow"></text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 袋子结果 -->
+        <view wx:if="{{(filterType === 'all' || filterType === 'bag') && searchResults.bags.length > 0}}" class="result-section">
+          <view class="result-title" wx:if="{{filterType === 'all'}}">袋子</view>
+          <view class="bag-results">
+            <view 
+              wx:for="{{searchResults.bags}}" 
+              wx:key="id" 
+              class="bag-result-item result-item"
+              bindtap="onBagTap"
+              data-id="{{item.id}}"
+              data-box-id="{{item.boxId}}"
+            >
+              <view class="result-icon" style="background-color: {{item.color}};">
+                <text class="{{item.icon}}"></text>
+              </view>
+              <view class="result-content">
+                <view class="result-name">{{item.name}}</view>
+                <view class="result-description">{{item.description}}</view>
+                <view class="result-meta">
+                  <text class="meta-item">{{item.itemCount}}件物品</text>
+                  <text class="meta-item">{{item.boxName}}</text>
+                  <text class="meta-item">{{item.location}}</text>
+                </view>
+              </view>
+              <text class="cuIcon-right result-arrow"></text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 物品结果 -->
+        <view wx:if="{{(filterType === 'all' || filterType === 'item') && searchResults.items.length > 0}}" class="result-section">
+          <view class="result-title" wx:if="{{filterType === 'all'}}">物品</view>
+          <view class="item-results">
+            <view 
+              wx:for="{{searchResults.items}}" 
+              wx:key="id" 
+              class="item-result-item result-item"
+              bindtap="onItemTap"
+              data-id="{{item.id}}"
+            >
+              <image 
+                class="item-result-image" 
+                src="{{item.image}}" 
+                mode="aspectFill"
+                lazy-load="{{true}}"
+              ></image>
+              <view class="result-content">
+                <view class="result-name">{{item.name}}</view>
+                <view class="result-description">{{item.description}}</view>
+                <view class="result-meta">
+                  <text class="meta-item">{{item.category}}</text>
+                  <text class="meta-item" wx:if="{{item.value}}">¥{{item.value}}</text>
+                  <text class="meta-item">{{item.bagName}}</text>
+                  <text class="meta-item">{{item.location}}</text>
+                </view>
+              </view>
+              <text class="cuIcon-right result-arrow"></text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 无结果 -->
+        <view wx:if="{{searchResults.boxes.length === 0 && searchResults.bags.length === 0 && searchResults.items.length === 0}}" class="no-results">
+          <text class="cuIcon-search no-results-icon"></text>
+          <view class="no-results-title">未找到相关内容</view>
+          <view class="no-results-subtitle">试试其他关键词或检查拼写</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

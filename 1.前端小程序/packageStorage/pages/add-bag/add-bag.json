@@ -1,0 +1,9 @@
+{
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": false,
+  "backgroundColor": "#f5f7fa",
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "cu-custom": "/colorui/components/cu-custom/cu-custom"
+  }
+}

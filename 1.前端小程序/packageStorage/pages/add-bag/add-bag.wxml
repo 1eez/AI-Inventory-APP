@@ -1,0 +1,153 @@
+<!--packageStorage/pages/add-bag/add-bag.wxml-->
+
+<!-- 自定义导航栏 -->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">{{bagId ? '编辑收纳袋' : '添加收纳袋'}}</view>
+</cu-custom>
+
+<view class="page-container">
+  <!-- 收纳盒信息 -->
+  <view class="box-info-card" wx:if="{{boxInfo}}">
+    <view class="box-info-header">
+      <text class="cuIcon-boxfill text-{{boxInfo.color}}"></text>
+      <text class="box-name">{{boxInfo.name}}</text>
+      <text class="box-location">{{boxInfo.location}}</text>
+    </view>
+    <view class="box-info-action" bindtap="onViewBox">
+      <text class="cuIcon-right"></text>
+    </view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="form-card">
+    <view class="card-header">
+      <text class="cuIcon-infofill text-blue"></text>
+      <text class="card-title">基本信息</text>
+    </view>
+    
+    <view class="form-section">
+      <view class="form-item">
+        <view class="form-label">名称 <text class="required">*</text></view>
+        <input 
+          class="form-input {{errors.name ? 'error' : ''}}"
+          placeholder="请输入收纳袋名称"
+          value="{{formData.name}}"
+          data-field="name"
+          bindinput="onInputChange"
+          maxlength="20"
+        />
+        <view class="error-text" wx:if="{{errors.name}}">{{errors.name}}</view>
+      </view>
+      
+      <view class="form-item">
+        <view class="form-label">描述</view>
+        <textarea 
+          class="form-textarea {{errors.description ? 'error' : ''}}"
+          placeholder="请输入收纳袋描述（可选）"
+          value="{{formData.description}}"
+          data-field="description"
+          bindinput="onInputChange"
+          maxlength="100"
+          show-confirm-bar="{{false}}"
+        ></textarea>
+        <view class="error-text" wx:if="{{errors.description}}">{{errors.description}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 类型选择 -->
+  <view class="form-card">
+    <view class="card-header">
+      <text class="cuIcon-tagfill text-orange"></text>
+      <text class="card-title">收纳袋类型</text>
+    </view>
+    
+    <view class="type-grid">
+      <view 
+        class="type-item {{formData.type === item.value ? 'active' : ''}}"
+        wx:for="{{typeOptions}}"
+        wx:key="value"
+        data-type="{{item.value}}"
+        bindtap="onTypeSelect"
+      >
+        <view class="type-icon">
+          <text class="cuIcon-{{item.icon}} {{formData.type === item.value ? 'text-white' : 'text-grey'}}"></text>
+        </view>
+        <view class="type-info">
+          <view class="type-name">{{item.name}}</view>
+          <view class="type-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 颜色选择 -->
+  <view class="form-card">
+    <view class="card-header">
+      <text class="cuIcon-colorlens text-purple"></text>
+      <text class="card-title">选择颜色</text>
+    </view>
+    
+    <view class="color-grid">
+      <view 
+        class="color-item {{formData.color === item.value ? 'active' : ''}}"
+        wx:for="{{colorOptions}}"
+        wx:key="value"
+        style="background: {{item.value}}"
+        data-color="{{item.value}}"
+        bindtap="onColorSelect"
+      >
+        <text class="cuIcon-check text-white" wx:if="{{formData.color === item.value}}"></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 预览区域 -->
+  <view class="preview-card">
+    <view class="card-header">
+      <text class="cuIcon-eyefill text-green"></text>
+      <text class="card-title">预览效果</text>
+    </view>
+    
+    <view class="preview-container">
+      <view class="preview-bag" style="background: {{formData.color}}">
+        <view class="preview-icon">
+          <text class="cuIcon-{{typeOptions.find(item => item.value === formData.type).icon}} text-white"></text>
+        </view>
+        <view class="preview-info">
+          <view class="preview-name">{{formData.name || '收纳袋名称'}}</view>
+          <view class="preview-desc">{{formData.description || '暂无描述'}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button 
+      class="cu-btn bg-grey lg"
+      bindtap="onReset"
+      disabled="{{submitting}}"
+    >
+      重置
+    </button>
+    
+    <button 
+      class="cu-btn bg-blue lg"
+      bindtap="onPreview"
+      disabled="{{submitting || !formData.name}}"
+    >
+      预览
+    </button>
+    
+    <button 
+      class="cu-btn bg-gradual-green lg"
+      bindtap="onSubmit"
+      disabled="{{submitting || !formData.name}}"
+      loading="{{submitting}}"
+    >
+      {{bagId ? '保存' : '创建'}}
+    </button>
+  </view>
+</view>

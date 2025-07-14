@@ -1,0 +1,332 @@
+/* packageProfile/pages/settings/settings.wxss */
+
+/* 页面容器 */
+.settings-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding-bottom: 40rpx;
+}
+
+/* 主要内容容器 */
+.main-container {
+  padding: 20rpx;
+}
+
+/* 设置分组 */
+.settings-section {
+  margin-bottom: 40rpx;
+}
+
+/* 分组标题 */
+.section-title {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  margin-bottom: 20rpx;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.section-title text:first-child {
+  margin-right: 20rpx;
+  font-size: 36rpx;
+}
+
+/* 设置卡片 */
+.settings-card {
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* 设置项 */
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item:active {
+  background-color: #f8f9fa;
+}
+
+/* 设置项信息 */
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.item-desc {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.4;
+}
+
+/* 选择器值 */
+.picker-value {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 28rpx;
+}
+
+.picker-value text {
+  margin-left: 10rpx;
+  color: #ccc;
+}
+
+/* 存储信息 */
+.storage-info {
+  padding: 30rpx;
+}
+
+.storage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.storage-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.storage-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 进度条 */
+.storage-progress {
+  margin-bottom: 30rpx;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12rpx;
+  background: #f0f0f0;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  border-radius: 6rpx;
+  transition: width 0.3s ease;
+}
+
+/* 存储详情 */
+.storage-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30rpx;
+}
+
+.detail-item {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+  padding-top: 30rpx;
+}
+
+.action-buttons .cu-btn {
+  flex: 1;
+  min-width: 140rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 24rpx;
+  border-radius: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-buttons .cu-btn text {
+  margin-right: 8rpx;
+}
+
+/* 开关样式 */
+switch {
+  transform: scale(0.8);
+}
+
+/* 选择器样式 */
+picker {
+  color: #666;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .main-container {
+    padding: 15rpx;
+  }
+  
+  .section-title {
+    font-size: 28rpx;
+    padding: 15rpx 20rpx;
+  }
+  
+  .setting-item {
+    padding: 25rpx 20rpx;
+  }
+  
+  .item-title {
+    font-size: 28rpx;
+  }
+  
+  .item-desc {
+    font-size: 24rpx;
+  }
+  
+  .action-buttons {
+    gap: 15rpx;
+  }
+  
+  .action-buttons .cu-btn {
+    min-width: 120rpx;
+    height: 55rpx;
+    line-height: 55rpx;
+    font-size: 22rpx;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .settings-page {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  }
+  
+  .settings-card {
+    background: #2c3e50;
+    color: #fff;
+  }
+  
+  .setting-item {
+    border-bottom-color: #34495e;
+  }
+  
+  .setting-item:active {
+    background-color: #34495e;
+  }
+  
+  .item-title {
+    color: #fff;
+  }
+  
+  .item-desc {
+    color: #bdc3c7;
+  }
+  
+  .picker-value {
+    color: #bdc3c7;
+  }
+  
+  .storage-label {
+    color: #bdc3c7;
+  }
+  
+  .storage-value {
+    color: #fff;
+  }
+  
+  .progress-bar {
+    background: #34495e;
+  }
+  
+  .detail-item {
+    color: #95a5a6;
+  }
+  
+  .action-buttons {
+    border-top-color: #34495e;
+  }
+}
+
+/* 动画效果 */
+.settings-card {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 设置项悬停效果 */
+.setting-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.setting-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.setting-item:active::before {
+  left: 100%;
+}
+
+/* 图标颜色 */
+.text-blue {
+  color: #007aff !important;
+}
+
+.text-orange {
+  color: #ff9500 !important;
+}
+
+.text-green {
+  color: #34c759 !important;
+}
+
+.text-purple {
+  color: #af52de !important;
+}
+
+.text-cyan {
+  color: #5ac8fa !important;
+}
+
+.text-red {
+  color: #ff3b30 !important;
+}

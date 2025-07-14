@@ -1,0 +1,182 @@
+<!--packageStorage/pages/box-detail/box-detail.wxml-->
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <cu-custom bgColor="bg-white" isBack="{{true}}">
+    <view slot="content" class="nav-title">{{boxInfo.name || '箱子详情'}}</view>
+    <view slot="right" class="nav-right">
+      <text class="cuIcon-edit nav-icon" bindtap="onEditBox"></text>
+    </view>
+  </cu-custom>
+
+  <!-- 搜索栏 -->
+  <view class="search-container">
+    <view class="search-box" bindtap="onSearch">
+      <text class="cuIcon-search search-icon"></text>
+      <input 
+        class="search-input" 
+        placeholder="在此箱子中搜索袋子或物品" 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+        confirm-type="search"
+      />
+    </view>
+  </view>
+
+  <!-- 主要内容区域 -->
+  <view class="container">
+    <!-- 骨架屏加载状态 -->
+    <view wx:if="{{skeletonLoading}}" class="skeleton-container">
+      <!-- 箱子信息骨架屏 -->
+      <view class="skeleton-box-info">
+        <view class="skeleton skeleton-avatar"></view>
+        <view class="skeleton-content">
+          <view class="skeleton skeleton-title"></view>
+          <view class="skeleton skeleton-text" style="width: 80%;"></view>
+          <view class="skeleton skeleton-text" style="width: 60%;"></view>
+        </view>
+      </view>
+      
+      <!-- 袋子列表骨架屏 -->
+      <view wx:for="{{skeletonItems}}" wx:key="index" class="skeleton-item">
+        <view class="skeleton-bag-item">
+          <view class="skeleton skeleton-avatar"></view>
+          <view class="skeleton-content">
+            <view class="skeleton skeleton-title"></view>
+            <view class="skeleton skeleton-text" style="width: 70%;"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 箱子信息和袋子列表 -->
+    <view wx:else>
+      <!-- 箱子信息卡片 -->
+      <view class="box-info-card card">
+        <view class="box-header">
+          <view class="box-icon-large" style="background-color: {{boxInfo.color}};">
+            <text class="{{boxInfo.icon}}"></text>
+          </view>
+          <view class="box-main-info">
+            <view class="box-name-large">{{boxInfo.name}}</view>
+            <view class="box-description-large">{{boxInfo.description}}</view>
+            
+            <!-- 标签 -->
+            <view class="box-tags" wx:if="{{boxInfo.tags && boxInfo.tags.length > 0}}">
+              <text wx:for="{{boxInfo.tags}}" wx:key="index" class="tag">{{item}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 统计信息 -->
+        <view class="box-stats-row">
+          <view class="stat-item">
+            <text class="stat-number">{{boxInfo.totalBags}}</text>
+            <text class="stat-label">个袋子</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-number">{{boxInfo.totalItems}}</text>
+            <text class="stat-label">件物品</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-number">{{boxInfo.createTime}}</text>
+            <text class="stat-label">创建时间</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 快速操作 -->
+      <view class="quick-actions card">
+        <view class="action-title">快速操作</view>
+        <view class="action-buttons">
+          <view class="action-btn" bindtap="onAddBag">
+            <view class="action-icon bg-blue">
+              <text class="cuIcon-add"></text>
+            </view>
+            <text class="action-text">新建袋子</text>
+          </view>
+          <view class="action-btn" bindtap="onQuickScan">
+            <view class="action-icon bg-green">
+              <text class="cuIcon-camera"></text>
+            </view>
+            <text class="action-text">快速拍照</text>
+          </view>
+          <view class="action-btn" bindtap="onBatchMove">
+            <view class="action-icon bg-orange">
+              <text class="cuIcon-move"></text>
+            </view>
+            <text class="action-text">批量移动</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 袋子列表 -->
+      <view wx:if="{{bags.length > 0}}" class="bags-section">
+        <view class="section-title">
+          <text class="title-text">袋子列表</text>
+          <text class="title-count">({{bags.length}})</text>
+        </view>
+        
+        <view class="bags-list">
+          <view 
+            wx:for="{{bags}}" 
+            wx:key="id" 
+            class="bag-item list-item"
+            bindtap="onBagTap"
+            data-id="{{item.id}}"
+          >
+            <view class="bag-icon list-item-icon" style="background-color: {{item.color}};">
+              <text class="{{item.icon}}"></text>
+            </view>
+            
+            <view class="bag-content list-item-content">
+              <view class="bag-header">
+                <text class="bag-name list-item-title">{{item.name}}</text>
+                <view class="bag-menu" bindtap="onBagMenu" data-id="{{item.id}}" catchtap="true">
+                  <text class="cuIcon-more"></text>
+                </view>
+              </view>
+              
+              <text class="bag-description list-item-subtitle">{{item.description}}</text>
+              
+              <view class="bag-meta">
+                <view class="meta-item">
+                  <text class="cuIcon-goods meta-icon"></text>
+                  <text class="meta-text">{{item.itemCount}}件物品</text>
+                </view>
+                <view class="meta-item" wx:if="{{item.lastUsed}}">
+                  <text class="cuIcon-time meta-icon"></text>
+                  <text class="meta-text">{{item.lastUsed}}</text>
+                </view>
+                <view class="meta-item" wx:else>
+                  <text class="cuIcon-time meta-icon"></text>
+                  <text class="meta-text">未使用</text>
+                </view>
+              </view>
+            </view>
+            
+            <text class="cuIcon-right list-item-arrow"></text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view wx:else class="empty-state">
+        <text class="cuIcon-goods empty-icon"></text>
+        <view class="empty-title">还没有袋子</view>
+        <view class="empty-subtitle">点击下方按钮创建第一个收纳袋\n开始分类整理物品吧</view>
+        <button class="cu-btn bg-blue margin-top" bindtap="onAddBag">
+          <text class="cuIcon-add margin-right-xs"></text>
+          创建第一个袋子
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 悬浮添加按钮 -->
+  <view class="btn-fab" bindtap="onAddBag" wx:if="{{bags.length > 0}}">
+    <text class="cuIcon-add"></text>
+  </view>
+</view>

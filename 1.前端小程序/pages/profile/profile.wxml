@@ -1,0 +1,183 @@
+<!--packageProfile/pages/profile/profile.wxml-->
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <cu-custom bgColor="bg-gradual-blue">
+    <view slot="content" class="nav-title">个人中心</view>
+  </cu-custom>
+
+  <!-- 主要内容区域 -->
+  <view class="container">
+    <!-- 骨架屏加载状态 -->
+    <view wx:if="{{skeletonLoading}}" class="skeleton-container">
+      <!-- 用户信息骨架屏 -->
+      <view class="skeleton-user-info">
+        <view class="skeleton skeleton-avatar-large"></view>
+        <view class="skeleton-content">
+          <view class="skeleton skeleton-title"></view>
+          <view class="skeleton skeleton-text" style="width: 60%;"></view>
+        </view>
+      </view>
+      
+      <!-- 统计信息骨架屏 -->
+      <view class="skeleton-stats">
+        <view wx:for="{{[1,2,3,4]}}" wx:key="index" class="skeleton-stat-item">
+          <view class="skeleton skeleton-number"></view>
+          <view class="skeleton skeleton-label"></view>
+        </view>
+      </view>
+      
+      <!-- 选项列表骨架屏 -->
+      <view wx:for="{{[1,2,3,4,5]}}" wx:key="index" class="skeleton-option-item">
+        <view class="skeleton skeleton-avatar"></view>
+        <view class="skeleton-content">
+          <view class="skeleton skeleton-title"></view>
+          <view class="skeleton skeleton-text" style="width: 70%;"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 用户信息和功能列表 -->
+    <view wx:else>
+      <!-- 用户信息卡片 -->
+      <view class="user-info-card">
+        <view class="user-header">
+          <view class="user-avatar-container">
+            <image 
+              wx:if="{{hasUserInfo}}"
+              class="user-avatar" 
+              src="{{userInfo.avatarUrl}}" 
+              mode="aspectFill"
+            ></image>
+            <view wx:else class="user-avatar-placeholder">
+              <text class="cuIcon-people"></text>
+            </view>
+          </view>
+          
+          <view class="user-info">
+            <view wx:if="{{hasUserInfo}}" class="user-name">{{userInfo.nickName}}</view>
+            <view wx:else class="user-name-placeholder">未登录</view>
+            
+            <view class="user-subtitle">
+              <text wx:if="{{hasUserInfo}}">欢迎使用物品管理系统</text>
+              <text wx:else class="login-btn" bindtap="onGetUserProfile">点击登录</text>
+            </view>
+          </view>
+          
+          <view class="user-actions">
+            <text class="cuIcon-right"></text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 统计信息 -->
+      <view class="statistics-card card">
+        <view class="card-title">我的统计</view>
+        <view class="statistics-grid">
+          <view 
+            class="stat-item"
+            bindtap="onStatisticTap"
+            data-type="boxes"
+          >
+            <view class="stat-number">{{statistics.totalBoxes}}</view>
+            <view class="stat-label">个箱子</view>
+          </view>
+          <view 
+            class="stat-item"
+            bindtap="onStatisticTap"
+            data-type="bags"
+          >
+            <view class="stat-number">{{statistics.totalBags}}</view>
+            <view class="stat-label">个袋子</view>
+          </view>
+          <view 
+            class="stat-item"
+            bindtap="onStatisticTap"
+            data-type="items"
+          >
+            <view class="stat-number">{{statistics.totalItems}}</view>
+            <view class="stat-label">件物品</view>
+          </view>
+          <view 
+            class="stat-item"
+            bindtap="onStatisticTap"
+            data-type="value"
+          >
+            <view class="stat-number">¥{{statistics.totalValue}}</view>
+            <view class="stat-label">总价值</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 最近活动 -->
+      <view wx:if="{{recentActivities.length > 0}}" class="activities-card card">
+        <view class="card-header">
+          <view class="card-title">最近活动</view>
+          <text class="view-more" bindtap="onViewMoreActivities">查看更多</text>
+        </view>
+        
+        <view class="activities-list">
+          <view 
+            wx:for="{{recentActivities}}" 
+            wx:key="id" 
+            class="activity-item"
+          >
+            <view class="activity-icon" style="background-color: {{item.color}};">
+              <text class="{{item.icon}}"></text>
+            </view>
+            <view class="activity-content">
+              <view class="activity-title">{{item.title}}</view>
+              <view class="activity-description">{{item.description}}</view>
+              <view class="activity-time">{{item.time}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 数据管理 -->
+      <view class="settings-card card">
+        <view class="card-title">数据管理</view>
+        <view class="settings-list">
+          <view 
+            wx:for="{{settingsOptions}}" 
+            wx:key="id" 
+            class="setting-item list-item"
+            bindtap="onSettingTap"
+            data-id="{{item.id}}"
+          >
+            <view class="setting-icon list-item-icon" style="background-color: {{item.color}};">
+              <text class="{{item.icon}}"></text>
+            </view>
+            <view class="setting-content list-item-content">
+              <view class="setting-title list-item-title">{{item.title}}</view>
+              <view class="setting-subtitle list-item-subtitle">{{item.subtitle}}</view>
+            </view>
+            <text class="cuIcon-right list-item-arrow"></text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 其他设置 -->
+      <view class="other-card card">
+        <view class="card-title">其他</view>
+        <view class="other-list">
+          <view 
+            wx:for="{{otherOptions}}" 
+            wx:key="id" 
+            class="other-item list-item"
+            bindtap="onOtherTap"
+            data-id="{{item.id}}"
+          >
+            <view class="other-icon list-item-icon" style="background-color: {{item.color}};">
+              <text class="{{item.icon}}"></text>
+            </view>
+            <view class="other-content list-item-content">
+              <view class="other-title list-item-title">{{item.title}}</view>
+              <view class="other-subtitle list-item-subtitle">{{item.subtitle}}</view>
+            </view>
+            <text class="cuIcon-right list-item-arrow"></text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

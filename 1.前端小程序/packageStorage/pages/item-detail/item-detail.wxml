@@ -1,0 +1,262 @@
+<!--packageStorage/pages/item-detail/item-detail.wxml-->
+
+<!-- 页面容器 -->
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="backText">返回</view>
+    <view slot="content">物品详情</view>
+    <view slot="right">
+      <text class="cuIcon-more" bindtap="onShowMenu"></text>
+    </view>
+  </cu-custom>
+
+  <!-- 骨架屏 -->
+  <view wx:if="{{showSkeleton}}" class="skeleton-container">
+    <!-- 图片骨架 -->
+    <view class="skeleton-images">
+      <view class="skeleton-image-main cu-skeleton"></view>
+      <view class="skeleton-image-thumbs">
+        <view class="skeleton-image-thumb cu-skeleton"></view>
+        <view class="skeleton-image-thumb cu-skeleton"></view>
+        <view class="skeleton-image-thumb cu-skeleton"></view>
+      </view>
+    </view>
+    
+    <!-- 基本信息骨架 -->
+    <view class="skeleton-info">
+      <view class="cu-skeleton skeleton-title"></view>
+      <view class="cu-skeleton skeleton-subtitle"></view>
+      <view class="cu-skeleton skeleton-description"></view>
+    </view>
+    
+    <!-- 详细信息骨架 -->
+    <view class="skeleton-details">
+      <view class="cu-skeleton skeleton-section-title"></view>
+      <view class="cu-skeleton skeleton-detail-item"></view>
+      <view class="cu-skeleton skeleton-detail-item"></view>
+      <view class="cu-skeleton skeleton-detail-item"></view>
+    </view>
+  </view>
+
+  <!-- 主要内容 -->
+  <view wx:else class="container">
+    <!-- 错误状态 -->
+    <view wx:if="{{errorMessage}}" class="error-container">
+      <view class="error-icon">
+        <text class="cuIcon-roundclosefill text-red"></text>
+      </view>
+      <view class="error-title">加载失败</view>
+      <view class="error-message">{{errorMessage}}</view>
+      <button class="cu-btn bg-blue margin-top" bindtap="initPage">重新加载</button>
+    </view>
+
+    <!-- 物品信息 -->
+    <view wx:else class="item-content">
+      <!-- 图片展示区 -->
+      <view class="image-section">
+        <swiper class="image-swiper" indicator-dots="{{true}}" autoplay="{{false}}" circular="{{true}}">
+          <swiper-item wx:for="{{itemInfo.images}}" wx:key="index">
+            <image 
+              class="item-image" 
+              src="{{item}}" 
+              mode="aspectFill"
+              data-index="{{index}}"
+              bindtap="onImageTap"
+            />
+          </swiper-item>
+        </swiper>
+        
+        <!-- 图片缩略图 -->
+        <view class="image-thumbs">
+          <view 
+            wx:for="{{itemInfo.images}}" 
+            wx:key="index"
+            class="thumb-item {{index === previewIndex ? 'active' : ''}}"
+            data-index="{{index}}"
+            bindtap="onImageTap"
+          >
+            <image class="thumb-image" src="{{item}}" mode="aspectFill" />
+          </view>
+        </view>
+      </view>
+
+      <!-- 基本信息卡片 -->
+      <view class="card info-card">
+        <view class="item-header">
+          <view class="item-title">{{itemInfo.name}}</view>
+          <view class="item-value">¥{{itemInfo.value}}</view>
+        </view>
+        
+        <view class="item-meta">
+          <view class="meta-item">
+            <text class="meta-label">分类：</text>
+            <text class="meta-value">{{itemInfo.category}}</text>
+          </view>
+          <view class="meta-item">
+            <text class="meta-label">状态：</text>
+            <text class="meta-value">{{itemInfo.condition}}</text>
+          </view>
+          <view class="meta-item">
+            <text class="meta-label">购买日期：</text>
+            <text class="meta-value">{{itemInfo.purchaseDate}}</text>
+          </view>
+        </view>
+        
+        <!-- 标签 -->
+        <view class="tags-container">
+          <view 
+            wx:for="{{itemInfo.tags}}" 
+            wx:key="index"
+            class="tag-item bg-blue light"
+          >
+            {{item}}
+          </view>
+        </view>
+        
+        <!-- 描述 -->
+        <view class="item-description">
+          {{itemInfo.description}}
+        </view>
+      </view>
+
+      <!-- 位置信息卡片 -->
+      <view class="card location-card">
+        <view class="card-header">
+          <view class="card-title">
+            <text class="cuIcon-locationfill text-blue margin-right-xs"></text>
+            存放位置
+          </view>
+          <view class="card-action" bindtap="onViewLocation">
+            <text class="text-blue">查看</text>
+          </view>
+        </view>
+        
+        <view class="location-path">
+          <view class="path-item">
+            <text class="path-icon cuIcon-boxfill text-orange"></text>
+            <text class="path-text">{{itemInfo.location.boxName}}</text>
+          </view>
+          <text class="path-arrow cuIcon-right text-gray"></text>
+          <view class="path-item">
+            <text class="path-icon cuIcon-bagfill text-green"></text>
+            <text class="path-text">{{itemInfo.location.bagName}}</text>
+          </view>
+          <text class="path-arrow cuIcon-right text-gray"></text>
+          <view class="path-item">
+            <text class="path-icon cuIcon-locationfill text-blue"></text>
+            <text class="path-text">{{itemInfo.location.position}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 规格参数卡片 -->
+      <view class="card specs-card">
+        <view class="card-title">
+          <text class="cuIcon-listfill text-blue margin-right-xs"></text>
+          规格参数
+        </view>
+        
+        <view class="specs-list">
+          <view 
+            wx:for="{{itemInfo.specifications}}" 
+            wx:for-item="value"
+            wx:for-index="key"
+            wx:key="key"
+            class="spec-item"
+          >
+            <view class="spec-label">{{key}}</view>
+            <view class="spec-value">{{value}}</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 备注信息 -->
+      <view wx:if="{{itemInfo.notes}}" class="card notes-card">
+        <view class="card-title">
+          <text class="cuIcon-editfill text-blue margin-right-xs"></text>
+          备注信息
+        </view>
+        <view class="notes-content">{{itemInfo.notes}}</view>
+      </view>
+
+      <!-- 相关物品 -->
+      <view wx:if="{{relatedItems.length > 0}}" class="card related-card">
+        <view class="card-header">
+          <view class="card-title">
+            <text class="cuIcon-similarfill text-blue margin-right-xs"></text>
+            相关物品
+          </view>
+          <view class="card-action">
+            <text class="text-blue">查看更多</text>
+          </view>
+        </view>
+        
+        <scroll-view class="related-scroll" scroll-x="{{true}}">
+          <view class="related-list">
+            <view 
+              wx:for="{{relatedItems}}" 
+              wx:key="id"
+              class="related-item"
+              data-item-id="{{item.id}}"
+              bindtap="onRelatedItemTap"
+            >
+              <image class="related-image" src="{{item.image}}" mode="aspectFill" />
+              <view class="related-name">{{item.name}}</view>
+              <view class="related-category">{{item.category}}</view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 操作历史 -->
+      <view wx:if="{{operationHistory.length > 0}}" class="card history-card">
+        <view class="card-title">
+          <text class="cuIcon-timefill text-blue margin-right-xs"></text>
+          操作历史
+        </view>
+        
+        <view class="history-list">
+          <view 
+            wx:for="{{operationHistory}}" 
+            wx:key="id"
+            class="history-item"
+          >
+            <view class="history-icon">
+              <text class="cuIcon-{{item.type === 'create' ? 'add' : item.type === 'update' ? 'edit' : 'move'}}fill text-blue"></text>
+            </view>
+            <view class="history-content">
+              <view class="history-description">{{item.description}}</view>
+              <view class="history-meta">
+                <text class="history-time">{{item.time}}</text>
+                <text class="history-operator">{{item.operator}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view wx:if="{{!showSkeleton && !errorMessage}}" class="bottom-actions">
+    <view class="action-group">
+      <button class="action-btn" bindtap="onEditItem">
+        <text class="cuIcon-editfill"></text>
+        <text>编辑</text>
+      </button>
+      <button class="action-btn" bindtap="onMoveItem">
+        <text class="cuIcon-movefill"></text>
+        <text>移动</text>
+      </button>
+      <button class="action-btn" bindtap="onCopyItem">
+        <text class="cuIcon-copyfill"></text>
+        <text>复制</text>
+      </button>
+      <button class="action-btn danger" bindtap="onDeleteItem">
+        <text class="cuIcon-deletefill"></text>
+        <text>删除</text>
+      </button>
+    </view>
+  </view>
+</view>

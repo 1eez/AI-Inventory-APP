@@ -1,0 +1,71 @@
+<!--pages/splash/splash.wxml-->
+<view class="splash-container">
+  <!-- 背景装饰 -->
+  <view class="bg-decoration">
+    <view class="decoration-circle circle-1"></view>
+    <view class="decoration-circle circle-2"></view>
+    <view class="decoration-circle circle-3"></view>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="splash-content">
+    <!-- Logo区域 -->
+    <view class="logo-section">
+      <view class="logo-container">
+        <view class="logo-icon">
+          <text class="cuIcon-goods"></text>
+        </view>
+        <view class="logo-rings">
+          <view class="ring ring-1"></view>
+          <view class="ring ring-2"></view>
+          <view class="ring ring-3"></view>
+        </view>
+      </view>
+      
+      <view class="app-info">
+        <text class="app-name">物品管理</text>
+        <text class="app-slogan">让每件物品都有归属</text>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view wx:if="{{!showError}}" class="loading-section">
+      <!-- 进度条 -->
+      <view class="progress-container">
+        <view class="progress-bg">
+          <view class="progress-fill" style="width: {{progress}}%;"></view>
+        </view>
+        <text class="progress-text">{{progress}}%</text>
+      </view>
+      
+      <!-- 加载文本 -->
+      <view class="loading-text-container">
+        <text class="loading-text">{{loadingText}}</text>
+        <view class="loading-dots">
+          <view class="dot dot-1"></view>
+          <view class="dot dot-2"></view>
+          <view class="dot dot-3"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 错误状态 -->
+    <view wx:else class="error-section">
+      <view class="error-icon">
+        <text class="cuIcon-warn"></text>
+      </view>
+      <text class="error-title">初始化失败</text>
+      <text class="error-message">{{errorMessage}}</text>
+      <button class="cu-btn bg-blue retry-btn" bindtap="onRetry">
+        <text class="cuIcon-refresh margin-right-xs"></text>
+        重试
+      </button>
+    </view>
+  </view>
+
+  <!-- 底部信息 -->
+  <view class="splash-footer">
+    <text class="footer-text">智能识别 · 分类整理 · 快速查找</text>
+    <text class="version-text">v1.0.0</text>
+  </view>
+</view>

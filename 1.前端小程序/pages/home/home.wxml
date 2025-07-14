@@ -1,0 +1,150 @@
+<!--pages/home/home.wxml-->
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <cu-custom bgColor="bg-white" isBack="{{false}}" isTop="{{true}}">
+    <view slot="content" class="nav-title">物品管理</view>
+    <view slot="right" class="nav-right">
+      <text class="cuIcon-scan nav-icon" bindtap="onScanCode"></text>
+    </view>
+  </cu-custom>
+
+  <!-- 搜索栏 -->
+  <view class="search-container">
+    <view class="search-box" bindtap="onSearch">
+      <text class="cuIcon-search search-icon"></text>
+      <input 
+        class="search-input" 
+        placeholder="搜索物品、箱子或袋子" 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+        confirm-type="search"
+      />
+    </view>
+  </view>
+
+  <!-- 主要内容区域 -->
+  <view class="container">
+    <!-- 骨架屏加载状态 -->
+    <view wx:if="{{skeletonLoading}}" class="skeleton-container">
+      <view wx:for="{{skeletonItems}}" wx:key="index" class="skeleton-item">
+        <view class="skeleton-box-item">
+          <view class="skeleton skeleton-avatar"></view>
+          <view class="skeleton-content">
+            <view class="skeleton skeleton-title"></view>
+            <view class="skeleton skeleton-text" style="width: 80%;"></view>
+            <view class="skeleton skeleton-text" style="width: 60%;"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 箱子列表 -->
+    <view wx:else class="box-list">
+      <!-- 统计信息 -->
+      <view class="stats-card card">
+        <view class="stats-content">
+          <view class="stat-item">
+            <text class="stat-number">{{boxes.length}}</text>
+            <text class="stat-label">个箱子</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-number">{{totalItems}}</text>
+            <text class="stat-label">件物品</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-number">{{boxesWithItems}}</text>
+            <text class="stat-label">有物品</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 快速操作 -->
+      <view class="quick-actions card">
+        <view class="action-title">快速操作</view>
+        <view class="action-buttons">
+          <view class="action-btn" bindtap="onAddBox">
+            <view class="action-icon bg-blue">
+              <text class="cuIcon-add"></text>
+            </view>
+            <text class="action-text">新建箱子</text>
+          </view>
+          <view class="action-btn" bindtap="onQuickScan">
+            <view class="action-icon bg-green">
+              <text class="cuIcon-camera"></text>
+            </view>
+            <text class="action-text">快速拍照</text>
+          </view>
+          <view class="action-btn" bindtap="onBatchImport">
+            <view class="action-icon bg-orange">
+              <text class="cuIcon-pic"></text>
+            </view>
+            <text class="action-text">批量导入</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 箱子列表 -->
+      <view wx:if="{{boxes.length > 0}}" class="boxes-section">
+        <view class="section-title">
+          <text class="title-text">我的箱子</text>
+          <text class="title-count">({{boxes.length}})</text>
+        </view>
+        
+        <view class="boxes-grid">
+          <view 
+            wx:for="{{boxes}}" 
+            wx:key="id" 
+            class="box-item card"
+            bindtap="onBoxTap"
+            data-id="{{item.id}}"
+          >
+            <view class="box-header">
+              <view class="box-icon" style="background-color: {{item.color}};">
+                <text class="{{item.icon}}"></text>
+              </view>
+              <view class="box-menu" bindtap="onBoxMenu" data-id="{{item.id}}" catchtap="true">
+                <text class="cuIcon-more"></text>
+              </view>
+            </view>
+            
+            <view class="box-content">
+              <view class="box-name">{{item.name}}</view>
+              <view class="box-description">{{item.description}}</view>
+              
+              <view class="box-stats">
+                <view class="stat-badge">
+                  <text class="cuIcon-goods"></text>
+                  <text class="stat-text">{{item.itemCount}}件物品</text>
+                </view>
+              </view>
+            </view>
+            
+            <view class="box-footer">
+              <text class="box-time">{{item.createTime}}</text>
+              <text class="cuIcon-right box-arrow"></text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view wx:else class="empty-state">
+        <text class="cuIcon-goods empty-icon"></text>
+        <view class="empty-title">还没有箱子</view>
+        <view class="empty-subtitle">点击下方按钮创建第一个储物箱\n开始整理您的物品吧</view>
+        <button class="cu-btn bg-blue margin-top" bindtap="onAddBox">
+          <text class="cuIcon-add margin-right-xs"></text>
+          创建第一个箱子
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 悬浮添加按钮 -->
+  <view class="btn-fab" bindtap="onAddBox" wx:if="{{boxes.length > 0}}">
+    <text class="cuIcon-add"></text>
+  </view>
+</view>

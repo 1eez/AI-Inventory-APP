@@ -1,0 +1,623 @@
+/* packageCamera/pages/item-confirm/item-confirm.wxss */
+
+/* 页面容器 */
+.page-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-bottom: 150rpx;
+}
+
+/* 图片区域 */
+.image-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.image-container {
+  position: relative;
+  border-radius: 20rpx;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.captured-image {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 20rpx;
+}
+
+.image-actions {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+}
+
+.image-actions .cu-btn {
+  backdrop-filter: blur(10rpx);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+}
+
+/* 识别结果区域 */
+.recognition-section {
+  background: white;
+  margin-bottom: 20rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.section-header .cuIcon-ai,
+.section-header .cuIcon-edit {
+  font-size: 32rpx;
+  margin-right: 15rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+/* 识别结果列表 */
+.recognition-list {
+  white-space: nowrap;
+  padding: 30rpx 0;
+}
+
+.recognition-items {
+  display: flex;
+  gap: 20rpx;
+  padding: 0 30rpx;
+}
+
+.recognition-item {
+  min-width: 280rpx;
+  padding: 25rpx;
+  border: 2rpx solid #e9ecef;
+  border-radius: 16rpx;
+  background: white;
+  transition: all 0.3s;
+  white-space: normal;
+}
+
+.recognition-item.selected {
+  border-color: #007aff;
+  background: #f0f8ff;
+  transform: translateY(-4rpx);
+  box-shadow: 0 8rpx 25rpx rgba(0, 122, 255, 0.2);
+}
+
+.item-confidence {
+  margin-bottom: 15rpx;
+}
+
+.confidence-text {
+  font-size: 24rpx;
+  color: #007aff;
+  font-weight: 600;
+}
+
+.confidence-bar {
+  width: 100%;
+  height: 6rpx;
+  background: #e9ecef;
+  border-radius: 3rpx;
+  margin-top: 8rpx;
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #007aff, #00d4aa);
+  border-radius: 3rpx;
+  transition: width 0.3s;
+}
+
+.item-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.item-category {
+  font-size: 24rpx;
+  color: #007aff;
+  background: #e3f2fd;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  display: inline-block;
+  margin-bottom: 10rpx;
+}
+
+.item-desc {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 建议区域 */
+.suggestions {
+  padding: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.suggestions-title {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.suggestions-title .cuIcon-lightbulb {
+  font-size: 28rpx;
+}
+
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15rpx;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.suggestion-item .cuIcon-check {
+  font-size: 24rpx;
+  margin-top: 2rpx;
+}
+
+/* 编辑区域 */
+.edit-section {
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 20rpx;
+}
+
+.form-card {
+  padding: 30rpx;
+}
+
+.form-group {
+  margin-bottom: 40rpx;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.required {
+  color: #e74c3c;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #333;
+  background: #fff;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus {
+  border-color: #007aff;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  padding: 20rpx;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #333;
+  background: #fff;
+  transition: border-color 0.3s;
+}
+
+.form-textarea:focus {
+  border-color: #007aff;
+}
+
+.form-picker {
+  width: 100%;
+}
+
+.picker-text {
+  height: 80rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 28rpx;
+  color: #333;
+  background: #fff;
+}
+
+.picker-text.placeholder {
+  color: #999;
+}
+
+.picker-text .cuIcon-right {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 标签 */
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+  margin-bottom: 20rpx;
+}
+
+.common-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  transition: all 0.3s;
+  border: 2rpx solid #e9ecef;
+  background: white;
+  color: #666;
+}
+
+.tag.selected {
+  background: #007aff;
+  color: white;
+  border-color: #007aff;
+}
+
+.tag.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.tag:not(.selected):not(.disabled):active {
+  background: #f0f8ff;
+  border-color: #007aff;
+  color: #007aff;
+}
+
+.tag .cuIcon-close {
+  font-size: 20rpx;
+}
+
+/* 位置选择器 */
+.location-selector {
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  transition: border-color 0.3s;
+}
+
+.location-selector:active {
+  border-color: #007aff;
+}
+
+.location-display {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+  flex: 1;
+}
+
+.location-display .cuIcon-locationfill {
+  font-size: 28rpx;
+}
+
+.location-text {
+  flex: 1;
+}
+
+.location-main {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.location-placeholder {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.location-selector .cuIcon-right {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30rpx;
+  background: white;
+  border-top: 1rpx solid #f0f0f0;
+  z-index: 100;
+}
+
+.action-buttons .cu-btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+/* 位置选择器弹窗 */
+.location-picker-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.location-picker-panel {
+  width: 100%;
+  max-height: 80vh;
+  background: white;
+  border-radius: 20rpx 20rpx 0 0;
+  overflow: hidden;
+}
+
+.picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.picker-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.picker-header .cuIcon-close {
+  font-size: 32rpx;
+  color: #999;
+  padding: 10rpx;
+}
+
+.picker-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 30rpx;
+}
+
+.picker-section {
+  margin-bottom: 40rpx;
+}
+
+.picker-section:last-child {
+  margin-bottom: 0;
+}
+
+.picker-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+/* 收纳盒列表 */
+.box-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.box-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 25rpx;
+  border: 2rpx solid #e9ecef;
+  border-radius: 16rpx;
+  background: white;
+  transition: all 0.3s;
+}
+
+.box-item.selected {
+  border-color: #007aff;
+  background: #f0f8ff;
+}
+
+.box-color {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+}
+
+.box-info {
+  flex: 1;
+}
+
+.box-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.box-location {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.box-item .cuIcon-check {
+  font-size: 32rpx;
+}
+
+/* 收纳袋列表 */
+.bag-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15rpx;
+}
+
+.bag-item {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+  padding: 20rpx;
+  border: 2rpx solid #e9ecef;
+  border-radius: 16rpx;
+  background: white;
+  transition: all 0.3s;
+}
+
+.bag-item.selected {
+  border-color: #007aff;
+  background: #f0f8ff;
+}
+
+.bag-color {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+}
+
+.bag-name {
+  font-size: 24rpx;
+  color: #333;
+  flex: 1;
+}
+
+.bag-item .cuIcon-check {
+  font-size: 24rpx;
+}
+
+.picker-actions {
+  padding: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.picker-actions .cu-btn {
+  width: 100%;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .recognition-item {
+    min-width: 240rpx;
+  }
+  
+  .bag-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .page-container {
+    background: #1a1a1a;
+  }
+  
+  .image-section,
+  .recognition-section,
+  .edit-section,
+  .location-picker-panel {
+    background: #2d2d2d;
+  }
+  
+  .section-title,
+  .form-label,
+  .item-name,
+  .box-name,
+  .picker-title {
+    color: #fff;
+  }
+  
+  .form-input,
+  .form-textarea,
+  .picker-text,
+  .location-selector {
+    background: #3d3d3d;
+    border-color: #4d4d4d;
+    color: #fff;
+  }
+  
+  .recognition-item,
+  .box-item,
+  .bag-item {
+    background: #3d3d3d;
+    border-color: #4d4d4d;
+  }
+  
+  .tag {
+    background: #3d3d3d;
+    border-color: #4d4d4d;
+    color: #fff;
+  }
+  
+  .action-buttons {
+    background: #2d2d2d;
+    border-top-color: #4d4d4d;
+  }
+}

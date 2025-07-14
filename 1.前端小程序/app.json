@@ -1,0 +1,98 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/splash/splash",
+    "pages/search/search",
+    "pages/profile/profile"
+  ],
+  "subPackages": [
+    {
+      "root": "packageStorage/",
+      "name": "storage",
+      "pages": [
+        "pages/box-detail/box-detail",
+        "pages/bag-detail/bag-detail",
+        "pages/item-detail/item-detail",
+        "pages/add-box/add-box",
+        "pages/add-bag/add-bag"
+      ]
+    },
+    {
+      "root": "packageSearch/",
+      "name": "search",
+      "pages": [
+        "pages/search-result/search-result"
+      ]
+    },
+    {
+      "root": "packageCamera/",
+      "name": "camera",
+      "pages": [
+        "pages/camera/camera",
+        "pages/item-confirm/item-confirm"
+      ]
+    },
+    {
+      "root": "packageProfile/",
+      "name": "profile",
+      "pages": [
+        "pages/settings/settings",
+        "pages/about/about"
+      ]
+    }
+  ],
+  "preloadRule": {
+    "pages/home/home": {
+      "network": "all",
+      "packages": ["storage"]
+    }
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "物品管理",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f8f9fa",
+    "enablePullDownRefresh": false,
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "custom": false,
+    "color": "#8a8a8a",
+    "selectedColor": "#1296db",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/search/search",
+        "text": "搜索",
+        "iconPath": "assets/icons/search.png",
+        "selectedIconPath": "assets/icons/search-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.camera": {
+      "desc": "用于拍照识别物品"
+    },
+    "scope.writePhotosAlbum": {
+      "desc": "用于保存物品照片到相册"
+    }
+  },
+  "requiredBackgroundModes": [],
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

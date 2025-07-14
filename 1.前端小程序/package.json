@@ -1,0 +1,30 @@
+{
+  "name": "ai-inventory-miniprogram",
+  "version": "1.0.0",
+  "description": "AI智能物品管理小程序",
+  "main": "app.js",
+  "scripts": {
+    "dev": "echo '请使用微信开发者工具打开项目进行开发'",
+    "build": "echo '请使用微信开发者工具进行构建'",
+    "preview": "echo '请使用微信开发者工具进行预览'"
+  },
+  "keywords": [
+    "miniprogram",
+    "wechat",
+    "inventory",
+    "management",
+    "ai"
+  ],
+  "author": "AI Assistant",
+  "license": "MIT",
+  "devDependencies": {
+    "miniprogram-api-typings": "^3.12.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

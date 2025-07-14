@@ -1,0 +1,377 @@
+<!--packageProfile/pages/settings/settings.wxml-->
+
+<!-- 设置页面 -->
+<view class="settings-page">
+  <!-- 自定义导航栏 -->
+  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="backText">返回</view>
+    <view slot="content">设置</view>
+  </cu-custom>
+
+  <!-- 主要内容 -->
+  <view class="main-container">
+    <!-- 通知设置 -->
+    <view class="settings-section">
+      <view class="section-title">
+        <text class="cuIcon-notification text-blue"></text>
+        <text>通知设置</text>
+      </view>
+      
+      <view class="settings-card">
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">推送通知</text>
+            <text class="item-desc">接收应用推送消息</text>
+          </view>
+          <switch 
+            checked="{{settings.notifications.enabled}}"
+            bindchange="onSwitchChange"
+            data-category="notifications"
+            data-key="enabled"
+            color="#0081ff"
+          />
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">物品提醒</text>
+            <text class="item-desc">物品到期或位置变更提醒</text>
+          </view>
+          <switch 
+            checked="{{settings.notifications.itemReminder}}"
+            bindchange="onSwitchChange"
+            data-category="notifications"
+            data-key="itemReminder"
+            color="#0081ff"
+          />
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">位置警报</text>
+            <text class="item-desc">物品位置异常时发送警报</text>
+          </view>
+          <switch 
+            checked="{{settings.notifications.locationAlert}}"
+            bindchange="onSwitchChange"
+            data-category="notifications"
+            data-key="locationAlert"
+            color="#0081ff"
+          />
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">系统更新</text>
+            <text class="item-desc">系统更新和维护通知</text>
+          </view>
+          <switch 
+            checked="{{settings.notifications.systemUpdate}}"
+            bindchange="onSwitchChange"
+            data-category="notifications"
+            data-key="systemUpdate"
+            color="#0081ff"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- 隐私设置 -->
+    <view class="settings-section">
+      <view class="section-title">
+        <text class="cuIcon-lock text-orange"></text>
+        <text>隐私设置</text>
+      </view>
+      
+      <view class="settings-card">
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">数据同步</text>
+            <text class="item-desc">同步数据到云端</text>
+          </view>
+          <switch 
+            checked="{{settings.privacy.dataSync}}"
+            bindchange="onSwitchChange"
+            data-category="privacy"
+            data-key="dataSync"
+            color="#0081ff"
+          />
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">位置访问</text>
+            <text class="item-desc">允许应用访问位置信息</text>
+          </view>
+          <switch 
+            checked="{{settings.privacy.locationAccess}}"
+            bindchange="onSwitchChange"
+            data-category="privacy"
+            data-key="locationAccess"
+            color="#0081ff"
+          />
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">相机访问</text>
+            <text class="item-desc">允许应用访问相机</text>
+          </view>
+          <switch 
+            checked="{{settings.privacy.cameraAccess}}"
+            bindchange="onSwitchChange"
+            data-category="privacy"
+            data-key="cameraAccess"
+            color="#0081ff"
+          />
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">数据分析</text>
+            <text class="item-desc">帮助改进应用体验</text>
+          </view>
+          <switch 
+            checked="{{settings.privacy.analyticsEnabled}}"
+            bindchange="onSwitchChange"
+            data-category="privacy"
+            data-key="analyticsEnabled"
+            color="#0081ff"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- 显示设置 -->
+    <view class="settings-section">
+      <view class="section-title">
+        <text class="cuIcon-display text-green"></text>
+        <text>显示设置</text>
+      </view>
+      
+      <view class="settings-card">
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">主题模式</text>
+            <text class="item-desc">选择应用主题</text>
+          </view>
+          <picker 
+            range="{{themeOptions}}"
+            range-key="name"
+            value="{{settings.display.theme}}"
+            bindchange="onThemeChange"
+          >
+            <view class="picker-value">
+              {{themeOptions[settings.display.theme] ? themeOptions[settings.display.theme].name : '跟随系统'}}
+              <text class="cuIcon-right"></text>
+            </view>
+          </picker>
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">语言</text>
+            <text class="item-desc">选择应用语言</text>
+          </view>
+          <picker 
+            range="{{languageOptions}}"
+            range-key="name"
+            value="{{settings.display.language}}"
+            bindchange="onLanguageChange"
+          >
+            <view class="picker-value">
+              {{languageOptions[settings.display.language] ? languageOptions[settings.display.language].name : '简体中文'}}
+              <text class="cuIcon-right"></text>
+            </view>
+          </picker>
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">字体大小</text>
+            <text class="item-desc">调整文字显示大小</text>
+          </view>
+          <picker 
+            range="{{fontSizeOptions}}"
+            range-key="name"
+            value="{{settings.display.fontSize}}"
+            bindchange="onFontSizeChange"
+          >
+            <view class="picker-value">
+              {{fontSizeOptions[settings.display.fontSize] ? fontSizeOptions[settings.display.fontSize].name : '中'}}
+              <text class="cuIcon-right"></text>
+            </view>
+          </picker>
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">网格视图</text>
+            <text class="item-desc">使用网格布局显示物品</text>
+          </view>
+          <switch 
+            checked="{{settings.display.gridView}}"
+            bindchange="onSwitchChange"
+            data-category="display"
+            data-key="gridView"
+            color="#0081ff"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- 功能设置 -->
+    <view class="settings-section">
+      <view class="section-title">
+        <text class="cuIcon-settings text-purple"></text>
+        <text>功能设置</text>
+      </view>
+      
+      <view class="settings-card">
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">自动备份</text>
+            <text class="item-desc">定期自动备份数据</text>
+          </view>
+          <switch 
+            checked="{{settings.features.autoBackup}}"
+            bindchange="onSwitchChange"
+            data-category="features"
+            data-key="autoBackup"
+            color="#0081ff"
+          />
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">智能建议</text>
+            <text class="item-desc">基于使用习惯提供建议</text>
+          </view>
+          <switch 
+            checked="{{settings.features.smartSuggestions}}"
+            bindchange="onSwitchChange"
+            data-category="features"
+            data-key="smartSuggestions"
+            color="#0081ff"
+          />
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">语音输入</text>
+            <text class="item-desc">支持语音录入物品信息</text>
+          </view>
+          <switch 
+            checked="{{settings.features.voiceInput}}"
+            bindchange="onSwitchChange"
+            data-category="features"
+            data-key="voiceInput"
+            color="#0081ff"
+          />
+        </view>
+        
+        <view class="setting-item">
+          <view class="item-info">
+            <text class="item-title">手势控制</text>
+            <text class="item-desc">支持手势快捷操作</text>
+          </view>
+          <switch 
+            checked="{{settings.features.gestureControl}}"
+            bindchange="onSwitchChange"
+            data-category="features"
+            data-key="gestureControl"
+            color="#0081ff"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- 存储管理 -->
+    <view class="settings-section">
+      <view class="section-title">
+        <text class="cuIcon-storage text-cyan"></text>
+        <text>存储管理</text>
+      </view>
+      
+      <view class="settings-card">
+        <view class="storage-info">
+          <view class="storage-item">
+            <text class="storage-label">已用空间</text>
+            <text class="storage-value">{{storageInfo.used}}MB / {{storageInfo.total}}MB</text>
+          </view>
+          <view class="storage-progress">
+            <view class="progress-bar">
+              <view class="progress-fill" style="width: {{storageInfo.used / storageInfo.total * 100}}%"></view>
+            </view>
+          </view>
+          
+          <view class="storage-details">
+            <view class="detail-item">
+              <text>物品数据: {{storageInfo.items}} 条</text>
+            </view>
+            <view class="detail-item">
+              <text>图片文件: {{storageInfo.images}} 张</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="action-buttons">
+          <button class="cu-btn bg-blue sm" bindtap="onClearCache">
+            <text class="cuIcon-delete"></text> 清理缓存
+          </button>
+          <button class="cu-btn bg-green sm" bindtap="onBackupData">
+            <text class="cuIcon-upload"></text> 备份数据
+          </button>
+          <button class="cu-btn bg-orange sm" bindtap="onRestoreData">
+            <text class="cuIcon-download"></text> 恢复数据
+          </button>
+          <button class="cu-btn bg-purple sm" bindtap="onExportData">
+            <text class="cuIcon-share"></text> 导出数据
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 系统信息 -->
+    <view class="settings-section">
+      <view class="section-title">
+        <text class="cuIcon-info text-red"></text>
+        <text>系统信息</text>
+      </view>
+      
+      <view class="settings-card">
+        <view class="setting-item" bindtap="onCheckUpdate">
+          <view class="item-info">
+            <text class="item-title">检查更新</text>
+            <text class="item-desc">当前版本: {{versionInfo.version}}</text>
+          </view>
+          <text class="cuIcon-right"></text>
+        </view>
+        
+        <view class="setting-item" bindtap="onViewAbout">
+          <view class="item-info">
+            <text class="item-title">关于应用</text>
+            <text class="item-desc">查看应用详细信息</text>
+          </view>
+          <text class="cuIcon-right"></text>
+        </view>
+        
+        <view class="setting-item" bindtap="onContactSupport">
+          <view class="item-info">
+            <text class="item-title">联系客服</text>
+            <text class="item-desc">获取帮助和支持</text>
+          </view>
+          <text class="cuIcon-right"></text>
+        </view>
+        
+        <view class="setting-item" bindtap="onResetSettings">
+          <view class="item-info">
+            <text class="item-title">重置设置</text>
+            <text class="item-desc">恢复所有设置为默认值</text>
+          </view>
+          <text class="cuIcon-right"></text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,238 @@
+<!--packageCamera/pages/item-confirm/item-confirm.wxml-->
+
+<!-- 自定义导航栏 -->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">确认物品信息</view>
+</cu-custom>
+
+<view class="page-container">
+  <!-- 拍摄图片 -->
+  <view class="image-section">
+    <view class="image-container">
+      <image src="{{imagePath}}" mode="aspectFit" class="captured-image"></image>
+      <view class="image-actions">
+        <button class="cu-btn bg-grey sm" bindtap="onRetakePhoto">
+          <text class="cuIcon-camerafill"></text>
+          重拍
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- AI识别结果 -->
+  <view class="recognition-section" wx:if="{{recognitionResult && recognitionResult.items.length > 0}}">
+    <view class="section-header">
+      <text class="cuIcon-ai text-blue"></text>
+      <text class="section-title">AI识别结果</text>
+      <button class="cu-btn bg-grey sm" bindtap="onManualInput">手动输入</button>
+    </view>
+    
+    <scroll-view class="recognition-list" scroll-x="{{true}}">
+      <view class="recognition-items">
+        <view 
+          class="recognition-item {{selectedItem && selectedItem.name === item.name ? 'selected' : ''}}"
+          wx:for="{{recognitionResult.items}}"
+          wx:key="name"
+          data-item="{{item}}"
+          bindtap="onSelectRecognizedItem"
+        >
+          <view class="item-confidence">
+            <text class="confidence-text">{{(item.confidence * 100).toFixed(0)}}%</text>
+            <view class="confidence-bar">
+              <view class="confidence-fill" style="width: {{item.confidence * 100}}%"></view>
+            </view>
+          </view>
+          <view class="item-name">{{item.name}}</view>
+          <view class="item-category">{{item.category}}</view>
+          <view class="item-desc">{{item.description}}</view>
+        </view>
+      </view>
+    </scroll-view>
+    
+    <!-- AI建议 -->
+    <view class="suggestions" wx:if="{{recognitionResult.suggestions.length > 0}}">
+      <view class="suggestions-title">
+        <text class="cuIcon-lightbulb text-orange"></text>
+        <text>智能建议</text>
+      </view>
+      <view class="suggestion-list">
+        <view class="suggestion-item" wx:for="{{recognitionResult.suggestions}}" wx:key="*this">
+          <text class="cuIcon-check text-green"></text>
+          <text>{{item}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 物品信息编辑 -->
+  <view class="edit-section">
+    <view class="section-header">
+      <text class="cuIcon-edit text-green"></text>
+      <text class="section-title">物品信息</text>
+    </view>
+    
+    <view class="form-card">
+      <!-- 基本信息 -->
+      <view class="form-group">
+        <view class="form-item">
+          <view class="form-label">名称 <text class="required">*</text></view>
+          <input 
+            class="form-input"
+            placeholder="请输入物品名称"
+            value="{{itemInfo.name}}"
+            data-field="name"
+            bindinput="onInputChange"
+            maxlength="30"
+          />
+        </view>
+        
+        <view class="form-item">
+          <view class="form-label">描述</view>
+          <textarea 
+            class="form-textarea"
+            placeholder="请输入物品描述（可选）"
+            value="{{itemInfo.description}}"
+            data-field="description"
+            bindinput="onInputChange"
+            maxlength="100"
+            show-confirm-bar="{{false}}"
+          ></textarea>
+        </view>
+        
+        <view class="form-item">
+          <view class="form-label">分类 <text class="required">*</text></view>
+          <picker 
+            class="form-picker"
+            mode="selector"
+            range="{{categories}}"
+            value="{{categories.indexOf(itemInfo.category)}}"
+            bindchange="onCategoryChange"
+          >
+            <view class="picker-text {{itemInfo.category ? '' : 'placeholder'}}">
+              {{itemInfo.category || '请选择分类'}}
+              <text class="cuIcon-right"></text>
+            </view>
+          </picker>
+        </view>
+      </view>
+      
+      <!-- 标签 -->
+      <view class="form-group">
+        <view class="form-label">标签</view>
+        
+        <!-- 已选标签 -->
+        <view class="selected-tags" wx:if="{{itemInfo.tags.length > 0}}">
+          <view 
+            class="tag selected"
+            wx:for="{{itemInfo.tags}}"
+            wx:key="*this"
+            data-index="{{index}}"
+            bindtap="onRemoveTag"
+          >
+            <text>{{item}}</text>
+            <text class="cuIcon-close"></text>
+          </view>
+        </view>
+        
+        <!-- 常用标签 -->
+        <view class="common-tags">
+          <view 
+            class="tag {{itemInfo.tags.includes(item) ? 'disabled' : ''}}"
+            wx:for="{{commonTags}}"
+            wx:key="*this"
+            data-tag="{{item}}"
+            bindtap="onAddTag"
+          >
+            <text>{{item}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 存放位置 -->
+      <view class="form-group">
+        <view class="form-label">存放位置</view>
+        <view class="location-selector" bindtap="onShowLocationPicker">
+          <view class="location-display">
+            <text class="cuIcon-locationfill text-orange"></text>
+            <view class="location-text">
+              <view class="location-main" wx:if="{{itemInfo.location.boxName}}">
+                {{itemInfo.location.boxName}}
+                <text wx:if="{{itemInfo.location.bagName}}"> > {{itemInfo.location.bagName}}</text>
+              </view>
+              <view class="location-placeholder" wx:else>点击选择存放位置</view>
+            </view>
+          </view>
+          <text class="cuIcon-right"></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button 
+      class="cu-btn bg-gradual-green lg"
+      bindtap="onSubmit"
+      disabled="{{submitting || !itemInfo.name || !itemInfo.category}}"
+      loading="{{submitting}}"
+    >
+      {{submitting ? '添加中...' : '确认添加'}}
+    </button>
+  </view>
+</view>
+
+<!-- 位置选择器 -->
+<view class="location-picker-mask" wx:if="{{showLocationPicker}}" bindtap="onHideLocationPicker">
+  <view class="location-picker-panel" catchtap="">
+    <view class="picker-header">
+      <text class="picker-title">选择存放位置</text>
+      <text class="cuIcon-close" bindtap="onHideLocationPicker"></text>
+    </view>
+    
+    <view class="picker-content">
+      <!-- 收纳盒选择 -->
+      <view class="picker-section">
+        <view class="picker-label">收纳盒</view>
+        <view class="box-list">
+          <view 
+            class="box-item {{itemInfo.location.boxId === item.id ? 'selected' : ''}}"
+            wx:for="{{storageOptions.boxes}}"
+            wx:key="id"
+            data-box="{{item}}"
+            bindtap="onSelectBox"
+          >
+            <view class="box-color" style="background: {{item.color}}"></view>
+            <view class="box-info">
+              <view class="box-name">{{item.name}}</view>
+              <view class="box-location">{{item.location}}</view>
+            </view>
+            <text class="cuIcon-check text-green" wx:if="{{itemInfo.location.boxId === item.id}}"></text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 收纳袋选择 -->
+      <view class="picker-section" wx:if="{{itemInfo.location.boxId && storageOptions.bags.length > 0}}">
+        <view class="picker-label">收纳袋（可选）</view>
+        <view class="bag-list">
+          <view 
+            class="bag-item {{itemInfo.location.bagId === item.id ? 'selected' : ''}}"
+            wx:for="{{storageOptions.bags}}"
+            wx:key="id"
+            data-bag="{{item}}"
+            bindtap="onSelectBag"
+          >
+            <view class="bag-color" style="background: {{item.color}}"></view>
+            <view class="bag-name">{{item.name}}</view>
+            <text class="cuIcon-check text-green" wx:if="{{itemInfo.location.bagId === item.id}}"></text>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="picker-actions">
+      <button class="cu-btn bg-blue lg" bindtap="onConfirmLocation">确认</button>
+    </view>
+  </view>
+</view>

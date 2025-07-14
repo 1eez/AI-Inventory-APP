@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "backgroundColor": "#f5f7fa",
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "cu-custom": "/colorui/components/cu-custom/cu-custom"
+  }
+}

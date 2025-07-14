@@ -1,0 +1,346 @@
+/* app.wxss */
+
+/* 引入ColorUI样式库 */
+@import "colorui/main.wxss";
+@import "colorui/icon.wxss";
+@import "colorui/animation.wxss";
+
+/* 全局变量定义 */
+page {
+  --primary-color: #1296db;
+  --secondary-color: #39b54a;
+  --accent-color: #e54d42;
+  --background-color: #f8f9fa;
+  --card-background: #ffffff;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-placeholder: #999999;
+  --border-color: #e5e5e5;
+  --shadow-light: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4rpx 20rpx rgba(0, 0, 0, 0.12);
+  --border-radius: 12rpx;
+  --border-radius-large: 20rpx;
+}
+
+/* 全局基础样式 */
+page {
+  background-color: var(--background-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* 通用容器样式 */
+.container {
+  padding: 0 30rpx;
+  min-height: 100vh;
+}
+
+.page-container {
+  padding-top: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 卡片样式 */
+.card {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+
+.card-large {
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--shadow-medium);
+}
+
+/* 列表项样式 */
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  background: var(--card-background);
+  border-bottom: 1rpx solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item:active {
+  background-color: #f5f5f5;
+}
+
+.list-item-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius);
+  background: linear-gradient(135deg, var(--primary-color), #4facfe);
+  color: white;
+  font-size: 36rpx;
+}
+
+.list-item-content {
+  flex: 1;
+}
+
+.list-item-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8rpx;
+}
+
+.list-item-subtitle {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+}
+
+.list-item-arrow {
+  color: var(--text-placeholder);
+  font-size: 24rpx;
+}
+
+/* 按钮样式增强 */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), #4facfe);
+  border: none;
+  border-radius: var(--border-radius);
+  color: white;
+  font-weight: 600;
+  box-shadow: var(--shadow-light);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+  background: var(--card-background);
+  border: 2rpx solid var(--border-color);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.btn-fab {
+  position: fixed;
+  bottom: 120rpx;
+  right: 30rpx;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--secondary-color), #7ed321);
+  color: white;
+  font-size: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-medium);
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.btn-fab:active {
+  transform: scale(0.95);
+}
+
+/* 搜索框样式 */
+.search-container {
+  padding: 20rpx 30rpx;
+  background: var(--card-background);
+  border-bottom: 1rpx solid var(--border-color);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: var(--background-color);
+  border-radius: 50rpx;
+  padding: 20rpx 30rpx;
+}
+
+.search-icon {
+  color: var(--text-placeholder);
+  margin-right: 20rpx;
+  font-size: 32rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+/* 空状态样式 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 60rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  color: var(--text-placeholder);
+  margin-bottom: 30rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  color: var(--text-secondary);
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.empty-subtitle {
+  font-size: 26rpx;
+  color: var(--text-placeholder);
+  line-height: 1.8;
+}
+
+/* 标签样式 */
+.tag {
+  display: inline-block;
+  padding: 8rpx 16rpx;
+  background: rgba(18, 150, 219, 0.1);
+  color: var(--primary-color);
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  margin-right: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.tag-secondary {
+  background: rgba(153, 153, 153, 0.1);
+  color: var(--text-secondary);
+}
+
+/* 骨架屏样式 */
+.skeleton {
+  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.skeleton-text {
+  height: 32rpx;
+  border-radius: 4rpx;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-title {
+  height: 40rpx;
+  width: 60%;
+  border-radius: 4rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: var(--border-radius);
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx;
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: var(--text-secondary);
+}
+
+/* 工具类 */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-center {
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  justify-content: space-between;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.mt-20 {
+  margin-top: 20rpx;
+}
+
+.mb-20 {
+  margin-bottom: 20rpx;
+}
+
+.ml-20 {
+  margin-left: 20rpx;
+}
+
+.mr-20 {
+  margin-right: 20rpx;
+}
+
+.p-20 {
+  padding: 20rpx;
+}
+
+.pt-20 {
+  padding-top: 20rpx;
+}
+
+.pb-20 {
+  padding-bottom: 20rpx;
+}
+
+.pl-20 {
+  padding-left: 20rpx;
+}
+
+.pr-20 {
+  padding-right: 20rpx;
+}

@@ -1,0 +1,174 @@
+<!--packageStorage/pages/add-box/add-box.wxml-->
+
+<!-- 页面容器 -->
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="backText">返回</view>
+    <view slot="content">{{boxId ? '编辑收纳盒' : '添加收纳盒'}}</view>
+    <view slot="right">
+      <text class="cuIcon-scan" bindtap="onScanAdd"></text>
+    </view>
+  </cu-custom>
+
+  <!-- 主要内容 -->
+  <view class="container">
+    <!-- 表单卡片 -->
+    <view class="card form-card">
+      <!-- 基本信息 -->
+      <view class="form-section">
+        <view class="section-title">
+          <text class="cuIcon-infofill text-blue margin-right-xs"></text>
+          基本信息
+        </view>
+        
+        <!-- 名称输入 -->
+        <view class="form-item">
+          <view class="form-label">
+            <text class="required">*</text>
+            收纳盒名称
+          </view>
+          <input 
+            class="form-input {{errors.name ? 'error' : ''}}"
+            placeholder="请输入收纳盒名称"
+            value="{{formData.name}}"
+            data-field="name"
+            bindinput="onInputChange"
+            maxlength="20"
+          />
+          <view wx:if="{{errors.name}}" class="error-text">{{errors.name}}</view>
+        </view>
+        
+        <!-- 描述输入 -->
+        <view class="form-item">
+          <view class="form-label">描述信息</view>
+          <textarea 
+            class="form-textarea {{errors.description ? 'error' : ''}}"
+            placeholder="请输入收纳盒的用途和特点"
+            value="{{formData.description}}"
+            data-field="description"
+            bindinput="onInputChange"
+            maxlength="100"
+            show-confirm-bar="{{false}}"
+          />
+          <view wx:if="{{errors.description}}" class="error-text">{{errors.description}}</view>
+        </view>
+        
+        <!-- 位置输入 -->
+        <view class="form-item">
+          <view class="form-label">存放位置</view>
+          <input 
+            class="form-input {{errors.location ? 'error' : ''}}"
+            placeholder="如：书房书桌下方"
+            value="{{formData.location}}"
+            data-field="location"
+            bindinput="onInputChange"
+            maxlength="50"
+          />
+          <view wx:if="{{errors.location}}" class="error-text">{{errors.location}}</view>
+        </view>
+      </view>
+      
+      <!-- 外观设置 -->
+      <view class="form-section">
+        <view class="section-title">
+          <text class="cuIcon-colorlens text-blue margin-right-xs"></text>
+          外观设置
+        </view>
+        
+        <!-- 颜色选择 -->
+        <view class="form-item">
+          <view class="form-label">主题颜色</view>
+          <view class="color-grid">
+            <view 
+              wx:for="{{colorOptions}}" 
+              wx:key="value"
+              class="color-item {{formData.color === item.value ? 'active' : ''}}"
+              style="background: {{item.value}}"
+              data-color="{{item.value}}"
+              bindtap="onColorSelect"
+            >
+              <text wx:if="{{formData.color === item.value}}" class="cuIcon-check text-white"></text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 容量选择 -->
+        <view class="form-item">
+          <view class="form-label">容量规格</view>
+          <view class="capacity-list">
+            <view 
+              wx:for="{{capacityOptions}}" 
+              wx:key="value"
+              class="capacity-item {{formData.capacity === item.value ? 'active' : ''}}"
+              data-capacity="{{item.value}}"
+              bindtap="onCapacitySelect"
+            >
+              <view class="capacity-name">{{item.name}}</view>
+              <view class="capacity-desc">{{item.desc}}</view>
+              <view wx:if="{{formData.capacity === item.value}}" class="capacity-check">
+                <text class="cuIcon-check text-blue"></text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 预览区域 -->
+      <view class="form-section">
+        <view class="section-title">
+          <text class="cuIcon-eye text-blue margin-right-xs"></text>
+          效果预览
+        </view>
+        
+        <view class="preview-container">
+          <view 
+            class="preview-box"
+            style="background: linear-gradient(135deg, {{formData.color}} 0%, {{formData.color}}88 100%)"
+          >
+            <view class="preview-content">
+              <view class="preview-name">{{formData.name || '收纳盒名称'}}</view>
+              <view class="preview-desc">{{formData.description || '暂无描述'}}</view>
+              <view class="preview-meta">
+                <view class="preview-location">
+                  <text class="cuIcon-locationfill"></text>
+                  {{formData.location || '未设置位置'}}
+                </view>
+                <view class="preview-capacity">
+                  <text class="cuIcon-boxfill"></text>
+                  {{(capacityOptions.find(item => item.value === formData.capacity) || {}).name}}
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button 
+        class="action-btn secondary"
+        bindtap="onReset"
+        disabled="{{submitting}}"
+      >
+        重置
+      </button>
+      <button 
+        class="action-btn secondary"
+        bindtap="onPreview"
+        disabled="{{submitting}}"
+      >
+        预览
+      </button>
+      <button 
+        class="action-btn primary"
+        bindtap="onSubmit"
+        disabled="{{submitting}}"
+        loading="{{submitting}}"
+      >
+        {{boxId ? '保存' : '创建'}}
+      </button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,10 @@
+{
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 50,
+  "backgroundColor": "#f5f7fa",
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "cu-custom": "/colorui/components/cu-custom/cu-custom"
+  }
+}
