@@ -85,6 +85,16 @@ App({
         return;
       }
 
+      // 临时方案：由于后台还未搭建，使用假的openid进行开发调试
+      console.log('使用临时openid进行开发调试');
+      const fakeOpenId = 'fake_openid_' + Date.now();
+      this.globalData.openid = fakeOpenId;
+      // 保存到本地存储
+      wx.setStorageSync('openid', fakeOpenId);
+      resolve(fakeOpenId);
+      
+      // TODO: 后台搭建完成后，恢复以下真实登录逻辑
+      /*
       // 登录获取code
       wx.login({
         success: (res) => {
@@ -104,6 +114,7 @@ App({
         },
         fail: reject
       });
+      */
     });
   },
 
