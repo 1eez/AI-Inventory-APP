@@ -26,22 +26,18 @@ Page({
   async startInitialization() {
     try {
       // 步骤1: 检查系统环境
-      this.updateProgress('检查系统环境...', 20);
+      this.updateProgress('检查系统环境...', 25);
       await this.checkSystemEnvironment();
       
-      // 步骤2: 获取用户授权
-      this.updateProgress('获取用户授权...', 40);
-      await this.getUserAuthorization();
+      // 步骤2: 初始化用户数据
+      this.updateProgress('初始化用户数据...', 50);
+      await this.initializeUserData();
       
-      // 步骤3: 初始化用户数据
-      this.updateProgress('初始化用户数据...', 60);
-      await this.waitForSystemReady();
-      
-      // 步骤4: 预加载资源
+      // 步骤3: 预加载资源
       this.updateProgress('预加载资源...', 80);
       await this.preloadResources();
       
-      // 步骤5: 完成初始化
+      // 步骤4: 完成初始化
       this.updateProgress('初始化完成', 100);
       
       // 延迟一下再跳转，让用户看到完成状态
@@ -70,15 +66,22 @@ Page({
    */
   checkSystemEnvironment() {
     return new Promise((resolve, reject) => {
-      // 检查微信版本
-      const systemInfo = wx.getSystemInfoSync();
-      const version = systemInfo.version;
-      
-      // 检查基础库版本
-      const SDKVersion = systemInfo.SDKVersion;
+      // 使用新的API获取微信APP基础信息
+      const appBaseInfo = wx.getAppBaseInfo();
+      const version = appBaseInfo.version;
+      const SDKVersion = appBaseInfo.SDKVersion;
       
       console.log('微信版本:', version);
       console.log('基础库版本:', SDKVersion);
+      
+      // 将主题、字体设置、语言信息保存到globalData
+      app.globalData.theme = appBaseInfo.theme;
+      app.globalData.fontSizeSetting = appBaseInfo.fontSizeSetting;
+      app.globalData.language = appBaseInfo.language;
+      
+      console.log('主题:', appBaseInfo.theme);
+      console.log('字体大小设置:', appBaseInfo.fontSizeSetting);
+      console.log('语言:', appBaseInfo.language);
       
       // 模拟检查延迟
       setTimeout(() => {
@@ -87,61 +90,64 @@ Page({
     });
   },
 
+
+
   /**
-   * 获取用户授权
+   * 初始化用户数据
    */
-  getUserAuthorization() {
-    return new Promise((resolve, reject) => {
-      // 检查是否已经授权
-      wx.getSetting({
-        success: (res) => {
-          console.log('用户授权状态:', res.authSetting);
-          
-          // 这里可以根据需要请求特定权限
-          // 比如相机权限、相册权限等
-          
-          setTimeout(() => {
-            resolve();
-          }, 600);
-        },
-        fail: (error) => {
-          console.error('获取授权状态失败:', error);
-          reject(error);
-        }
-      });
-    });
+  async initializeUserData() {
+    try {
+      // 等待获取openid
+      let openid = app.globalData.openid;
+      
+      // 如果没有openid，等待获取
+      if (!openid) {
+        console.log('等待获取openid...');
+        openid = await app.getOpenId();
+      }
+      //console.log('获取到openid:', openid);
+      
+      // 获取baseUrl
+      const baseUrl = app.globalData.baseUrl;
+      
+      // 调用后台接口获取用户信息
+      const userHomeData = await this.fetchUserHomeData(baseUrl, openid);
+      
+      // 将数据保存到全局数据中，供home页使用
+      app.globalData.userHomeData = userHomeData;
+      
+      console.log('传给home页的数据:', userHomeData);
+      
+    } catch (error) {
+      console.error('初始化用户数据失败:', error);
+      throw error;
+    }
   },
 
   /**
-   * 等待系统就绪
+   * 获取用户首页数据
    */
-  waitForSystemReady() {
+  fetchUserHomeData(baseUrl, openid) {
     return new Promise((resolve, reject) => {
-      const checkReady = () => {
-        if (app.globalData.systemReady) {
-          resolve();
-        } else {
-          // 注册回调等待系统就绪
-          app.onSystemReady(() => {
-            resolve();
-          });
+      const url = `${baseUrl}v0/home/info?openid=${openid}`;
+      
+      wx.request({
+        url: url,
+        method: 'GET',
+        success: (res) => {
+          console.log('后台接口响应:', res);
+          
+          if (res.statusCode === 200 && res.data) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`接口请求失败: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('接口请求失败:', error);
+          reject(error);
         }
-      };
-      
-      // 设置超时保护
-      const timeout = setTimeout(() => {
-        reject(new Error('系统初始化超时'));
-      }, 10000); // 10秒超时
-      
-      checkReady();
-      
-      // 清除超时
-      resolve = ((originalResolve) => {
-        return (...args) => {
-          clearTimeout(timeout);
-          originalResolve(...args);
-        };
-      })(resolve);
+      });
     });
   },
 
