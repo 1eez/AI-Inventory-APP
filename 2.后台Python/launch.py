@@ -69,7 +69,7 @@ app.add_middleware(
 # -----------------------------------------------------------
 # 【 -- 系统模块 -- 】
 # -----------------------------------------------------------
-# 接口：/v0/auth/getopenid/  -- 请求方式GET
+# 接口：/auth/login  -- 请求方式POST
 # 【系统】获取微信小程序openid
 from v0_auth import router as AuthRouter
 app.include_router(AuthRouter)

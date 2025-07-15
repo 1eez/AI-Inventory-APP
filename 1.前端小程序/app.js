@@ -49,26 +49,48 @@ App({
    */
   getSystemInfo() {
     return new Promise((resolve) => {
-      wx.getSystemInfo({
-        success: (res) => {
-          this.globalData.StatusBar = res.statusBarHeight;
-          this.globalData.CustomBar = res.statusBarHeight + 45;
-          
-          if (res.platform === 'android') {
-            this.globalData.CustomBar = res.statusBarHeight + 50;
-          }
-          
-          // 获取胶囊按钮位置信息
-          const custom = wx.getMenuButtonBoundingClientRect();
-          this.globalData.Custom = custom;
-          this.globalData.CustomBar = custom.bottom + custom.top - res.statusBarHeight;
-          
-          resolve(res);
-        },
-        fail: () => {
-          resolve({});
+      // 使用新的 API 替代已废弃的 wx.getSystemInfo
+      try {
+        // 获取窗口信息（基础库 2.20.1 开始支持）
+        const windowInfo = wx.getWindowInfo();
+        this.globalData.StatusBar = windowInfo.statusBarHeight;
+        this.globalData.CustomBar = windowInfo.statusBarHeight + 45;
+        
+        // 获取设备信息以判断平台
+        const deviceInfo = wx.getDeviceInfo();
+        if (deviceInfo.platform === 'android') {
+          this.globalData.CustomBar = windowInfo.statusBarHeight + 50;
         }
-      });
+        
+        // 获取胶囊按钮位置信息
+        const custom = wx.getMenuButtonBoundingClientRect();
+        this.globalData.Custom = custom;
+        this.globalData.CustomBar = custom.bottom + custom.top - windowInfo.statusBarHeight;
+        
+        resolve(windowInfo);
+      } catch (error) {
+        // 兼容低版本基础库，降级使用 wx.getSystemInfo
+        wx.getSystemInfo({
+          success: (res) => {
+            this.globalData.StatusBar = res.statusBarHeight;
+            this.globalData.CustomBar = res.statusBarHeight + 45;
+            
+            if (res.platform === 'android') {
+              this.globalData.CustomBar = res.statusBarHeight + 50;
+            }
+            
+            // 获取胶囊按钮位置信息
+            const custom = wx.getMenuButtonBoundingClientRect();
+            this.globalData.Custom = custom;
+            this.globalData.CustomBar = custom.bottom + custom.top - res.statusBarHeight;
+            
+            resolve(res);
+          },
+          fail: () => {
+            resolve({});
+          }
+        });
+      }
     });
   },
 

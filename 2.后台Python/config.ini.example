@@ -15,3 +15,8 @@ model = glm-4-flash
 temperature = 1.0
 # 模型输出的最大token数，最大输出为4095，默认值为10
 max_completion_tokens = 10
+
+# 微信小程序配置段落
+[weixin]
+AppID = YOUR APP ID
+AppSecret = YOUR App Secret
