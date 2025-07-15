@@ -74,6 +74,11 @@ app.add_middleware(
 from v0_auth import router as AuthRouter
 app.include_router(AuthRouter)
 
+# 接口：/v0/home/info  -- 请求方式GET
+# 【首页】获取用户首页信息
+from v0_get_home_info import router as HomeInfoRouter
+app.include_router(HomeInfoRouter)
+
 # -----------------------------------------------------------
 # 【 -- 测试模块 -- 】
 # -----------------------------------------------------------

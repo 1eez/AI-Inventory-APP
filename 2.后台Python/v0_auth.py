@@ -47,7 +47,7 @@ async def wechat_login(request: LoginRequest):
     
     # 检查错误
     if "errcode" in result:
-        raise HTTPException(status_code=400, detail="获取openid失败")
+        raise HTTPException(status_code=400, detail="获取openid失败报错")
     
     if "openid" not in result:
         raise HTTPException(status_code=400, detail="获取openid失败")

@@ -3,5 +3,18 @@
   "libVersion": "3.8.10",
   "setting": {
     "urlCheck": false
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/splash/splash",
+          "pathName": "pages/splash/splash",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
   }
 }

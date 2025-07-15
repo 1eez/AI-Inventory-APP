@@ -53,6 +53,13 @@ Page({
     // 其他选项
     otherOptions: [
       {
+        id: 'settings',
+        title: '应用设置',
+        subtitle: '通知、隐私、显示等设置',
+        icon: 'cuIcon-settings',
+        color: '#667eea'
+      },
+      {
         id: 'feedback',
         title: '意见反馈',
         subtitle: '帮助我们改进',
@@ -295,6 +302,9 @@ Page({
     console.log('点击其他选项:', optionId);
     
     switch (optionId) {
+      case 'settings':
+        this.handleSettings();
+        break;
       case 'feedback':
         this.handleFeedback();
         break;
@@ -400,6 +410,13 @@ Page({
           icon: 'none'
         });
       }
+    });
+  },
+
+  // 应用设置
+  handleSettings() {
+    wx.navigateTo({
+      url: '/packageProfile/pages/settings/settings'
     });
   },
 

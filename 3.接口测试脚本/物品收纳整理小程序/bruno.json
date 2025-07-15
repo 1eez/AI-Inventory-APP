@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "物品收纳整理小程序",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
