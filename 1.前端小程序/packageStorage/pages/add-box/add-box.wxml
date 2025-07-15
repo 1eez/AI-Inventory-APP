@@ -136,7 +136,7 @@
                 </view>
                 <view class="preview-capacity">
                   <text class="cuIcon-boxfill"></text>
-                  {{(capacityOptions.find(item => item.value === formData.capacity) || {}).name}}
+                  {{currentCapacityName}}
                 </view>
               </view>
             </view>

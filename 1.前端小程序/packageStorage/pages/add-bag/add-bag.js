@@ -42,7 +42,9 @@ Page({
     // 提交状态
     submitting: false,
     // 表单验证错误
-    errors: {}
+    errors: {},
+    // 当前选中类型的图标
+    currentTypeIcon: 'bagfill'
   },
 
   /**
@@ -124,8 +126,12 @@ Page({
         boxId: this.data.formData.boxId
       };
       
+      // 获取对应类型的图标
+      const typeInfo = this.data.typeOptions.find(item => item.value === mockData.type);
+      
       this.setData({
-        formData: mockData
+        formData: mockData,
+        currentTypeIcon: typeInfo ? typeInfo.icon : 'bagfill'
       });
       
       // 更新页面标题
@@ -173,9 +179,11 @@ Page({
    */
   onTypeSelect(e) {
     const { type } = e.currentTarget.dataset;
+    const typeInfo = this.data.typeOptions.find(item => item.value === type);
     
     this.setData({
-      'formData.type': type
+      'formData.type': type,
+      currentTypeIcon: typeInfo ? typeInfo.icon : 'bagfill'
     });
   },
 

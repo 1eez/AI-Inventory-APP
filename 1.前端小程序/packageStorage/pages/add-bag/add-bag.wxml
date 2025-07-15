@@ -113,7 +113,7 @@
     <view class="preview-container">
       <view class="preview-bag" style="background: {{formData.color}}">
         <view class="preview-icon">
-          <text class="cuIcon-{{typeOptions.find(item => item.value === formData.type).icon}} text-white"></text>
+          <text class="cuIcon-{{currentTypeIcon}} text-white"></text>
         </view>
         <view class="preview-info">
           <view class="preview-name">{{formData.name || '收纳袋名称'}}</view>

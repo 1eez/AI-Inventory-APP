@@ -62,6 +62,14 @@ Page({
     try {
       const recognitionResult = JSON.parse(resultStr);
       
+      // 为每个识别结果添加百分比显示
+      if (recognitionResult.items) {
+        recognitionResult.items = recognitionResult.items.map(item => ({
+          ...item,
+          confidencePercent: Math.round(item.confidence * 100)
+        }));
+      }
+      
       this.setData({
         imagePath,
         recognitionResult

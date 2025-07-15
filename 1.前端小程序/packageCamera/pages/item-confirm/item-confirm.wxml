@@ -38,9 +38,9 @@
           bindtap="onSelectRecognizedItem"
         >
           <view class="item-confidence">
-            <text class="confidence-text">{{(item.confidence * 100).toFixed(0)}}%</text>
+            <text class="confidence-text">{{item.confidencePercent}}%</text>
             <view class="confidence-bar">
-              <view class="confidence-fill" style="width: {{item.confidence * 100}}%"></view>
+              <view class="confidence-fill" style="width: {{item.confidencePercent}}"></view>
             </view>
           </view>
           <view class="item-name">{{item.name}}</view>

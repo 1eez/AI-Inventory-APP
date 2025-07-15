@@ -37,7 +37,9 @@ Page({
     // 提交状态
     submitting: false,
     // 表单验证错误
-    errors: {}
+    errors: {},
+    // 当前选中容量的名称
+    currentCapacityName: '中型'
   },
 
   /**
@@ -73,8 +75,12 @@ Page({
         capacity: 'large'
       };
       
+      // 获取对应容量的名称
+      const capacityInfo = this.data.capacityOptions.find(item => item.value === mockData.capacity);
+      
       this.setData({
-        formData: mockData
+        formData: mockData,
+        currentCapacityName: capacityInfo ? capacityInfo.name : '中型'
       });
       
       // 更新页面标题
@@ -122,9 +128,11 @@ Page({
    */
   onCapacitySelect(e) {
     const { capacity } = e.currentTarget.dataset;
+    const capacityInfo = this.data.capacityOptions.find(item => item.value === capacity);
     
     this.setData({
-      'formData.capacity': capacity
+      'formData.capacity': capacity,
+      currentCapacityName: capacityInfo ? capacityInfo.name : '中型'
     });
   },
 
@@ -235,7 +243,8 @@ Page({
               location: '',
               capacity: 'medium'
             },
-            errors: {}
+            errors: {},
+            currentCapacityName: '中型'
           });
         }
       }
