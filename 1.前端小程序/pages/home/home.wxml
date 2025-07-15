@@ -46,17 +46,17 @@
         <view class="stats-content">
           <view class="stat-item">
             <text class="stat-number">{{boxes.length}}</text>
-            <text class="stat-label">个箱子</text>
+            <text class="stat-label">储物箱</text>
           </view>
           <view class="stat-divider"></view>
           <view class="stat-item">
             <text class="stat-number">{{totalItems}}</text>
-            <text class="stat-label">件物品</text>
+            <text class="stat-label">收纳袋</text>
           </view>
           <view class="stat-divider"></view>
           <view class="stat-item">
             <text class="stat-number">{{boxesWithItems}}</text>
-            <text class="stat-label">有物品</text>
+            <text class="stat-label">物品</text>
           </view>
         </view>
       </view>
@@ -67,21 +67,21 @@
         <view class="action-buttons">
           <view class="action-btn" bindtap="onAddBox">
             <view class="action-icon bg-blue">
-              <text class="cuIcon-add"></text>
+              <text class="cuIcon-present"></text>
             </view>
-            <text class="action-text">新建箱子</text>
+            <text class="action-text">新建储物箱</text>
+          </view>
+          <view class="action-btn" bindtap="onAddBag">
+            <view class="action-icon bg-orange">
+              <text class="cuIcon-goods"></text>
+            </view>
+            <text class="action-text">新建收纳袋</text>
           </view>
           <view class="action-btn" bindtap="onQuickScan">
             <view class="action-icon bg-green">
               <text class="cuIcon-camera"></text>
             </view>
             <text class="action-text">快速拍照</text>
-          </view>
-          <view class="action-btn" bindtap="onBatchImport">
-            <view class="action-icon bg-orange">
-              <text class="cuIcon-pic"></text>
-            </view>
-            <text class="action-text">批量导入</text>
           </view>
         </view>
       </view>

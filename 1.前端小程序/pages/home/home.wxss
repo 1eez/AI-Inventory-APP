@@ -311,27 +311,35 @@
 
 /* 响应式适配 */
 @media (max-width: 375px) {
+  /* 保持箱子两列布局 */
   .boxes-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 16rpx;
   }
   
   .box-item {
-    padding: 24rpx;
+    padding: 20rpx;
   }
   
+  /* 保持快速操作按钮横向排列 */
   .action-buttons {
-    flex-direction: column;
-    gap: 30rpx;
+    display: flex;
+    justify-content: space-around;
   }
   
   .action-btn {
-    flex-direction: row;
-    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
   }
   
   .action-icon {
-    margin-right: 20rpx;
-    margin-bottom: 0;
+    margin-bottom: 16rpx;
+  }
+  
+  .action-text {
+    font-size: 22rpx;
   }
 }
 
