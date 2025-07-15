@@ -33,7 +33,7 @@
       <!-- 进度条 -->
       <view class="progress-container">
         <view class="progress-bg">
-          <view class="progress-fill" style="width: {{progress}}%;"></view>
+          <view class="progress-fill" style="--progress-width: {{progress}}%"></view>
         </view>
         <text class="progress-text">{{progress}}%</text>
       </view>
