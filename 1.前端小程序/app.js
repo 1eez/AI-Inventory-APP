@@ -8,6 +8,8 @@ App({
     userInfo: null,
     systemReady: false,
     userDataReady: false,
+    // 后台接口基础URL
+    baseUrl: 'https://prd.shouna.nidele.com/',
     // 系统信息
     StatusBar: 0,
     CustomBar: 0,
@@ -102,41 +104,41 @@ App({
       // 先检查本地存储
       const localOpenId = wx.getStorageSync('openid');
       if (localOpenId) {
+        console.log('从本地存储获取到openid:', localOpenId);
         this.globalData.openid = localOpenId;
         resolve(localOpenId);
         return;
       }
 
-      // 临时方案：由于后台还未搭建，使用假的openid进行开发调试
-      console.log('使用临时openid进行开发调试');
-      const fakeOpenId = 'fake_openid_' + Date.now();
-      this.globalData.openid = fakeOpenId;
-      // 保存到本地存储
-      wx.setStorageSync('openid', fakeOpenId);
-      resolve(fakeOpenId);
-      
-      // TODO: 后台搭建完成后，恢复以下真实登录逻辑
-      /*
+      //console.log('开始获取微信登录code');
       // 登录获取code
       wx.login({
         success: (res) => {
           if (res.code) {
+            //console.log('获取到微信登录code:', res.code);
             // 发送code到后台换取openid
             this.exchangeOpenId(res.code)
               .then((openid) => {
+                //console.log('成功获取到openid:', openid);
                 this.globalData.openid = openid;
                 // 保存到本地存储
                 wx.setStorageSync('openid', openid);
                 resolve(openid);
               })
-              .catch(reject);
+              .catch((error) => {
+                console.error('获取openid失败:', error);
+                reject(error);
+              });
           } else {
+            console.error('微信登录失败，未获取到code');
             reject(new Error('登录失败'));
           }
         },
-        fail: reject
+        fail: (error) => {
+          console.error('微信登录调用失败:', error);
+          reject(error);
+        }
       });
-      */
     });
   },
 
@@ -145,21 +147,32 @@ App({
    */
   exchangeOpenId(code) {
     return new Promise((resolve, reject) => {
-      // TODO: 替换为实际的后台接口地址
+      //console.log('向后台发送登录请求，code:', code);
+      
       wx.request({
-        url: 'https://your-api.com/auth/login',
+        url: this.globalData.baseUrl + 'auth/login',
         method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
         data: {
           code: code
         },
         success: (res) => {
-          if (res.data && res.data.openid) {
+          //console.log('后台登录接口响应:', res);
+          
+          if (res.statusCode === 200 && res.data && res.data.openid) {
+            console.log('成功从后台获取openid:', res.data.openid);
             resolve(res.data.openid);
           } else {
-            reject(new Error('获取openid失败'));
+            console.error('后台返回数据格式错误或无openid:', res.data);
+            reject(new Error('获取openid失败: ' + JSON.stringify(res.data)));
           }
         },
-        fail: reject
+        fail: (error) => {
+          console.error('请求后台登录接口失败:', error);
+          reject(error);
+        }
       });
     });
   },
@@ -232,7 +245,7 @@ App({
    * 小程序显示时触发
    */
   onShow() {
-    console.log('小程序显示');
+
   },
 
   /**

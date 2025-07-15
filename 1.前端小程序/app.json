@@ -83,14 +83,7 @@
       }
     ]
   },
-  "permission": {
-    "scope.camera": {
-      "desc": "用于拍照识别物品"
-    },
-    "scope.writePhotosAlbum": {
-      "desc": "用于保存物品照片到相册"
-    }
-  },
+
   "requiredBackgroundModes": [],
   "style": "v2",
   "sitemapLocation": "sitemap.json",
