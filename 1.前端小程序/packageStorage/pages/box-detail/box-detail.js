@@ -87,31 +87,75 @@ Page({
       // 模拟网络请求延迟
       await new Promise(resolve => setTimeout(resolve, 600));
       
-      // TODO: 替换为实际的API调用
-      const mockBoxInfo = {
-        id: this.boxId,
-        name: this.boxName || '客厅储物箱',
-        description: '客厅常用物品收纳',
-        icon: 'cuIcon-goods',
-        color: '#1296db',
-        createTime: '2024-01-15',
-        updateTime: '2024-01-20',
-        totalBags: 4,
-        totalItems: 12,
-        tags: ['客厅', '常用', '整理']
+      // 优先从全局数据中获取箱子信息
+      let boxData = app.globalData.currentBoxInfo;
+      
+      if (!boxData) {
+        console.warn('未找到全局箱子数据，使用默认数据');
+        // 如果没有全局数据，使用默认数据结构
+        boxData = {
+          box_id: parseInt(this.boxId),
+          user_id: 1,
+          sort_id: 1,
+          name: this.boxName || '未知箱子',
+          description: '暂无描述',
+          color: '#1296db',
+          location: '',
+          created_at: new Date().toISOString(),
+          item_count: 0,
+          icon: 'cuIcon-goods'
+        };
+      }
+      
+      console.log('使用的箱子数据:', boxData);
+      
+      // 格式化数据以适配WXML显示
+      const formattedBoxInfo = {
+        id: boxData.box_id || boxData.id,
+        name: boxData.name,
+        description: boxData.description,
+        color: boxData.color,
+        location: boxData.location,
+        icon: boxData.icon || 'cuIcon-goods',
+        createTime: this.formatDate(boxData.created_at),
+        totalBags: 0, // TODO: 从后台获取袋子数量
+        totalItems: boxData.item_count || 0,
+        tags: [] // TODO: 从后台获取标签信息
       };
       
       this.setData({
-        boxInfo: mockBoxInfo
+        boxInfo: formattedBoxInfo
       });
       
       // 更新页面标题
       wx.setNavigationBarTitle({
-        title: mockBoxInfo.name
+        title: formattedBoxInfo.name
       });
+      
+      // 清除全局数据，避免内存泄漏
+      app.globalData.currentBoxInfo = null;
+      
     } catch (error) {
       console.error('加载箱子信息失败:', error);
       throw error;
+    }
+  },
+
+  /**
+   * 格式化日期显示
+   */
+  formatDate(dateString) {
+    if (!dateString) return '';
+    
+    try {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      console.error('日期格式化失败:', error);
+      return dateString;
     }
   },
 
@@ -265,6 +309,38 @@ Page({
   onEditBox() {
     wx.navigateTo({
       url: `/packageStorage/pages/add-box/add-box?mode=edit&id=${this.boxId}`
+    });
+  },
+
+  /**
+   * 删除箱子
+   */
+  onDeleteBox() {
+    wx.showModal({
+      title: '确认删除',
+      content: `确定要删除箱子"${this.data.boxInfo?.name || ''}"吗？箱子内的所有袋子和物品也将被删除。`,
+      confirmText: '删除',
+      confirmColor: '#e54d42',
+      success: (res) => {
+        if (res.confirm) {
+          // TODO: 调用删除API
+          wx.showLoading({ title: '删除中...' });
+          
+          setTimeout(() => {
+            wx.hideLoading();
+            
+            wx.showToast({
+              title: '删除成功',
+              icon: 'success'
+            });
+            
+            // 返回上一页
+            setTimeout(() => {
+              wx.navigateBack();
+            }, 1500);
+          }, 1000);
+        }
+      }
     });
   },
 

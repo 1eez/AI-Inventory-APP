@@ -53,40 +53,41 @@
     <view wx:else>
       <!-- 箱子信息卡片 -->
       <view class="box-info-card card">
-        <view class="box-header">
-          <view class="box-icon-large" style="background-color: {{boxInfo.color}};">
-            <text class="{{boxInfo.icon}}"></text>
-          </view>
-          <view class="box-main-info">
-            <view class="box-name-large">{{boxInfo.name}}</view>
-            <view class="box-description-large">{{boxInfo.description}}</view>
-            
-            <!-- 标签 -->
-            <view class="box-tags" wx:if="{{boxInfo.tags && boxInfo.tags.length > 0}}">
-              <text wx:for="{{boxInfo.tags}}" wx:key="index" class="tag">{{item}}</text>
+        <view 
+          class="box-preview"
+          style="background: linear-gradient(135deg, {{boxInfo.color}} 0%, {{boxInfo.color}}88 100%)"
+        >
+          <view class="box-preview-content">
+            <view class="box-preview-name">{{boxInfo.name}}</view>
+            <view class="box-preview-desc" wx:if="{{boxInfo.description}}">{{boxInfo.description}}</view>
+            <view class="box-preview-meta">
+              <view class="box-preview-location" wx:if="{{boxInfo.location}}">
+                <text class="cuIcon-locationfill"></text>
+                <text>{{boxInfo.location}}</text>
+              </view>
+              <view class="box-preview-date">
+                <text class="preview-date-text">{{boxInfo.createTime}}</text>
+              </view>
             </view>
-          </view>
-        </view>
-        
-        <!-- 统计信息 -->
-        <view class="box-stats-row">
-          <view class="stat-item">
-            <text class="stat-number">{{boxInfo.totalBags}}</text>
-            <text class="stat-label">个袋子</text>
-          </view>
-          <view class="stat-divider"></view>
-          <view class="stat-item">
-            <text class="stat-number">{{boxInfo.totalItems}}</text>
-            <text class="stat-label">件物品</text>
-          </view>
-          <view class="stat-divider"></view>
-          <view class="stat-item">
-            <text class="stat-number">{{boxInfo.createTime}}</text>
-            <text class="stat-label">创建时间</text>
           </view>
         </view>
       </view>
 
+      <!-- 统计信息 -->
+      <view class="stats-card card">
+        <view class="stats-content">
+          <view class="stat-item">
+            <text class="stat-number">{{boxInfo.totalBags}}</text>
+            <text class="stat-label">袋子</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-number">{{boxInfo.totalItems}}</text>
+            <text class="stat-label">物品</text>
+          </view>
+        </view>
+      </view>
+      
       <!-- 快速操作 -->
       <view class="quick-actions card">
         <view class="action-title">快速操作</view>
@@ -109,8 +110,16 @@
             </view>
             <text class="action-text">批量移动</text>
           </view>
+          <view class="action-btn" bindtap="onDeleteBox">
+            <view class="action-icon bg-red">
+              <text class="cuIcon-delete"></text>
+            </view>
+            <text class="action-text">删除箱子</text>
+          </view>
         </view>
       </view>
+
+
 
       <!-- 袋子列表 -->
       <view wx:if="{{bags.length > 0}}" class="bags-section">

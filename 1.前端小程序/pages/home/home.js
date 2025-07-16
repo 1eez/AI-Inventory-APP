@@ -218,6 +218,27 @@ Page({
       return;
     }
     
+    // 将完整的箱子信息存储到全局数据中，供详情页使用
+    app.globalData.currentBoxInfo = {
+      // 原始后台数据字段
+      box_id: box.box_id || box.id,
+      user_id: box.user_id,
+      sort_id: box.sort_id,
+      name: box.name,
+      description: box.description,
+      color: box.color,
+      location: box.location,
+      created_at: box.created_at,
+      item_count: box.item_count,
+      // 处理后的显示字段
+      id: box.id,
+      icon: box.icon,
+      itemCount: box.itemCount,
+      createTime: box.createTime
+    };
+    
+    console.log('传递给详情页的箱子信息:', app.globalData.currentBoxInfo);
+    
     // 跳转到箱子详情页
     wx.navigateTo({
       url: `/packageStorage/pages/box-detail/box-detail?id=${boxId}&name=${encodeURIComponent(box.name)}`
