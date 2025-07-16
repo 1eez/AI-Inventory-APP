@@ -131,7 +131,7 @@
         <view class="bags-list">
           <view 
             wx:for="{{bags}}" 
-            wx:key="id" 
+            wx:key="id"
             class="bag-item list-item"
             bindtap="onBagTap"
             data-id="{{item.id}}"
@@ -148,25 +148,13 @@
                 </view>
               </view>
               
-              <text class="bag-description list-item-subtitle">{{item.description}}</text>
-              
               <view class="bag-meta">
                 <view class="meta-item">
                   <text class="cuIcon-goods meta-icon"></text>
                   <text class="meta-text">{{item.itemCount}}件物品</text>
                 </view>
-                <view class="meta-item" wx:if="{{item.lastUsed}}">
-                  <text class="cuIcon-time meta-icon"></text>
-                  <text class="meta-text">{{item.lastUsed}}</text>
-                </view>
-                <view class="meta-item" wx:else>
-                  <text class="cuIcon-time meta-icon"></text>
-                  <text class="meta-text">未使用</text>
-                </view>
               </view>
             </view>
-            
-            <text class="cuIcon-right list-item-arrow"></text>
           </view>
         </view>
       </view>
