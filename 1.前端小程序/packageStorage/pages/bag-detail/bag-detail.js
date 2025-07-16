@@ -9,8 +9,33 @@ Page({
     skeletonItems: [1, 2, 3, 4, 5],
     
     // 袋子信息
-    bagInfo: {},
-    boxInfo: {},
+    bagInfo: {
+      id: null,
+      name: '',
+      description: '',
+      color: '#1296db',
+      icon: 'cuIcon-goods',
+      tags: [],
+      itemCount: 0,
+      totalValue: 0,
+      createTime: '',
+      lastUsed: '',
+      location: ''
+    },
+    
+    // 箱子信息
+    boxInfo: {
+      id: null,
+      name: '',
+      description: '',
+      color: '#1296db',
+      location: '',
+      icon: 'cuIcon-home',
+      createTime: '',
+      totalBags: 0,
+      totalItems: 0,
+      tags: []
+    },
     
     // 物品列表
     items: [],
@@ -102,20 +127,36 @@ Page({
   // 加载物品列表
   async loadItems() {
     try {
+      this.setData({ loading: true });
+      
+      // 从后台API获取数据
       const items = await this.getItemsFromAPI();
       
+      // 更新页面数据
       this.setData({
-        items
+        items: items,
+        filteredItems: items,
+        loading: false
       });
+      
+      // 更新统计信息
+      this.updateStatistics();
+      
     } catch (error) {
-      console.error('加载物品列表失败:', error);
-      // 如果API调用失败，使用模拟数据作为备用
-      const items = await this.mockGetItems(this.data.bagId);
-      this.setData({ items });
+      console.error('加载袋子详情失败:', error);
+      
+      // 显示错误提示
+      wx.showToast({
+        title: error.message || '加载失败',
+        icon: 'none',
+        duration: 2000
+      });
+      
+      this.setData({ loading: false });
     }
   },
 
-  // 从后台API获取物品列表
+  // 从后台API获取袋子详情和物品列表
   async getItemsFromAPI() {
     const baseUrl = app.globalData.baseUrl;
     const openid = app.globalData.openid;
@@ -134,11 +175,50 @@ Page({
           bag_id: this.data.bagId
         },
         success: (res) => {
-          console.log('获取物品列表API响应:', res);
-          if (res.statusCode === 200 && res.data.code === 200) {
-            // 处理API返回的数据格式
-            const items = res.data.data || [];
-            resolve(items.map(item => ({
+          console.log('获取袋子详情API响应:', res);
+          if (res.statusCode === 200 && res.data.status === 'success') {
+            const responseData = res.data.data;
+            
+            // 更新袋子信息
+            if (responseData.bag_info) {
+              const bagInfo = {
+                id: responseData.bag_info.bag_id,
+                name: responseData.bag_info.name,
+                description: responseData.bag_info.description || '',
+                color: responseData.bag_info.color || '#1296db',
+                icon: responseData.bag_info.icon || 'cuIcon-goods',
+                tags: responseData.bag_info.tags || [],
+                itemCount: responseData.total_count || 0,
+                totalValue: responseData.bag_info.total_value || 0,
+                createTime: this.formatDate(responseData.bag_info.created_at),
+                lastUsed: responseData.bag_info.last_used ? this.formatDate(responseData.bag_info.last_used) : '',
+                location: responseData.bag_info.location || ''
+              };
+              
+              this.setData({ bagInfo });
+            }
+            
+            // 更新箱子信息
+            if (responseData.box_info) {
+              const boxInfo = {
+                id: responseData.box_info.box_id,
+                name: responseData.box_info.name,
+                description: responseData.box_info.description || '',
+                color: responseData.box_info.color || '#1296db',
+                location: responseData.box_info.location || '',
+                icon: responseData.box_info.icon || 'cuIcon-home',
+                createTime: this.formatDate(responseData.box_info.created_at),
+                totalBags: 0, // TODO: 从后台获取袋子数量
+                totalItems: responseData.box_info.item_count || 0,
+                tags: responseData.box_info.tags || []
+              };
+              
+              this.setData({ boxInfo });
+            }
+            
+            // 处理物品列表
+            const items = responseData.items_list || [];
+            const formattedItems = items.map(item => ({
               id: item.id,
               name: item.name || '未命名物品',
               description: item.description || '',
@@ -150,16 +230,51 @@ Page({
               condition: item.condition || '良好',
               purchaseDate: item.purchase_date || '',
               lastUsed: item.last_used || ''
-            })));
+            }));
+            
+            resolve(formattedItems);
           } else {
-            reject(new Error(res.data.message || '获取物品列表失败'));
+            reject(new Error(res.data.message || '获取袋子详情失败'));
           }
         },
         fail: (error) => {
-          console.error('获取物品列表API调用失败:', error);
+          console.error('获取袋子详情API调用失败:', error);
           reject(error);
         }
       });
+    });
+  },
+  
+  // 格式化日期显示
+  formatDate(dateString) {
+    if (!dateString) return '';
+    
+    try {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      console.error('日期格式化失败:', error);
+      return dateString;
+    }
+  },
+
+  // 更新统计信息
+  updateStatistics() {
+    const items = this.data.items;
+    const totalItems = items.length;
+    const totalValue = items.reduce((sum, item) => sum + (item.value || 0), 0);
+    const categories = [...new Set(items.map(item => item.category))].length;
+    
+    this.setData({
+      'statistics.totalItems': totalItems,
+      'statistics.totalValue': totalValue,
+      'statistics.categories': categories,
+      'statistics.lastUpdate': new Date().toLocaleDateString(),
+      'bagInfo.itemCount': totalItems,
+      'bagInfo.totalValue': totalValue
     });
   },
 

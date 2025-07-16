@@ -3,7 +3,7 @@
 /* 页面容器 */
 .page-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f2f7ff 100%);
 }
 
 /* 导航栏 */
@@ -334,58 +334,48 @@
   opacity: 0.9;
 }
 
-/* 快速操作 */
+/* 快速操作 - 与box-detail页面保持一致 */
 .quick-actions {
   margin-bottom: 30rpx;
+  padding: 30rpx;
 }
 
 .action-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 30rpx;
 }
 
 .action-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   gap: 20rpx;
 }
 
 .action-btn {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30rpx 20rpx;
-  background: #f8f9fa;
-  border-radius: 16rpx;
-  transition: all 0.3s ease;
-}
-
-.action-btn:active {
-  transform: scale(0.95);
-  background: #e9ecef;
+  flex: 1;
 }
 
 .action-icon {
   width: 80rpx;
   height: 80rpx;
-  border-radius: 20rpx;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16rpx;
-}
-
-.action-icon text {
+  color: white;
   font-size: 36rpx;
-  color: #fff;
+  margin-bottom: 16rpx;
+  box-shadow: var(--shadow-light);
 }
 
 .action-text {
   font-size: 24rpx;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 

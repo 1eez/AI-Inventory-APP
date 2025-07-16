@@ -12,7 +12,7 @@ Page({
     // 表单数据
     formData: {
       name: '',
-      color: '#43e97b',
+      color: '#f37b1d',
       boxId: ''
     },
     // 颜色选项
