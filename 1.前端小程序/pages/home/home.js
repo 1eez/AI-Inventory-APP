@@ -91,14 +91,14 @@ Page({
       
       this.setData({
         boxes: processedBoxes,
-        totalItems: statistics.total_items || 0,
-        boxesWithItems: statistics.total_boxes || 0
+        totalItems: statistics.total_bags || 0,
+        boxesWithItems: statistics.total_items || 0
       });
       
       console.log('箱子数据加载完成:', {
         boxes: processedBoxes,
-        totalItems: statistics.total_items,
-        boxesWithItems: statistics.total_boxes
+        totalItems: statistics.total_bags,
+        boxesWithItems: statistics.total_items
       });
       
       // 更新全局数据缓存
