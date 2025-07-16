@@ -317,7 +317,7 @@ Page({
    */
   onAddBag() {
     wx.navigateTo({
-      url: `/packageStorage/pages/add-bag/add-bag?boxId=${this.boxId}&boxName=${encodeURIComponent(this.data.boxInfo?.name || '')}`
+      url: `/packageStorage/pages/add-bag/add-bag?boxId=${this.boxId}&boxName=${encodeURIComponent(this.data.boxInfo?.name || '')}&boxLocation=${encodeURIComponent(this.data.boxInfo?.location || '')}&boxColor=${encodeURIComponent(this.data.boxInfo?.color || '#1296db')}`
     });
   },
 

@@ -152,71 +152,7 @@
   margin-top: 10rpx;
 }
 
-/* 类型网格 */
-.type-grid {
-  padding: 30rpx;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20rpx;
-}
 
-.type-item {
-  padding: 25rpx;
-  border: 2rpx solid #e9ecef;
-  border-radius: 16rpx;
-  display: flex;
-  align-items: center;
-  transition: all 0.3s;
-  background: white;
-}
-
-.type-item.active {
-  border-color: #007aff;
-  background: #007aff;
-  transform: translateY(-2rpx);
-  box-shadow: 0 8rpx 25rpx rgba(0, 122, 255, 0.3);
-}
-
-.type-icon {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 50%;
-  background: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 20rpx;
-  font-size: 28rpx;
-}
-
-.type-item.active .type-icon {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.type-info {
-  flex: 1;
-}
-
-.type-name {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 5rpx;
-}
-
-.type-item.active .type-name {
-  color: white;
-}
-
-.type-desc {
-  font-size: 22rpx;
-  color: #999;
-  line-height: 1.4;
-}
-
-.type-item.active .type-desc {
-  color: rgba(255, 255, 255, 0.8);
-}
 
 /* 颜色网格 */
 .color-grid {
@@ -270,17 +206,7 @@
   box-shadow: 0 8rpx 25rpx rgba(0, 0, 0, 0.15);
 }
 
-.preview-icon {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 25rpx;
-  font-size: 36rpx;
-}
+
 
 .preview-info {
   flex: 1;
@@ -293,11 +219,7 @@
   margin-bottom: 8rpx;
 }
 
-.preview-desc {
-  font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.4;
-}
+
 
 /* 操作按钮 */
 .action-buttons {
@@ -323,10 +245,6 @@
 
 /* 响应式设计 */
 @media (max-width: 750rpx) {
-  .type-grid {
-    grid-template-columns: 1fr;
-  }
-  
   .color-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -354,8 +272,7 @@
   
   .card-title,
   .box-name,
-  .form-label,
-  .type-name {
+  .form-label {
     color: #fff;
   }
   
@@ -364,15 +281,6 @@
     background: #3d3d3d;
     border-color: #4d4d4d;
     color: #fff;
-  }
-  
-  .type-item {
-    background: #3d3d3d;
-    border-color: #4d4d4d;
-  }
-  
-  .type-icon {
-    background: #4d4d4d;
   }
   
   .action-buttons {

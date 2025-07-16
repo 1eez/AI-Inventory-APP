@@ -1,7 +1,7 @@
 <!--packageStorage/pages/add-bag/add-bag.wxml-->
 
 <!-- 自定义导航栏 -->
-<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+<cu-custom bgColor="bg-white" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">{{bagId ? '编辑收纳袋' : '添加收纳袋'}}</view>
 </cu-custom>
@@ -13,9 +13,6 @@
       <text class="cuIcon-boxfill text-{{boxInfo.color}}"></text>
       <text class="box-name">{{boxInfo.name}}</text>
       <text class="box-location">{{boxInfo.location}}</text>
-    </view>
-    <view class="box-info-action" bindtap="onViewBox">
-      <text class="cuIcon-right"></text>
     </view>
   </view>
 
@@ -40,47 +37,11 @@
         <view class="error-text" wx:if="{{errors.name}}">{{errors.name}}</view>
       </view>
       
-      <view class="form-item">
-        <view class="form-label">描述</view>
-        <textarea 
-          class="form-textarea {{errors.description ? 'error' : ''}}"
-          placeholder="请输入收纳袋描述（可选）"
-          value="{{formData.description}}"
-          data-field="description"
-          bindinput="onInputChange"
-          maxlength="100"
-          show-confirm-bar="{{false}}"
-        ></textarea>
-        <view class="error-text" wx:if="{{errors.description}}">{{errors.description}}</view>
-      </view>
+
     </view>
   </view>
 
-  <!-- 类型选择 -->
-  <view class="form-card">
-    <view class="card-header">
-      <text class="cuIcon-tagfill text-orange"></text>
-      <text class="card-title">收纳袋类型</text>
-    </view>
-    
-    <view class="type-grid">
-      <view 
-        class="type-item {{formData.type === item.value ? 'active' : ''}}"
-        wx:for="{{typeOptions}}"
-        wx:key="value"
-        data-type="{{item.value}}"
-        bindtap="onTypeSelect"
-      >
-        <view class="type-icon">
-          <text class="cuIcon-{{item.icon}} {{formData.type === item.value ? 'text-white' : 'text-grey'}}"></text>
-        </view>
-        <view class="type-info">
-          <view class="type-name">{{item.name}}</view>
-          <view class="type-desc">{{item.desc}}</view>
-        </view>
-      </view>
-    </view>
-  </view>
+
 
   <!-- 颜色选择 -->
   <view class="form-card">
@@ -112,12 +73,8 @@
     
     <view class="preview-container">
       <view class="preview-bag" style="background: {{formData.color}}">
-        <view class="preview-icon">
-          <text class="cuIcon-{{currentTypeIcon}} text-white"></text>
-        </view>
         <view class="preview-info">
           <view class="preview-name">{{formData.name || '收纳袋名称'}}</view>
-          <view class="preview-desc">{{formData.description || '暂无描述'}}</view>
         </view>
       </view>
     </view>
