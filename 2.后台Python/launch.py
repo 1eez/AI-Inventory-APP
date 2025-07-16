@@ -112,6 +112,24 @@ from v2_get_bag import router as GetBagRouter
 app.include_router(GetBagRouter)
 
 # -----------------------------------------------------------
+# 【 -- 物品管理 -- 】
+# -----------------------------------------------------------
+# 接口：/v3/item/add  -- 请求方式POST
+# 【物品】添加物品
+from v3_add_item import router as AddItemRouter
+app.include_router(AddItemRouter)
+
+# 接口：/v3/item/delete  -- 请求方式POST
+# 【物品】删除物品
+from v3_delete_item import router as DeleteItemRouter
+app.include_router(DeleteItemRouter)
+
+# 接口：/v3/item/get  -- 请求方式GET
+# 【物品】获取物品信息
+from v3_get_item import router as GetItemRouter
+app.include_router(GetItemRouter)
+
+# -----------------------------------------------------------
 # 【 -- 测试模块 -- 】
 # -----------------------------------------------------------
 # 接口：/v0/testAI/  -- 请求方式POST

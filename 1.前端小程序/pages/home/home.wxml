@@ -154,4 +154,43 @@
   <view class="btn-fab" bindtap="onAddBox" wx:if="{{boxes.length > 0}}">
     <text class="cuIcon-add"></text>
   </view>
+
+  <!-- 箱子选择浮层 -->
+  <view wx:if="{{showBoxSelector}}" class="box-selector-overlay" bindtap="onCloseBoxSelector">
+    <view class="box-selector-modal" catchtap="">
+      <view class="selector-header">
+        <text class="selector-title">选择储物箱</text>
+        <text class="cuIcon-close selector-close" bindtap="onCloseBoxSelector"></text>
+      </view>
+      
+      <view class="selector-content">
+        <view class="selector-subtitle">请选择要添加收纳袋的储物箱</view>
+        
+        <scroll-view class="selector-list" scroll-y="true">
+          <view 
+            wx:for="{{selectorBoxes}}" 
+            wx:key="id" 
+            class="selector-box-item"
+            bindtap="onSelectBox"
+            data-id="{{item.id}}"
+          >
+            <view class="selector-box-card">
+              <view class="selector-box-color" style="background-color: {{item.color}};"></view>
+              <view class="selector-box-info">
+                <view class="selector-box-name">{{item.name}}</view>
+                <view class="selector-box-desc" wx:if="{{item.location}}">
+                  <text class="cuIcon-locationfill"></text>
+                  <text>{{item.location}}</text>
+                </view>
+                <view class="selector-box-count">{{item.itemCount}} 个物品</view>
+              </view>
+              <view class="selector-box-arrow">
+                <text class="cuIcon-right"></text>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+  </view>
 </view>

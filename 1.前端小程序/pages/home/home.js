@@ -13,7 +13,10 @@ Page({
     skeletonItems: [1, 2, 3, 4, 5], // 显示5个骨架屏项目
     // 统计数据
     totalItems: 0, // 总物品数量
-    boxesWithItems: 0 // 有物品的箱子数量
+    boxesWithItems: 0, // 有物品的箱子数量
+    // 箱子选择浮层
+    showBoxSelector: false, // 是否显示箱子选择浮层
+    selectorBoxes: [] // 浮层中的箱子列表
   },
 
   /*** 生命周期函数--监听页面加载   */
@@ -249,6 +252,63 @@ Page({
   onAddBox() {
     wx.navigateTo({
       url: '/packageStorage/pages/add-box/add-box'
+    });
+  },
+
+  /*** 添加新收纳袋   */
+  onAddBag() {
+    // 检查是否有箱子
+    if (this.data.boxes.length === 0) {
+      wx.showModal({
+        title: '提示',
+        content: '请先创建一个储物箱，然后再添加收纳袋',
+        showCancel: true,
+        cancelText: '取消',
+        confirmText: '创建箱子',
+        success: (res) => {
+          if (res.confirm) {
+            this.onAddBox();
+          }
+        }
+      });
+      return;
+    }
+
+    // 显示箱子选择浮层
+    this.setData({
+      showBoxSelector: true,
+      selectorBoxes: this.data.boxes
+    });
+  },
+
+  /*** 关闭箱子选择浮层   */
+  onCloseBoxSelector() {
+    this.setData({
+      showBoxSelector: false
+    });
+  },
+
+  /*** 选择箱子   */
+  onSelectBox(e) {
+    const boxId = e.currentTarget.dataset.id;
+    const box = this.data.boxes.find(item => item.id === boxId);
+    
+    if (!box) {
+      wx.showToast({
+        title: '箱子信息错误',
+        icon: 'error'
+      });
+      return;
+    }
+
+    // 关闭浮层
+    this.setData({
+      showBoxSelector: false
+    });
+
+    // 跳转到添加收纳袋页面，传递箱子信息
+    wx.navigateTo({
+      url: `/packageStorage/pages/add-bag/add-bag?boxId=${box.box_id || box.id}&boxName=${encodeURIComponent(box.name)}&boxLocation=${encodeURIComponent(box.location || '')}&boxColor=${encodeURIComponent(box.color || '#1296db')}`
     });
   },
 
