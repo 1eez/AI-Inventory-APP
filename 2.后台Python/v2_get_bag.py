@@ -61,6 +61,21 @@ def get_bags_by_box_id(box_id: int, db_manager: DatabaseManager) -> List[Dict[st
     results = db_manager.execute_query(query, (box_id,))
     return [dict(row) for row in results]
 
+def get_box_info_by_id(box_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
+    """
+    根据储物箱ID获取储物箱的所有信息
+    
+    Args:
+        box_id: 储物箱ID
+        db_manager: 数据库管理器实例
+        
+    Returns:
+        Dict: 储物箱信息
+    """
+    query = "SELECT * FROM boxes_summary WHERE box_id = ?"
+    result = db_manager.execute_query(query, (box_id,), fetch_one=True)
+    return dict(result) if result else {}
+
 # 创建数据库管理器实例
 db_manager = DatabaseManager()
 
@@ -93,12 +108,16 @@ async def get_bag_info(
         # 获取袋子信息
         bags = get_bags_by_box_id(box_id, db_manager)
         
+        # 获取储物箱信息
+        box_info = get_box_info_by_id(box_id, db_manager)
+        
         return {
             "status": "success",
             "message": "获取袋子信息成功",
             "data": {
                 "bags": bags,
-                "total_count": len(bags)
+                "total_count": len(bags),
+                "box_info": box_info
             }
         }
         
