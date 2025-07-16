@@ -122,15 +122,14 @@
                 
                 <view class="box-info">
                   <view class="box-desc" wx:if="{{item.description}}">{{item.description}}</view>
+                </view>
+                
+                <view class="box-footer">
                   <view class="box-location" wx:if="{{item.location}}">
                     <text class="cuIcon-locationfill location-icon"></text>
                     <text class="location-text">{{item.location}}</text>
                   </view>
-                </view>
-                
-                <view class="box-footer">
-                  <view class="box-placeholder"></view>
-                  <view class="box-count">{{item.itemCount}}件</view>
+                  <view class="box-count" style="color: {{item.color}}">{{item.itemCount}}</view>
                 </view>
               </view>
             </view>

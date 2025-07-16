@@ -254,18 +254,25 @@
 /* 箱子底部 */
 .box-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+  position: relative;
 }
 
-.box-placeholder {
-  flex: 1;
+.box-footer .box-location {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  max-width: calc(100% - 80rpx);
 }
 
 .box-count {
-  font-size: 22rpx;
-  color: #666;
+  font-size: 38rpx;
   font-weight: 500;
+  flex-shrink: 0;
 }
 
 /* 空状态优化 */
@@ -338,7 +345,7 @@
     font-size: 22rpx;
   }
   
-  .box-location {
+  .box-footer .box-location {
     font-size: 20rpx;
   }
   
