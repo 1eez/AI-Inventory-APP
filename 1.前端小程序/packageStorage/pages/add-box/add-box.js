@@ -13,33 +13,27 @@ Page({
     formData: {
       name: '',
       description: '',
-      color: '#667eea',
+      color: '#e54d42',
       location: '',
-      capacity: 'medium'
+
     },
     // 颜色选项
     colorOptions: [
-      { value: '#667eea', name: '蓝色' },
-      { value: '#f093fb', name: '粉色' },
-      { value: '#4facfe', name: '天蓝' },
-      { value: '#43e97b', name: '绿色' },
-      { value: '#fa709a', name: '玫红' },
-      { value: '#ffecd2', name: '橙色' },
-      { value: '#a8edea', name: '青色' },
-      { value: '#d299c2', name: '紫色' }
+      { value: '#e54d42', name: '红色' },
+      { value: '#f37b1d', name: '橙色' },
+      { value: '#fbbd08', name: '黄色' },
+      { value: '#3eb93b', name: '绿色' },
+      { value: '#37c0fe', name: '青色' },
+      { value: '#0081ff', name: '蓝色' },
+      { value: '#8044de', name: '紫色' },
+      { value: '#e03997', name: '粉色' }
     ],
-    // 容量选项
-    capacityOptions: [
-      { value: 'small', name: '小型', desc: '适合存放小物件' },
-      { value: 'medium', name: '中型', desc: '适合存放日常用品' },
-      { value: 'large', name: '大型', desc: '适合存放大件物品' }
-    ],
+
     // 提交状态
     submitting: false,
     // 表单验证错误
     errors: {},
-    // 当前选中容量的名称
-    currentCapacityName: '中型'
+
   },
 
   /**
@@ -71,16 +65,11 @@ Page({
         name: '电子设备收纳盒',
         description: '存放各种电子设备和配件',
         color: '#4facfe',
-        location: '书房书桌下方',
-        capacity: 'large'
+        location: '书房书桌下方'
       };
       
-      // 获取对应容量的名称
-      const capacityInfo = this.data.capacityOptions.find(item => item.value === mockData.capacity);
-      
       this.setData({
-        formData: mockData,
-        currentCapacityName: capacityInfo ? capacityInfo.name : '中型'
+        formData: mockData
       });
       
       // 更新页面标题
@@ -123,18 +112,7 @@ Page({
     });
   },
 
-  /**
-   * 选择容量
-   */
-  onCapacitySelect(e) {
-    const { capacity } = e.currentTarget.dataset;
-    const capacityInfo = this.data.capacityOptions.find(item => item.value === capacity);
-    
-    this.setData({
-      'formData.capacity': capacity,
-      currentCapacityName: capacityInfo ? capacityInfo.name : '中型'
-    });
-  },
+
 
   /**
    * 表单验证
@@ -239,12 +217,10 @@ Page({
             formData: {
               name: '',
               description: '',
-              color: '#667eea',
-              location: '',
-              capacity: 'medium'
+              color: '#e54d42',
+              location: ''
             },
-            errors: {},
-            currentCapacityName: '中型'
+            errors: {}
           });
         }
       }
@@ -267,7 +243,7 @@ Page({
     
     wx.showModal({
       title: '预览效果',
-      content: `名称：${formData.name}\n描述：${formData.description || '无'}\n位置：${formData.location || '未设置'}\n容量：${this.data.capacityOptions.find(item => item.value === formData.capacity)?.name}`,
+      content: `名称：${formData.name}\n描述：${formData.description || '无'}\n位置：${formData.location || '未设置'}`,
       showCancel: false
     });
   },

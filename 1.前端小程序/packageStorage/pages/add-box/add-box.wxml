@@ -3,11 +3,11 @@
 <!-- 页面容器 -->
 <view class="page-container">
   <!-- 自定义导航栏 -->
-  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <cu-custom bgColor="bg-white" isBack="{{true}}">
     <view slot="backText">返回</view>
     <view slot="content">{{boxId ? '编辑收纳盒' : '添加收纳盒'}}</view>
     <view slot="right">
-      <text class="cuIcon-scan" bindtap="onScanAdd"></text>
+      <text class="cuIcon-add" bindtap="onScanAdd"></text>
     </view>
   </cu-custom>
 
@@ -35,6 +35,8 @@
             data-field="name"
             bindinput="onInputChange"
             maxlength="20"
+            confirm-type="done"
+            adjust-position="{{true}}"
           />
           <view wx:if="{{errors.name}}" class="error-text">{{errors.name}}</view>
         </view>
@@ -43,13 +45,15 @@
         <view class="form-item">
           <view class="form-label">描述信息</view>
           <textarea 
-            class="form-textarea {{errors.description ? 'error' : ''}}"
-            placeholder="请输入收纳盒的用途和特点"
+            class="form-textarea-narrow {{errors.description ? 'error' : ''}}"
+            placeholder="请输入收纳盒的用途"
             value="{{formData.description}}"
             data-field="description"
             bindinput="onInputChange"
             maxlength="100"
             show-confirm-bar="{{false}}"
+            adjust-position="{{true}}"
+            auto-height="{{false}}"
           />
           <view wx:if="{{errors.description}}" class="error-text">{{errors.description}}</view>
         </view>
@@ -64,6 +68,8 @@
             data-field="location"
             bindinput="onInputChange"
             maxlength="50"
+            confirm-type="done"
+            adjust-position="{{true}}"
           />
           <view wx:if="{{errors.location}}" class="error-text">{{errors.location}}</view>
         </view>
@@ -93,25 +99,7 @@
           </view>
         </view>
         
-        <!-- 容量选择 -->
-        <view class="form-item">
-          <view class="form-label">容量规格</view>
-          <view class="capacity-list">
-            <view 
-              wx:for="{{capacityOptions}}" 
-              wx:key="value"
-              class="capacity-item {{formData.capacity === item.value ? 'active' : ''}}"
-              data-capacity="{{item.value}}"
-              bindtap="onCapacitySelect"
-            >
-              <view class="capacity-name">{{item.name}}</view>
-              <view class="capacity-desc">{{item.desc}}</view>
-              <view wx:if="{{formData.capacity === item.value}}" class="capacity-check">
-                <text class="cuIcon-check text-blue"></text>
-              </view>
-            </view>
-          </view>
-        </view>
+
       </view>
       
       <!-- 预览区域 -->
@@ -134,10 +122,7 @@
                   <text class="cuIcon-locationfill"></text>
                   {{formData.location || '未设置位置'}}
                 </view>
-                <view class="preview-capacity">
-                  <text class="cuIcon-boxfill"></text>
-                  {{currentCapacityName}}
-                </view>
+
               </view>
             </view>
           </view>

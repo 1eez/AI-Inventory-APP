@@ -22,11 +22,6 @@
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
 }
 
-/* 表单卡片 */
-.form-card {
-  /* 继承 card 样式 */
-}
-
 /* 表单区域 */
 .form-section {
   margin-bottom: 40rpx;
@@ -72,6 +67,7 @@
 /* 输入框样式 */
 .form-input {
   width: 100%;
+  height: 88rpx;
   padding: 24rpx 20rpx;
   border: 2rpx solid #e9ecef;
   border-radius: 16rpx;
@@ -79,6 +75,8 @@
   color: #2c3e50;
   background: #fff;
   transition: all 0.3s ease;
+  box-sizing: border-box;
+  line-height: 40rpx;
 }
 
 .form-input:focus {
@@ -98,7 +96,7 @@
 /* 文本域样式 */
 .form-textarea {
   width: 100%;
-  min-height: 120rpx;
+  height: 160rpx;
   padding: 24rpx 20rpx;
   border: 2rpx solid #e9ecef;
   border-radius: 16rpx;
@@ -107,6 +105,8 @@
   background: #fff;
   transition: all 0.3s ease;
   resize: none;
+  box-sizing: border-box;
+  line-height: 40rpx;
 }
 
 .form-textarea:focus {
@@ -120,6 +120,36 @@
 }
 
 .form-textarea::placeholder {
+  color: #adb5bd;
+}
+
+/* 紧凑版文本域样式 */
+.form-textarea-narrow {
+  width: 100%;
+  height: 120rpx;
+  padding: 20rpx;
+  border: 2rpx solid #e9ecef;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #2c3e50;
+  background: #fff;
+  transition: all 0.3s ease;
+  resize: none;
+  box-sizing: border-box;
+  line-height: 36rpx;
+}
+
+.form-textarea-narrow:focus {
+  border-color: #667eea;
+  background: #f8f9ff;
+}
+
+.form-textarea-narrow.error {
+  border-color: #e74c3c;
+  background: #fef5f5;
+}
+
+.form-textarea-narrow::placeholder {
   color: #adb5bd;
 }
 
@@ -137,11 +167,13 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 20rpx;
   margin-top: 16rpx;
+  max-width: 100%;
 }
 
 .color-item {
-  width: 80rpx;
+  width: 100%;
   height: 80rpx;
+  max-width: 80rpx;
   border-radius: 20rpx;
   display: flex;
   align-items: center;
@@ -149,65 +181,21 @@
   cursor: pointer;
   transition: all 0.3s ease;
   border: 3rpx solid transparent;
+  box-sizing: border-box;
 }
 
 .color-item.active {
   border-color: #2c3e50;
-  transform: scale(1.1);
+  transform: scale(1.05);
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
 }
 
 .color-item text {
-  font-size: 32rpx;
-  font-weight: 600;
-}
-
-/* 容量选择列表 */
-.capacity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  margin-top: 16rpx;
-}
-
-.capacity-item {
-  position: relative;
-  padding: 24rpx;
-  border: 2rpx solid #e9ecef;
-  border-radius: 16rpx;
-  background: #fff;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.capacity-item.active {
-  border-color: #667eea;
-  background: #f8f9ff;
-}
-
-.capacity-item:active {
-  transform: scale(0.98);
-}
-
-.capacity-name {
   font-size: 28rpx;
   font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 8rpx;
 }
 
-.capacity-desc {
-  font-size: 24rpx;
-  color: #666;
-  line-height: 1.4;
-}
 
-.capacity-check {
-  position: absolute;
-  top: 24rpx;
-  right: 24rpx;
-  font-size: 28rpx;
-}
 
 /* 预览容器 */
 .preview-container {
@@ -268,16 +256,19 @@
   display: flex;
   gap: 20rpx;
   padding: 0 30rpx;
+  flex-wrap: nowrap;
 }
 
 .action-btn {
   flex: 1;
-  padding: 24rpx 32rpx;
+  padding: 24rpx 16rpx;
   border-radius: 16rpx;
-  font-size: 28rpx;
+  font-size: 26rpx;
   font-weight: 600;
   border: none;
   transition: all 0.3s ease;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .action-btn.primary {
@@ -316,21 +307,30 @@
 /* 响应式设计 */
 @media (max-width: 375px) {
   .color-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 16rpx;
   }
   
   .color-item {
-    width: 70rpx;
     height: 70rpx;
+    max-width: 70rpx;
+  }
+  
+  .color-item.active {
+    transform: scale(1.02);
+  }
+  
+  .color-item text {
+    font-size: 24rpx;
   }
   
   .action-buttons {
-    flex-direction: column;
+    gap: 12rpx;
   }
   
   .action-btn {
-    flex: none;
+    padding: 20rpx 12rpx;
+    font-size: 24rpx;
   }
   
   .preview-meta {
@@ -374,19 +374,7 @@
     border-color: #e74c3c;
   }
   
-  .capacity-item {
-    background: #4a5568;
-    border-color: #718096;
-  }
-  
-  .capacity-item.active {
-    background: #2d3748;
-    border-color: #667eea;
-  }
-  
-  .capacity-desc {
-    color: #a0aec0;
-  }
+
   
   .action-btn.secondary {
     background: #4a5568;
