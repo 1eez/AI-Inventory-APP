@@ -4,7 +4,7 @@
   <cu-custom bgColor="bg-white" isBack="{{true}}">
     <view slot="content" class="nav-title">{{boxInfo.name || '箱子详情'}}</view>
     <view slot="right" class="nav-right">
-      <text class="cuIcon-edit nav-icon" bindtap="onEditBox"></text>
+      <text class="cuIcon-shop nav-icon" bindtap="onEditBox"></text>
     </view>
   </cu-custom>
 
@@ -87,7 +87,7 @@
           </view>
         </view>
       </view>
-      
+
       <!-- 快速操作 -->
       <view class="quick-actions card">
         <view class="action-title">快速操作</view>
@@ -96,7 +96,7 @@
             <view class="action-icon bg-blue">
               <text class="cuIcon-add"></text>
             </view>
-            <text class="action-text">新建袋子</text>
+            <text class="action-text">新建收纳袋</text>
           </view>
           <view class="action-btn" bindtap="onQuickScan">
             <view class="action-icon bg-green">
@@ -175,7 +175,7 @@
       <view wx:else class="empty-state">
         <text class="cuIcon-goods empty-icon"></text>
         <view class="empty-title">还没有袋子</view>
-        <view class="empty-subtitle">点击下方按钮创建第一个收纳袋\n开始分类整理物品吧</view>
+        <view class="empty-subtitle">点击按钮创建第一个收纳袋\n开始整理物品吧</view>
         <button class="cu-btn bg-blue margin-top" bindtap="onAddBag">
           <text class="cuIcon-add margin-right-xs"></text>
           创建第一个袋子

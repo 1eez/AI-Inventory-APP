@@ -106,6 +106,11 @@ app.include_router(AddBagRouter)
 from v2_delete_bag import router as DeleteBagRouter
 app.include_router(DeleteBagRouter)
 
+# 接口：/v2/bag/get  -- 请求方式GET
+# 【袋子】获取袋子信息
+from v2_get_bag import router as GetBagRouter
+app.include_router(GetBagRouter)
+
 # -----------------------------------------------------------
 # 【 -- 测试模块 -- 】
 # -----------------------------------------------------------

@@ -164,60 +164,78 @@ Page({
    */
   async loadBags() {
     try {
-      // 模拟网络请求延迟
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // 获取全局数据
+      const openid = app.globalData.openid;
+      const baseUrl = app.globalData.baseUrl;
       
-      // TODO: 替换为实际的API调用
-      const mockBags = [
-        {
-          id: 1,
-          name: '电子产品袋',
-          description: '充电器、数据线等电子配件',
-          itemCount: 5,
-          icon: 'cuIcon-mobile',
-          color: '#e54d42',
-          createTime: '2024-01-15',
-          lastUsed: '2024-01-20'
-        },
-        {
-          id: 2,
-          name: '文具袋',
-          description: '笔、橡皮、便签等文具用品',
-          itemCount: 3,
-          icon: 'cuIcon-form',
-          color: '#39b54a',
-          createTime: '2024-01-12',
-          lastUsed: '2024-01-18'
-        },
-        {
-          id: 3,
-          name: '杂物袋',
-          description: '各种小物件临时存放',
-          itemCount: 4,
-          icon: 'cuIcon-goods',
-          color: '#f37b1d',
-          createTime: '2024-01-10',
-          lastUsed: '2024-01-19'
-        },
-        {
-          id: 4,
-          name: '备用袋',
-          description: '暂时空置，可放置新物品',
-          itemCount: 0,
-          icon: 'cuIcon-add',
-          color: '#8799a3',
-          createTime: '2024-01-08',
-          lastUsed: null
-        }
-      ];
+      if (!openid) {
+        throw new Error('用户身份信息缺失');
+      }
       
-      this.setData({
-        bags: mockBags
+      if (!this.boxId) {
+        throw new Error('箱子ID缺失');
+      }
+      
+      // 调用后台接口获取袋子列表
+      const result = await this.requestBagList(baseUrl, {
+        openid: openid,
+        box_id: parseInt(this.boxId)
       });
+      
+      if (result.status === 'success') {
+        // 格式化袋子数据以适配前端显示
+        const formattedBags = result.data.bags.map(bag => ({
+          id: bag.bag_id,
+          name: bag.name,
+          description: bag.description || '暂无描述',
+          itemCount: bag.item_count || 0,
+          icon: bag.icon || 'cuIcon-goods',
+          color: bag.color || '#1296db',
+          createTime: this.formatDate(bag.created_at),
+          lastUsed: bag.last_used ? this.formatDate(bag.last_used) : null
+        }));
+        
+        this.setData({
+          bags: formattedBags
+        });
+        
+        console.log('袋子列表加载成功:', formattedBags);
+      } else {
+        throw new Error(result.message || '获取袋子列表失败');
+      }
     } catch (error) {
       console.error('加载袋子列表失败:', error);
       throw error;
     }
+  },
+
+  /**
+   * 发送获取袋子列表请求
+   */
+  requestBagList(baseUrl, params) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v2/bag/get',
+        method: 'GET',
+        data: params,
+        header: {
+          'content-type': 'application/json'
+        },
+        success: (res) => {
+          console.log('获取袋子列表接口响应:', res);
+          
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('获取袋子列表请求失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
   },
 
   /**

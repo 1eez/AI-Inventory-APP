@@ -383,14 +383,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 120rpx 60rpx;
+  padding: 10rpx;
   text-align: center;
 }
 
 .empty-icon {
   font-size: 120rpx;
   color: #ddd;
-  margin-bottom: 40rpx;
+  margin-bottom: 20rpx;
 }
 
 .empty-title {
@@ -401,10 +401,11 @@
 }
 
 .empty-subtitle {
-  font-size: 26rpx;
+  font-size: 24rpx;
   color: #999;
-  line-height: 1.6;
-  margin-bottom: 60rpx;
+  line-height: 1.8;
+  margin-bottom: 20rpx;
+  white-space: pre-line;
 }
 
 /* 悬浮按钮 */
