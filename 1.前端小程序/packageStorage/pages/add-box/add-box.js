@@ -124,18 +124,18 @@ Page({
     // 验证名称
     if (!formData.name.trim()) {
       errors.name = '请输入收纳盒名称';
-    } else if (formData.name.trim().length > 20) {
-      errors.name = '名称不能超过20个字符';
+    } else if (formData.name.trim().length > 100) {
+      errors.name = '名称不能超过100个字符';
     }
     
     // 验证描述
-    if (formData.description && formData.description.length > 100) {
-      errors.description = '描述不能超过100个字符';
+    if (formData.description && formData.description.length > 500) {
+      errors.description = '描述不能超过500个字符';
     }
     
     // 验证位置
-    if (formData.location && formData.location.length > 50) {
-      errors.location = '位置描述不能超过50个字符';
+    if (formData.location && formData.location.length > 200) {
+      errors.location = '位置描述不能超过200个字符';
     }
     
     this.setData({ errors });
@@ -166,8 +166,13 @@ Page({
         title: isEdit ? '保存中...' : '创建中...' 
       });
       
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      if (isEdit) {
+        // 编辑模式 - 暂时保持模拟调用，等待编辑接口
+        await new Promise(resolve => setTimeout(resolve, 1500));
+      } else {
+        // 创建模式 - 调用后台接口
+        await this.createBox(formData);
+      }
       
       wx.hideLoading();
       
@@ -196,12 +201,66 @@ Page({
       console.error('提交失败:', error);
       wx.hideLoading();
       wx.showToast({
-        title: '操作失败，请重试',
+        title: error.message || '操作失败，请重试',
         icon: 'error'
       });
     } finally {
       this.setData({ submitting: false });
     }
+  },
+
+  /**
+   * 调用后台接口创建箱子
+   */
+  async createBox(formData) {
+    return new Promise((resolve, reject) => {
+      // 获取全局数据
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      
+      if (!openid) {
+        reject(new Error('用户未登录，请重新打开小程序'));
+        return;
+      }
+      
+      // 构建请求数据
+      const requestData = {
+        openid: openid,
+        name: formData.name.trim(),
+        description: formData.description || '',
+        color: formData.color || '#1296db',
+        location: formData.location || ''
+      };
+      
+      console.log('创建箱子请求数据:', requestData);
+      
+      wx.request({
+        url: baseUrl + 'v1/box/add',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: requestData,
+        success: (res) => {
+          console.log('创建箱子接口响应:', res);
+          
+          if (res.statusCode === 200) {
+            if (res.data && res.data.success !== false) {
+              resolve(res.data);
+            } else {
+              reject(new Error(res.data?.message || '创建失败'));
+            }
+          } else {
+            reject(new Error(`服务器错误 (${res.statusCode})`));
+          }
+        },
+        fail: (error) => {
+          console.error('创建箱子接口调用失败:', error);
+          reject(new Error('网络请求失败，请检查网络连接'));
+        }
+      });
+    });
   },
 
   /**

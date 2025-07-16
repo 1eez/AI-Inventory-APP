@@ -51,7 +51,7 @@ def get_user_data(openid: str, db_manager: DatabaseManager) -> Dict[str, Any]:
     user_id = user_row['user_id']
     
     # 获取用户的箱子信息
-    boxes_query = "SELECT box_id, sort_id, name, created_at FROM boxes_summary WHERE user_id = ? ORDER BY sort_id"
+    boxes_query = "SELECT * FROM boxes_summary WHERE user_id = ? ORDER BY sort_id"
     boxes_rows = db_manager.execute_query(boxes_query, (user_id,))
     boxes = [dict(row) for row in boxes_rows]
     

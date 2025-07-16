@@ -107,30 +107,39 @@
             bindtap="onBoxTap"
             data-id="{{item.id}}"
           >
-            <view class="box-header">
-              <view class="box-icon" style="background-color: {{item.color}};">
-                <text class="{{item.icon}}"></text>
-              </view>
-              <view class="box-menu" bindtap="onBoxMenu" data-id="{{item.id}}" catchtap="true">
-                <text class="cuIcon-more"></text>
-              </view>
-            </view>
-            
-            <view class="box-content">
-              <view class="box-name">{{item.name}}</view>
-              <view class="box-description">{{item.description}}</view>
-              
-              <view class="box-stats">
-                <view class="stat-badge">
-                  <text class="cuIcon-goods"></text>
-                  <text class="stat-text">{{item.itemCount}}件物品</text>
+            <view 
+              class="box-preview"
+              style="background: linear-gradient(135deg, {{item.color}} 0%, {{item.color}}88 100%)"
+            >
+              <view class="box-preview-content">
+                <view class="box-preview-header">
+                  <view class="box-preview-name">{{item.name}}</view>
+                  <view class="box-menu" bindtap="onBoxMenu" data-id="{{item.id}}" catchtap="true">
+                    <text class="cuIcon-more text-white"></text>
+                  </view>
+                </view>
+                
+                <view class="box-preview-desc">{{item.description || '暂无描述'}}</view>
+                
+                <view class="box-preview-meta">
+                  <view class="box-preview-location" wx:if="{{item.location}}">
+                    <text class="cuIcon-locationfill"></text>
+                    <text class="location-text">{{item.location}}</text>
+                  </view>
+                  
+                  <view class="box-preview-stats">
+                    <view class="stat-item">
+                      <text class="cuIcon-goods"></text>
+                      <text class="stat-text">{{item.itemCount}}件</text>
+                    </view>
+                  </view>
+                </view>
+                
+                <view class="box-preview-footer">
+                  <text class="box-time">{{item.createTime}}</text>
+                  <text class="cuIcon-right box-arrow"></text>
                 </view>
               </view>
-            </view>
-            
-            <view class="box-footer">
-              <text class="box-time">{{item.createTime}}</text>
-              <text class="cuIcon-right box-arrow"></text>
             </view>
           </view>
         </view>

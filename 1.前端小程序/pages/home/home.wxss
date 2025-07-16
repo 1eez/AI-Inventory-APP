@@ -152,111 +152,149 @@
 }
 
 .box-item {
-  padding: 30rpx;
   position: relative;
   transition: all 0.3s ease;
-  border: 2rpx solid transparent;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 }
 
 .box-item:active {
   transform: scale(0.98);
-  border-color: var(--primary-color);
 }
 
-/* 箱子头部 */
-.box-header {
+/* 箱子预览样式 */
+.box-preview {
+  padding: 30rpx;
+  border-radius: 20rpx;
+  position: relative;
+  overflow: hidden;
+  min-height: 200rpx;
+}
+
+.box-preview-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.box-preview-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 20rpx;
+  margin-bottom: 12rpx;
 }
 
-.box-icon {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: var(--border-radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 28rpx;
-  box-shadow: var(--shadow-light);
-}
-
-.box-menu {
-  padding: 8rpx;
-  color: var(--text-placeholder);
-  font-size: 24rpx;
-}
-
-/* 箱子内容 */
-.box-content {
-  margin-bottom: 20rpx;
-}
-
-.box-name {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 8rpx;
-  line-height: 1.4;
+.box-preview-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+  flex: 1;
+  margin-right: 16rpx;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   overflow: hidden;
 }
 
-.box-description {
-  font-size: 22rpx;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 16rpx;
+.box-menu {
+  padding: 8rpx;
+  font-size: 24rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10rpx);
+}
+
+.box-preview-desc {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 20rpx;
+  line-height: 1.4;
+  text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.2);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+  flex: 1;
 }
 
-.box-stats {
+.box-preview-meta {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8rpx;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 16rpx;
 }
 
-.stat-badge {
+.box-preview-location {
   display: flex;
   align-items: center;
-  background: rgba(18, 150, 219, 0.1);
-  color: var(--primary-color);
-  padding: 6rpx 12rpx;
-  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.2);
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.box-preview-location text {
+  margin-right: 6rpx;
   font-size: 20rpx;
 }
 
-.stat-badge .cuIcon-goods {
-  font-size: 18rpx;
+.location-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.box-preview-stats {
+  display: flex;
+  gap: 12rpx;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 6rpx 12rpx;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+.stat-item text {
   margin-right: 6rpx;
+  font-size: 18rpx;
 }
 
 .stat-text {
   font-size: 20rpx;
 }
 
-/* 箱子底部 */
-.box-footer {
+.box-preview-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: auto;
 }
 
 .box-time {
   font-size: 20rpx;
-  color: var(--text-placeholder);
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.2);
 }
 
 .box-arrow {
   font-size: 20rpx;
-  color: var(--text-placeholder);
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8rpx;
+  border-radius: 50%;
+  backdrop-filter: blur(10rpx);
 }
 
 /* 空状态优化 */
@@ -317,8 +355,44 @@
     gap: 16rpx;
   }
   
-  .box-item {
-    padding: 20rpx;
+  .box-preview {
+    padding: 24rpx;
+    min-height: 180rpx;
+  }
+  
+  .box-preview-name {
+    font-size: 28rpx;
+  }
+  
+  .box-preview-desc {
+    font-size: 22rpx;
+    margin-bottom: 16rpx;
+  }
+  
+  .box-preview-location {
+    font-size: 20rpx;
+  }
+  
+  .stat-item {
+    font-size: 18rpx;
+    padding: 4rpx 8rpx;
+  }
+  
+  .stat-item text {
+    font-size: 16rpx;
+  }
+  
+  .stat-text {
+    font-size: 18rpx;
+  }
+  
+  .box-time {
+    font-size: 18rpx;
+  }
+  
+  .box-arrow {
+    font-size: 18rpx;
+    padding: 6rpx;
   }
   
   /* 保持快速操作按钮横向排列 */

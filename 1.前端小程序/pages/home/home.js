@@ -60,11 +60,11 @@ Page({
   /*** 加载箱子列表数据   */
   async loadBoxes() {
     try {
-      // 从全局数据中获取用户首页数据
-      const userHomeData = app.globalData.userHomeData;
+      // 直接调用后台接口获取最新数据
+      const userHomeData = await this.fetchUserHomeData();
       
       if (!userHomeData || !userHomeData.data) {
-        console.warn('未找到用户首页数据，使用空数据');
+        console.warn('未获取到用户首页数据，使用空数据');
         this.setData({
           boxes: [],
           totalItems: 0,
@@ -77,15 +77,15 @@ Page({
       
       // 处理箱子数据，为每个箱子添加默认的显示属性
       const processedBoxes = boxes.map((box, index) => {
-        // 预定义的图标和颜色数组
+        // 预定义的图标数组
         const icons = ['cuIcon-goods', 'cuIcon-clothes', 'cuIcon-shop', 'cuIcon-form', 'cuIcon-home'];
-        const colors = ['#1296db', '#e54d42', '#39b54a', '#f37b1d', '#8dc63f'];
         
         return {
           ...box,
+          id: box.box_id, // 映射后台字段
           icon: box.icon || icons[index % icons.length],
-          color: box.color || colors[index % colors.length],
-          itemCount: box.item_count || 0
+          itemCount: box.item_count || 0,
+          createTime: this.formatDate(box.created_at) // 格式化日期
         };
       });
       
@@ -101,9 +101,62 @@ Page({
         boxesWithItems: statistics.total_boxes
       });
       
+      // 更新全局数据缓存
+      app.globalData.userHomeData = userHomeData;
+      
     } catch (error) {
       console.error('加载箱子数据失败:', error);
       throw error;
+    }
+  },
+
+  /*** 获取用户首页数据   */
+  fetchUserHomeData() {
+    return new Promise((resolve, reject) => {
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      
+      if (!openid) {
+        reject(new Error('用户未登录'));
+        return;
+      }
+      
+      const url = `${baseUrl}v0/home/info?openid=${openid}`;
+      
+      wx.request({
+        url: url,
+        method: 'GET',
+        success: (res) => {
+          console.log('首页数据接口响应:', res);
+          
+          if (res.statusCode === 200 && res.data) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`接口请求失败: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('首页数据接口请求失败:', error);
+          reject(error);
+        }
+      });
+    });
+  },
+
+  /*** 格式化日期   */
+  formatDate(dateString) {
+    if (!dateString) return '';
+    
+    try {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      console.error('日期格式化失败:', error);
+      return '';
     }
   },
 
@@ -197,10 +250,24 @@ Page({
   },
 
   /*** 生命周期函数--监听页面显示   */
-  onShow() {
+  async onShow() {
+    console.log('首页显示');
+    
     // 页面显示时刷新数据
     if (this.data.systemReady) {
-      this.loadBoxes();
+      try {
+        await this.loadBoxes();
+      } catch (error) {
+        console.error('页面显示时刷新数据失败:', error);
+        // 静默处理错误，不影响用户体验
+      }
+    } else {
+      // 如果系统还未就绪，等待系统就绪后再加载
+      this.waitForSystemReady().then(() => {
+        this.loadBoxes().catch(error => {
+          console.error('系统就绪后加载数据失败:', error);
+        });
+      });
     }
   },
 
