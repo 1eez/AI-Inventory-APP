@@ -88,6 +88,24 @@ app.include_router(HomeInfoRouter)
 from v1_add_box import router as AddBoxRouter
 app.include_router(AddBoxRouter)
 
+# 接口：/v1/box/delete  -- 请求方式POST
+# 【储物箱】删除储物箱
+from v1_delete_box import router as DeleteBoxRouter
+app.include_router(DeleteBoxRouter)
+
+# -----------------------------------------------------------
+# 【 -- 袋子管理 -- 】
+# -----------------------------------------------------------
+# 接口：/v2/bag/add  -- 请求方式POST
+# 【袋子】添加袋子
+from v2_add_bag import router as AddBagRouter
+app.include_router(AddBagRouter)
+
+# 接口：/v2/bag/delete  -- 请求方式POST
+# 【袋子】删除袋子
+from v2_delete_bag import router as DeleteBagRouter
+app.include_router(DeleteBagRouter)
+
 # -----------------------------------------------------------
 # 【 -- 测试模块 -- 】
 # -----------------------------------------------------------

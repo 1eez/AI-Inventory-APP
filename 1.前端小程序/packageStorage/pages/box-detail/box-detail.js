@@ -323,24 +323,92 @@ Page({
       confirmColor: '#e54d42',
       success: (res) => {
         if (res.confirm) {
-          // TODO: 调用删除API
-          wx.showLoading({ title: '删除中...' });
-          
-          setTimeout(() => {
-            wx.hideLoading();
-            
-            wx.showToast({
-              title: '删除成功',
-              icon: 'success'
-            });
-            
-            // 返回上一页
-            setTimeout(() => {
-              wx.navigateBack();
-            }, 1500);
-          }, 1000);
+          this.deleteBoxFromServer();
         }
       }
+    });
+  },
+
+  /**
+   * 调用后台接口删除箱子
+   */
+  async deleteBoxFromServer() {
+    try {
+      wx.showLoading({ title: '删除中...' });
+      
+      // 获取全局数据
+      const openid = app.globalData.openid;
+      const baseUrl = app.globalData.baseUrl;
+      
+      if (!openid) {
+        throw new Error('用户身份信息缺失');
+      }
+      
+      if (!this.data.boxInfo?.id) {
+        throw new Error('箱子ID缺失');
+      }
+      
+      // 调用删除接口
+      const result = await this.requestDeleteBox(baseUrl, {
+        openid: openid,
+        box_id: parseInt(this.data.boxInfo.id)
+      });
+      
+      wx.hideLoading();
+      
+      if (result.status === 'success') {
+        wx.showToast({
+          title: '删除成功',
+          icon: 'success'
+        });
+        
+        // 延迟返回上一页，让用户看到成功提示
+        setTimeout(() => {
+          wx.navigateBack();
+        }, 1500);
+      } else {
+        throw new Error(result.message || '删除失败');
+      }
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('删除箱子失败:', error);
+      
+      wx.showModal({
+        title: '删除失败',
+        content: error.message || '网络错误，请稍后重试',
+        showCancel: false,
+        confirmText: '确定'
+      });
+    }
+  },
+
+  /**
+   * 发送删除箱子请求
+   */
+  requestDeleteBox(baseUrl, data) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v1/box/delete',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: data,
+        success: (res) => {
+          console.log('删除箱子接口响应:', res);
+          
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('删除箱子请求失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
     });
   },
 
