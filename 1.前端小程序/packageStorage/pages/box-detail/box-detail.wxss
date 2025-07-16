@@ -435,32 +435,40 @@
 
 /* 响应式设计 */
 @media (max-width: 375px) {
+  /* 保持快速操作按钮横向排列 */
   .action-buttons {
-    flex-direction: column;
+    display: flex;
+    justify-content: space-around;
     gap: 16rpx;
   }
   
   .action-btn {
-    flex-direction: row;
-    justify-content: flex-start;
-    padding: 24rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
   }
   
   .action-icon {
     width: 60rpx;
     height: 60rpx;
-    margin-right: 20rpx;
-    margin-bottom: 0;
+    margin-bottom: 12rpx;
   }
   
-  .box-stats-row {
-    flex-direction: column;
-    gap: 20rpx;
+  .action-text {
+    font-size: 22rpx;
+  }
+  
+  /* 保持统计信息横向排列 */
+  .stats-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
   }
   
   .stat-divider {
-    width: 100%;
-    height: 2rpx;
+    width: 2rpx;
+    height: 60rpx;
   }
 }
 
