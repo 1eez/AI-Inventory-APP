@@ -133,23 +133,23 @@
     <!-- 操作按钮 -->
     <view class="action-buttons">
       <button 
-        class="action-btn secondary"
+        class="cu-btn bg-grey lg"
         bindtap="onReset"
         disabled="{{submitting}}"
       >
         重置
       </button>
       <button 
-        class="action-btn secondary"
+        class="cu-btn bg-blue lg"
         bindtap="onPreview"
-        disabled="{{submitting}}"
+        disabled="{{submitting || !formData.name}}"
       >
         预览
       </button>
       <button 
-        class="action-btn primary"
+        class="cu-btn bg-gradual-green lg"
         bindtap="onSubmit"
-        disabled="{{submitting}}"
+        disabled="{{submitting || !formData.name}}"
         loading="{{submitting}}"
       >
         {{boxId ? '保存' : '创建'}}

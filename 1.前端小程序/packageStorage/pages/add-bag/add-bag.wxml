@@ -12,6 +12,7 @@
     <view class="box-info-header">
       <text class="cuIcon-boxfill text-{{boxInfo.color}}"></text>
       <text class="box-name">{{boxInfo.name}}</text>
+      <text class="cuIcon-locationfill text-gray margin-right-xs"></text>
       <text class="box-location">{{boxInfo.location}}</text>
     </view>
   </view>

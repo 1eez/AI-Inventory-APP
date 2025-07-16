@@ -17,13 +17,13 @@ Page({
     },
     // 颜色选项
     colorOptions: [
+      { value: '#f37b1d', name: '橙色' },
       { value: '#43e97b', name: '绿色' },
       { value: '#667eea', name: '蓝色' },
       { value: '#f093fb', name: '粉色' },
       { value: '#4facfe', name: '天蓝' },
       { value: '#fa709a', name: '玫红' },
-      { value: '#ffecd2', name: '橙色' },
-      { value: '#a8edea', name: '青色' },
+      { value: '#37c0fe', name: '青色' },
       { value: '#d299c2', name: '紫色' }
     ],
     // 所属收纳盒信息
@@ -185,42 +185,89 @@ Page({
         title: isEdit ? '保存中...' : '创建中...' 
       });
       
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // 获取全局数据
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      
+      if (!openid) {
+        throw new Error('用户未登录');
+      }
+      
+      // 调用后台接口添加袋子
+      const response = await this.addBagToServer({
+        openid: openid,
+        box_id: parseInt(formData.boxId),
+        name: formData.name.trim(),
+        color: formData.color
+      }, baseUrl);
       
       wx.hideLoading();
       
-      wx.showToast({
-        title: isEdit ? '保存成功' : '创建成功',
-        icon: 'success'
-      });
-      
-      // 返回上一页并刷新
-      setTimeout(() => {
-        wx.navigateBack({
-          success: () => {
-            // 通知上一页刷新数据
-            const pages = getCurrentPages();
-            if (pages.length > 1) {
-              const prevPage = pages[pages.length - 2];
-              if (prevPage.onShow) {
-                prevPage.onShow();
+      if (response.status === 'success') {
+        wx.showToast({
+          title: isEdit ? '保存成功' : '创建成功',
+          icon: 'success'
+        });
+        
+        // 返回上一页并刷新
+        setTimeout(() => {
+          wx.navigateBack({
+            success: () => {
+              // 通知上一页刷新数据
+              const pages = getCurrentPages();
+              if (pages.length > 1) {
+                const prevPage = pages[pages.length - 2];
+                if (prevPage.onShow) {
+                  prevPage.onShow();
+                }
               }
             }
-          }
-        });
-      }, 1500);
+          });
+        }, 1500);
+      } else {
+        throw new Error(response.message || '创建失败');
+      }
       
     } catch (error) {
       console.error('提交失败:', error);
       wx.hideLoading();
       wx.showToast({
-        title: '操作失败，请重试',
+        title: error.message || '操作失败，请重试',
         icon: 'error'
       });
     } finally {
       this.setData({ submitting: false });
     }
+  },
+
+  /**
+   * 调用后台接口添加袋子
+   */
+  addBagToServer(bagData, baseUrl) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v2/bag/add',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: bagData,
+        success: (res) => {
+          console.log('添加袋子接口响应:', res);
+          
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('请求添加袋子接口失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
   },
 
   /**
@@ -235,7 +282,7 @@ Page({
           this.setData({
             formData: {
               name: '',
-              color: '#43e97b',
+              color: '#f37b1d',
               boxId: this.data.formData.boxId
             },
             errors: {}
