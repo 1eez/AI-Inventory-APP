@@ -2,9 +2,7 @@
 const app = getApp();
 
 Page({
-  /**
-   * 页面的初始数据
-   */
+  /*** 页面的初始数据   */
   data: {
     loading: true,
     systemReady: false,
@@ -18,17 +16,13 @@ Page({
     boxesWithItems: 0 // 有物品的箱子数量
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
+  /*** 生命周期函数--监听页面加载   */
   onLoad(options) {
     console.log('首页加载');
     this.initPage();
   },
 
-  /**
-   * 初始化页面
-   */
+  /*** 初始化页面   */
   async initPage() {
     try {
       // 等待系统就绪
@@ -49,9 +43,7 @@ Page({
     }
   },
 
-  /**
-   * 等待系统就绪
-   */
+  /*** 等待系统就绪   */
   waitForSystemReady() {
     return new Promise((resolve) => {
       if (app.globalData.systemReady) {
@@ -65,72 +57,57 @@ Page({
     });
   },
 
-  /**
-   * 加载箱子列表数据
-   */
+  /*** 加载箱子列表数据   */
   async loadBoxes() {
     try {
-      // 模拟网络请求延迟
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // 从全局数据中获取用户首页数据
+      const userHomeData = app.globalData.userHomeData;
       
-      // TODO: 替换为实际的API调用
-      const mockBoxes = [
-        {
-          id: 1,
-          name: '客厅储物箱',
-          description: '客厅常用物品收纳',
-          itemCount: 12,
-          icon: 'cuIcon-goods',
-          color: '#1296db',
-          createTime: '2024-01-15'
-        },
-        {
-          id: 2,
-          name: '卧室衣柜',
-          description: '换季衣物整理',
-          itemCount: 8,
-          icon: 'cuIcon-clothes',
-          color: '#e54d42',
-          createTime: '2024-01-10'
-        },
-        {
-          id: 3,
-          name: '厨房收纳',
-          description: '厨房用品分类存放',
-          itemCount: 15,
-          icon: 'cuIcon-shop',
-          color: '#39b54a',
-          createTime: '2024-01-08'
-        },
-        {
-          id: 4,
-          name: '书房文具',
-          description: '学习办公用品',
-          itemCount: 6,
-          icon: 'cuIcon-form',
-          color: '#f37b1d',
-          createTime: '2024-01-05'
-        }
-      ];
+      if (!userHomeData || !userHomeData.data) {
+        console.warn('未找到用户首页数据，使用空数据');
+        this.setData({
+          boxes: [],
+          totalItems: 0,
+          boxesWithItems: 0
+        });
+        return;
+      }
       
-      // 计算统计数据
-      const totalItems = mockBoxes.reduce((sum, box) => sum + box.itemCount, 0);
-      const boxesWithItems = mockBoxes.filter(box => box.itemCount > 0).length;
+      const { statistics, boxes } = userHomeData.data;
+      
+      // 处理箱子数据，为每个箱子添加默认的显示属性
+      const processedBoxes = boxes.map((box, index) => {
+        // 预定义的图标和颜色数组
+        const icons = ['cuIcon-goods', 'cuIcon-clothes', 'cuIcon-shop', 'cuIcon-form', 'cuIcon-home'];
+        const colors = ['#1296db', '#e54d42', '#39b54a', '#f37b1d', '#8dc63f'];
+        
+        return {
+          ...box,
+          icon: box.icon || icons[index % icons.length],
+          color: box.color || colors[index % colors.length],
+          itemCount: box.item_count || 0
+        };
+      });
       
       this.setData({
-        boxes: mockBoxes,
-        totalItems: totalItems,
-        boxesWithItems: boxesWithItems
+        boxes: processedBoxes,
+        totalItems: statistics.total_items || 0,
+        boxesWithItems: statistics.total_boxes || 0
       });
+      
+      console.log('箱子数据加载完成:', {
+        boxes: processedBoxes,
+        totalItems: statistics.total_items,
+        boxesWithItems: statistics.total_boxes
+      });
+      
     } catch (error) {
       console.error('加载箱子数据失败:', error);
       throw error;
     }
   },
 
-  /**
-   * 处理加载错误
-   */
+  /*** 处理加载错误   */
   handleLoadError(error) {
     this.setData({
       loading: false,
@@ -151,18 +128,14 @@ Page({
     });
   },
 
-  /**
-   * 搜索输入处理
-   */
+  /*** 搜索输入处理   */
   onSearchInput(e) {
     this.setData({
       searchKeyword: e.detail.value
     });
   },
 
-  /**
-   * 执行搜索
-   */
+  /*** 执行搜索   */
   onSearch() {
     const keyword = this.data.searchKeyword.trim();
     if (!keyword) {
@@ -179,9 +152,7 @@ Page({
     });
   },
 
-  /**
-   * 点击箱子项
-   */
+  /*** 点击箱子项   */
   onBoxTap(e) {
     const boxId = e.currentTarget.dataset.id;
     const box = this.data.boxes.find(item => item.id === boxId);
@@ -200,18 +171,14 @@ Page({
     });
   },
 
-  /**
-   * 添加新箱子
-   */
+  /*** 添加新箱子   */
   onAddBox() {
     wx.navigateTo({
       url: '/packageStorage/pages/add-box/add-box'
     });
   },
 
-  /**
-   * 下拉刷新
-   */
+  /*** 下拉刷新   */
   async onPullDownRefresh() {
     try {
       await this.loadBoxes();
@@ -229,9 +196,7 @@ Page({
     }
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
+  /*** 生命周期函数--监听页面显示   */
   onShow() {
     // 页面显示时刷新数据
     if (this.data.systemReady) {
@@ -239,41 +204,11 @@ Page({
     }
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-    // 页面隐藏
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-    // 页面卸载
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-    this.onPullDownRefresh();
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-    // 可以在这里实现分页加载
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
+  /*** 用户点击右上角分享   */
   onShareAppMessage() {
     return {
-      title: '我的物品管理系统',
-      path: '/pages/home/home',
+      title: '相信我，你需要她帮你收纳整理',
+      path: '/pages/splash/splash',
       imageUrl: '/assets/images/share-cover.jpg'
     };
   }

@@ -2,9 +2,7 @@
 const app = getApp();
 
 Page({
-  /**
-   * 页面的初始数据
-   */
+  /*** 页面的初始数据   */
   data: {
     loadingText: '正在初始化...',
     progress: 0,
@@ -12,17 +10,13 @@ Page({
     errorMessage: ''
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
+  /*** 生命周期函数--监听页面加载   */
   onLoad(options) {
     console.log('启动页加载');
     this.startInitialization();
   },
 
-  /**
-   * 开始初始化流程
-   */
+  /*** 开始初始化流程   */
   async startInitialization() {
     try {
       // 步骤1: 检查系统环境
@@ -51,9 +45,7 @@ Page({
     }
   },
 
-  /**
-   * 更新进度
-   */
+  /*** 更新进度   */
   updateProgress(text, progress) {
     this.setData({
       loadingText: text,
@@ -61,9 +53,7 @@ Page({
     });
   },
 
-  /**
-   * 检查系统环境
-   */
+  /*** 检查系统环境   */
   checkSystemEnvironment() {
     return new Promise((resolve, reject) => {
       // 使用新的API获取微信APP基础信息
@@ -90,11 +80,7 @@ Page({
     });
   },
 
-
-
-  /**
-   * 初始化用户数据
-   */
+  /*** 初始化用户数据   */
   async initializeUserData() {
     try {
       // 等待获取openid
@@ -124,9 +110,7 @@ Page({
     }
   },
 
-  /**
-   * 获取用户首页数据
-   */
+  /*** 获取用户首页数据   */
   fetchUserHomeData(baseUrl, openid) {
     return new Promise((resolve, reject) => {
       const url = `${baseUrl}v0/home/info?openid=${openid}`;
@@ -151,9 +135,7 @@ Page({
     });
   },
 
-  /**
-   * 预加载资源
-   */
+  /*** 预加载资源   */
   preloadResources() {
     return new Promise((resolve) => {
       // 预加载一些关键图片资源
@@ -197,9 +179,7 @@ Page({
     });
   },
 
-  /**
-   * 处理初始化错误
-   */
+  /*** 处理初始化错误   */
   handleInitializationError(error) {
     this.setData({
       showError: true,
@@ -207,9 +187,7 @@ Page({
     });
   },
 
-  /**
-   * 重试初始化
-   */
+  /*** 重试初始化   */
   onRetry() {
     this.setData({
       showError: false,
@@ -221,33 +199,11 @@ Page({
     this.startInitialization();
   },
 
-  /**
-   * 跳转到首页
-   */
+  /*** 跳转到首页   */
   navigateToHome() {
     wx.reLaunch({
       url: '/pages/home/home'
     });
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-    // 页面显示
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-    // 页面隐藏
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-    // 页面卸载
-  }
 });

@@ -261,27 +261,27 @@
 
 /* 空状态优化 */
 .empty-state {
-  padding: 120rpx 60rpx;
+  padding: 10rpx;
 }
 
 .empty-state .empty-icon {
   font-size: 160rpx;
   color: #e5e5e5;
-  margin-bottom: 40rpx;
+  margin-bottom: 20rpx;
 }
 
 .empty-state .empty-title {
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: 20rpx;
 }
 
 .empty-state .empty-subtitle {
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: var(--text-placeholder);
   line-height: 1.8;
-  margin-bottom: 60rpx;
+  margin-bottom: 20rpx;
   white-space: pre-line;
 }
 

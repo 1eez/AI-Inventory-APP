@@ -138,9 +138,9 @@
 
       <!-- 空状态 -->
       <view wx:else class="empty-state">
-        <text class="cuIcon-goods empty-icon"></text>
+        <text class="cuIcon-shop empty-icon"></text>
         <view class="empty-title">还没有箱子</view>
-        <view class="empty-subtitle">点击下方按钮创建第一个储物箱\n开始整理您的物品吧</view>
+        <view class="empty-subtitle">点击按钮创建第一个储物箱\n开始整理您的物品吧</view>
         <button class="cu-btn bg-blue margin-top" bindtap="onAddBox">
           <text class="cuIcon-add margin-right-xs"></text>
           创建第一个箱子
