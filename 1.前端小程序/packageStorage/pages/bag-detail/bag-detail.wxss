@@ -69,12 +69,22 @@
   padding: 0;
 }
 
+.skeleton-box-info {
+  display: flex;
+  padding: 40rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+}
+
 .skeleton-bag-info {
   display: flex;
   padding: 40rpx;
   background: #fff;
   border-radius: 20rpx;
   margin-bottom: 30rpx;
+  margin-left: 20rpx;
+  margin-right: 20rpx;
 }
 
 .skeleton-content {
@@ -97,14 +107,115 @@
   margin-right: 30rpx;
 }
 
+/* 箱子信息卡片 */
+.box-info-card {
+  margin-bottom: 20rpx;
+}
+
+.box-preview {
+  border-radius: 20rpx;
+  padding: 40rpx;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.box-preview-content {
+  position: relative;
+  z-index: 2;
+}
+
+.box-preview-name {
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-bottom: 12rpx;
+  line-height: 1.3;
+}
+
+.box-preview-desc {
+  font-size: 28rpx;
+  opacity: 0.9;
+  margin-bottom: 24rpx;
+  line-height: 1.4;
+}
+
+.box-preview-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.box-preview-location {
+  display: flex;
+  align-items: center;
+}
+
+.box-preview-location text:first-child {
+  margin-right: 8rpx;
+  font-size: 26rpx;
+}
+
+.preview-date-text {
+  font-size: 24rpx;
+}
+
 /* 袋子信息卡片 */
 .bag-info-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  margin-left: 20rpx;
+  margin-right: 20rpx;
+  box-shadow: 0 8rpx 25rpx rgba(0, 0, 0, 0.1);
+  border-left: 6rpx solid #667eea;
+}
+
+.preview-container {
+  margin-bottom: 20rpx;
+}
+
+.preview-bag {
+  border-radius: 16rpx;
+  padding: 30rpx;
   color: #fff;
-  border-radius: 24rpx;
-  padding: 40rpx;
-  margin-bottom: 30rpx;
-  box-shadow: 0 20rpx 40rpx rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-info {
+  position: relative;
+  z-index: 2;
+}
+
+.preview-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+  line-height: 1.3;
+}
+
+.preview-desc {
+  font-size: 26rpx;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.bag-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.bag-tags .tag {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 500;
 }
 
 .bag-header {
@@ -163,15 +274,19 @@
   backdrop-filter: blur(10rpx);
 }
 
-.bag-stats-row {
+/* 统计信息卡片 */
+.stats-card {
+  margin-bottom: 20rpx;
+}
+
+.stats-content {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background: rgba(255, 255, 255, 0.1);
+  background: #fff;
   border-radius: 16rpx;
   padding: 30rpx 20rpx;
-  backdrop-filter: blur(10rpx);
-  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.08);
 }
 
 .stat-item {
@@ -185,17 +300,18 @@
   font-size: 36rpx;
   font-weight: 700;
   margin-bottom: 8rpx;
+  color: #2c3e50;
 }
 
 .stat-label {
   font-size: 24rpx;
-  opacity: 0.8;
+  color: #666;
 }
 
 .stat-divider {
   width: 2rpx;
   height: 60rpx;
-  background: rgba(255, 255, 255, 0.3);
+  background: #e9ecef;
 }
 
 .bag-location {

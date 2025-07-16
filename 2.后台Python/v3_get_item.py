@@ -112,6 +112,26 @@ def get_bag_info(bag_id: int, box_id: int, user_id: int, db_manager: DatabaseMan
     
     return dict(result)
 
+def get_box_info(box_id: int, user_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
+    """
+    获取储物箱基本信息
+    
+    Args:
+        box_id: 储物箱ID
+        user_id: 用户ID
+        db_manager: 数据库管理器实例
+        
+    Returns:
+        Dict: 储物箱信息
+    """
+    query = "SELECT * FROM boxes_summary WHERE box_id = ? AND user_id = ?"
+    
+    result = db_manager.execute_query(query, (box_id, user_id), fetch_one=True)
+    if not result:
+        raise HTTPException(status_code=404, detail="储物箱不存在或无权限查看")
+    
+    return dict(result)
+
 # 创建数据库管理器实例
 db_manager = DatabaseManager()
 
@@ -148,6 +168,9 @@ async def get_items(
         # 获取袋子基本信息
         bag_info = get_bag_info(bag_id, box_id, user_id, db_manager)
         
+        # 获取储物箱基本信息
+        box_info = get_box_info(box_id, user_id, db_manager)
+        
         if item_id is not None:
             # 获取单个物品信息
             item_info = get_item_by_id(item_id, bag_id, box_id, user_id, db_manager)
@@ -156,6 +179,7 @@ async def get_items(
                 "message": "物品信息获取成功",
                 "data": {
                     "bag_info": bag_info,
+                    "box_info": box_info,
                     "item_info": item_info
                 }
             }
@@ -167,6 +191,7 @@ async def get_items(
                 "message": "物品列表获取成功",
                 "data": {
                     "bag_info": bag_info,
+                    "box_info": box_info,
                     "items_list": items_list,
                     "total_count": len(items_list)
                 }

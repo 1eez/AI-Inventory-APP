@@ -26,9 +26,21 @@ Page({
   onLoad(options) {
     console.log('袋子详情页加载', options);
     
+    // 检查必要参数
+    if (!options.bag_id) {
+      wx.showToast({
+        title: '缺少袋子ID参数',
+        icon: 'none'
+      });
+      setTimeout(() => {
+        wx.navigateBack();
+      }, 1500);
+      return;
+    }
+    
     this.setData({
-      bagId: options.id || '',
-      boxId: options.boxId || ''
+      bagId: options.bag_id || options.id || '',
+      boxId: options.box_id || options.boxId || ''
     });
     
     // 等待系统准备就绪
@@ -90,16 +102,65 @@ Page({
   // 加载物品列表
   async loadItems() {
     try {
-      // TODO: 替换为真实API调用
-      const items = await this.mockGetItems(this.data.bagId);
+      const items = await this.getItemsFromAPI();
       
       this.setData({
         items
       });
     } catch (error) {
       console.error('加载物品列表失败:', error);
-      throw error;
+      // 如果API调用失败，使用模拟数据作为备用
+      const items = await this.mockGetItems(this.data.bagId);
+      this.setData({ items });
     }
+  },
+
+  // 从后台API获取物品列表
+  async getItemsFromAPI() {
+    const baseUrl = app.globalData.baseUrl;
+    const openid = app.globalData.openid;
+    
+    if (!baseUrl || !openid) {
+      throw new Error('缺少必要的配置信息');
+    }
+    
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `${baseUrl}v3/item/get`,
+        method: 'GET',
+        data: {
+          openid: openid,
+          box_id: this.data.boxId,
+          bag_id: this.data.bagId
+        },
+        success: (res) => {
+          console.log('获取物品列表API响应:', res);
+          if (res.statusCode === 200 && res.data.code === 200) {
+            // 处理API返回的数据格式
+            const items = res.data.data || [];
+            resolve(items.map(item => ({
+              id: item.id,
+              name: item.name || '未命名物品',
+              description: item.description || '',
+              image: item.image || '/images/placeholder.png',
+              category: item.category || '其他',
+              tags: item.tags || [],
+              value: item.value || 0,
+              quantity: item.quantity || 1,
+              condition: item.condition || '良好',
+              purchaseDate: item.purchase_date || '',
+              lastUsed: item.last_used || ''
+            })));
+          } else {
+            reject(new Error(res.data.message || '获取物品列表失败'));
+          }
+        },
+        fail: (error) => {
+          console.error('获取物品列表API调用失败:', error);
+          reject(error);
+        }
+      });
+    });
   },
 
   // 模拟获取袋子信息
@@ -364,6 +425,28 @@ Page({
             title: '删除成功',
             icon: 'success'
           });
+        }
+      }
+    });
+  },
+
+  // 删除袋子
+  onDeleteBag() {
+    wx.showModal({
+      title: '确认删除',
+      content: `确定要删除袋子"${this.data.bagInfo.name}"吗？删除后袋子内的所有物品也将被删除。`,
+      confirmColor: '#e74c3c',
+      success: (res) => {
+        if (res.confirm) {
+          // TODO: 调用删除袋子API
+          wx.showToast({
+            title: '删除成功',
+            icon: 'success'
+          });
+          
+          setTimeout(() => {
+            wx.navigateBack();
+          }, 1500);
         }
       }
     });

@@ -308,7 +308,7 @@ Page({
     
     // 跳转到袋子详情页
     wx.navigateTo({
-      url: `/packageStorage/pages/bag-detail/bag-detail?boxId=${this.boxId}&bagId=${bagId}&bagName=${encodeURIComponent(bag.name)}`
+      url: `/packageStorage/pages/bag-detail/bag-detail?box_id=${this.boxId}&bag_id=${bagId}&bagName=${encodeURIComponent(bag.name)}`
     });
   },
 

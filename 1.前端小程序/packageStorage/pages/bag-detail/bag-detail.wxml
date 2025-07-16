@@ -27,13 +27,22 @@
   <view class="container">
     <!-- 骨架屏加载状态 -->
     <view wx:if="{{skeletonLoading}}" class="skeleton-container">
-      <!-- 袋子信息骨架屏 -->
-      <view class="skeleton-bag-info">
+      <!-- 箱子信息骨架屏 -->
+      <view class="skeleton-box-info">
         <view class="skeleton skeleton-avatar"></view>
         <view class="skeleton-content">
           <view class="skeleton skeleton-title"></view>
           <view class="skeleton skeleton-text" style="width: 80%;"></view>
           <view class="skeleton skeleton-text" style="width: 60%;"></view>
+        </view>
+      </view>
+      
+      <!-- 袋子信息骨架屏 -->
+      <view class="skeleton-bag-info">
+        <view class="skeleton skeleton-avatar"></view>
+        <view class="skeleton-content">
+          <view class="skeleton skeleton-title"></view>
+          <view class="skeleton skeleton-text" style="width: 70%;"></view>
         </view>
       </view>
       
@@ -50,47 +59,59 @@
       </view>
     </view>
 
-    <!-- 袋子信息和物品列表 -->
+    <!-- 箱子信息、袋子信息和物品列表 -->
     <view wx:else>
+      <!-- 箱子信息卡片 -->
+      <view class="box-info-card card">
+        <view 
+          class="box-preview"
+          style="background: linear-gradient(135deg, {{boxInfo.color}} 0%, {{boxInfo.color}}88 100%)"
+        >
+          <view class="box-preview-content">
+            <view class="box-preview-name">{{boxInfo.name}}</view>
+            <view class="box-preview-desc" wx:if="{{boxInfo.description}}">{{boxInfo.description}}</view>
+            <view class="box-preview-meta">
+              <view class="box-preview-location" wx:if="{{boxInfo.location}}">
+                <text class="cuIcon-locationfill"></text>
+                <text>{{boxInfo.location}}</text>
+              </view>
+              <view class="box-preview-date">
+                <text class="preview-date-text">{{boxInfo.createTime}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
       <!-- 袋子信息卡片 -->
       <view class="bag-info-card card">
-        <view class="bag-header">
-          <view class="bag-icon-large" style="background-color: {{bagInfo.color}};">
-            <text class="{{bagInfo.icon}}"></text>
-          </view>
-          <view class="bag-main-info">
-            <view class="bag-name-large">{{bagInfo.name}}</view>
-            <view class="bag-description-large">{{bagInfo.description}}</view>
-            
-            <!-- 标签 -->
-            <view class="bag-tags" wx:if="{{bagInfo.tags && bagInfo.tags.length > 0}}">
-              <text wx:for="{{bagInfo.tags}}" wx:key="index" class="tag">{{item}}</text>
+        <view class="preview-container">
+          <view class="preview-bag" style="background: {{bagInfo.color}}">
+            <view class="preview-info">
+              <view class="preview-name">{{bagInfo.name || '收纳袋名称'}}</view>
+              <view class="preview-desc" wx:if="{{bagInfo.description}}">{{bagInfo.description}}</view>
             </view>
           </view>
         </view>
         
-        <!-- 统计信息 -->
-        <view class="bag-stats-row">
+        <!-- 袋子标签 -->
+        <view class="bag-tags" wx:if="{{bagInfo.tags && bagInfo.tags.length > 0}}">
+          <text wx:for="{{bagInfo.tags}}" wx:key="index" class="tag">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 统计信息 -->
+      <view class="stats-card card">
+        <view class="stats-content">
           <view class="stat-item">
-            <text class="stat-number">{{bagInfo.itemCount}}</text>
-            <text class="stat-label">件物品</text>
+            <text class="stat-number">{{bagInfo.itemCount || 0}}</text>
+            <text class="stat-label">物品</text>
           </view>
           <view class="stat-divider"></view>
           <view class="stat-item">
-            <text class="stat-number">¥{{bagInfo.totalValue}}</text>
+            <text class="stat-number">¥{{bagInfo.totalValue || 0}}</text>
             <text class="stat-label">总价值</text>
           </view>
-          <view class="stat-divider"></view>
-          <view class="stat-item">
-            <text class="stat-number">{{bagInfo.lastUsed}}</text>
-            <text class="stat-label">最近使用</text>
-          </view>
-        </view>
-        
-        <!-- 位置信息 -->
-        <view class="bag-location" wx:if="{{bagInfo.location}}">
-          <text class="cuIcon-location location-icon"></text>
-          <text class="location-text">{{boxInfo.name}} > {{bagInfo.location}}</text>
         </view>
       </view>
 
@@ -115,6 +136,12 @@
               <text class="cuIcon-selection"></text>
             </view>
             <text class="action-text">批量操作</text>
+          </view>
+          <view class="action-btn" bindtap="onDeleteBag">
+            <view class="action-icon bg-red">
+              <text class="cuIcon-delete"></text>
+            </view>
+            <text class="action-text">删除袋子</text>
           </view>
         </view>
       </view>
