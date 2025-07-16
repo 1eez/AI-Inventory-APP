@@ -51,8 +51,8 @@ App({
    */
   getSystemInfo() {
     return new Promise((resolve) => {
-      // 使用新的 API 替代已废弃的 wx.getSystemInfo
       try {
+        // 使用新的 API 替代已废弃的 wx.getSystemInfo
         // 获取窗口信息（基础库 2.20.1 开始支持）
         const windowInfo = wx.getWindowInfo();
         this.globalData.StatusBar = windowInfo.statusBarHeight;
@@ -69,29 +69,20 @@ App({
         this.globalData.Custom = custom;
         this.globalData.CustomBar = custom.bottom + custom.top - windowInfo.statusBarHeight;
         
+        console.log('系统信息获取成功:', {
+          statusBarHeight: windowInfo.statusBarHeight,
+          customBar: this.globalData.CustomBar,
+          platform: deviceInfo.platform
+        });
+        
         resolve(windowInfo);
       } catch (error) {
-        // 兼容低版本基础库，降级使用 wx.getSystemInfo
-        wx.getSystemInfo({
-          success: (res) => {
-            this.globalData.StatusBar = res.statusBarHeight;
-            this.globalData.CustomBar = res.statusBarHeight + 45;
-            
-            if (res.platform === 'android') {
-              this.globalData.CustomBar = res.statusBarHeight + 50;
-            }
-            
-            // 获取胶囊按钮位置信息
-            const custom = wx.getMenuButtonBoundingClientRect();
-            this.globalData.Custom = custom;
-            this.globalData.CustomBar = custom.bottom + custom.top - res.statusBarHeight;
-            
-            resolve(res);
-          },
-          fail: () => {
-            resolve({});
-          }
-        });
+        console.error('获取系统信息失败:', error);
+        // 设置默认值
+        this.globalData.StatusBar = 44;
+        this.globalData.CustomBar = 88;
+        this.globalData.Custom = { bottom: 88, top: 44 };
+        resolve({});
       }
     });
   },

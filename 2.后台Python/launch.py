@@ -73,11 +73,20 @@ app.add_middleware(
 # 【系统】获取微信小程序openid
 from v0_auth import router as AuthRouter
 app.include_router(AuthRouter)
-
+# -----------------------------------------------------------
+# 【 -- 首页 -- 】
+# -----------------------------------------------------------
 # 接口：/v0/home/info  -- 请求方式GET
 # 【首页】获取用户首页信息
 from v0_get_home_info import router as HomeInfoRouter
 app.include_router(HomeInfoRouter)
+# -----------------------------------------------------------
+# 【 -- 箱子管理 -- 】
+# -----------------------------------------------------------
+# 接口：/v1/box/add  -- 请求方式POST
+# 【储物箱】添加储物箱
+from v1_add_box import router as AddBoxRouter
+app.include_router(AddBoxRouter)
 
 # -----------------------------------------------------------
 # 【 -- 测试模块 -- 】

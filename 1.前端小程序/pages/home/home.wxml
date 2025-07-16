@@ -4,7 +4,7 @@
   <cu-custom bgColor="bg-white" isBack="{{false}}" isTop="{{true}}">
     <view slot="content" class="nav-title">物品管理</view>
     <view slot="right" class="nav-right">
-      <text class="cuIcon-scan nav-icon" bindtap="onScanCode"></text>
+      <text class="cuIcon-scan nav-icon"></text>
     </view>
   </cu-custom>
 
