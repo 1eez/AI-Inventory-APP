@@ -67,7 +67,7 @@
         <view class="action-buttons">
           <view class="action-btn" bindtap="onAddBox">
             <view class="action-icon bg-blue">
-              <text class="cuIcon-present"></text>
+              <text class="cuIcon-shop"></text>
             </view>
             <text class="action-text">新建储物箱</text>
           </view>
@@ -82,6 +82,12 @@
               <text class="cuIcon-camera"></text>
             </view>
             <text class="action-text">快速拍照</text>
+          </view>
+          <view class="action-btn" bindtap="onBatchImport">
+            <view class="action-icon bg-red">
+              <text class="cuIcon-pic"></text>
+            </view>
+            <text class="action-text">相册导入</text>
           </view>
         </view>
       </view>
