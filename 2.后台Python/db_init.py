@@ -48,6 +48,12 @@ class DatabaseInitializer:
                 # 创建物品表
                 self._create_items_table(cursor)
                 
+                # 创建标签表
+                self._create_tags_table(cursor)
+                
+                # 创建物品标签关联表
+                self._create_items_tags_table(cursor)
+                
                 # 提交事务
                 conn.commit()
                 print(f"数据库创建成功: {self.db_path}")
@@ -84,6 +90,9 @@ class DatabaseInitializer:
             user_id INTEGER NOT NULL,
             sort_id INTEGER NOT NULL,
             name VARCHAR(100) NOT NULL,
+            description TEXT DEFAULT '',
+            color VARCHAR(20) DEFAULT '#1296db',
+            location VARCHAR(200) DEFAULT '',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users_summary(user_id)
         )
@@ -104,8 +113,9 @@ class DatabaseInitializer:
             box_id INTEGER NOT NULL,
             sort_id INTEGER NOT NULL,
             name VARCHAR(100) NOT NULL,
+            color VARCHAR(20) DEFAULT '#1296db',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (box_id) REFERENCES boxes_summary(box_id) ON DELETE CASCADE
+            FOREIGN KEY (box_id) REFERENCES boxes_summary(box_id)
         )
         """
         cursor.execute(sql)
@@ -126,10 +136,9 @@ class DatabaseInitializer:
             title VARCHAR(200) NOT NULL,
             description TEXT DEFAULT '',
             category VARCHAR(100) DEFAULT '',
-            tags VARCHAR(500) DEFAULT '',
             image_path VARCHAR(500) DEFAULT '',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (bag_id) REFERENCES bags_summary(bag_id) ON DELETE CASCADE
+            FOREIGN KEY (bag_id) REFERENCES bags_summary(bag_id)
         )
         """
         cursor.execute(sql)
@@ -140,6 +149,41 @@ class DatabaseInitializer:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_category ON items_detail(category)")
         
         print("物品表创建成功")
+    
+    def _create_tags_table(self, cursor):
+        """创建标签表"""
+        sql = """
+        CREATE TABLE IF NOT EXISTS tags (
+            tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name VARCHAR(100) NOT NULL UNIQUE
+        )
+        """
+        cursor.execute(sql)
+        
+        # 创建索引
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name)")
+        
+        print("标签表创建成功")
+    
+    def _create_items_tags_table(self, cursor):
+        """创建物品标签关联表"""
+        sql = """
+        CREATE TABLE IF NOT EXISTS items_tags (
+            item_id INTEGER NOT NULL,
+            tag_id INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (item_id, tag_id),
+            FOREIGN KEY (item_id) REFERENCES items_detail(item_id) ON DELETE CASCADE,
+            FOREIGN KEY (tag_id) REFERENCES tags(tag_id) ON DELETE CASCADE
+        )
+        """
+        cursor.execute(sql)
+        
+        # 创建索引
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_tags_item_id ON items_tags(item_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_tags_tag_id ON items_tags(tag_id)")
+        
+        print("物品标签关联表创建成功")
 
 def main():
     """主函数"""
