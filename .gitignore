@@ -215,3 +215,4 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+2.后台Python/data/database.sqlite
