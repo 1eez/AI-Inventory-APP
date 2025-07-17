@@ -354,7 +354,7 @@
   }
   
   .box-count {
-    font-size: 20rpx;
+    font-size: 32rpx;
   }
   
   /* 保持快速操作按钮横向排列 */

@@ -8,18 +8,7 @@
     flash="{{flashEnabled ? 'on' : 'off'}}"
     bindinitdone="onCameraReady"
     binderror="onCameraError"
-    bindscancode="onScanCode"
-    scan-area="{{showScanFrame}}"
   >
-    <!-- 扫描框 -->
-    <view class="scan-frame" wx:if="{{mode === 'scan' && showScanFrame}}">
-      <view class="scan-corner scan-corner-tl"></view>
-      <view class="scan-corner scan-corner-tr"></view>
-      <view class="scan-corner scan-corner-bl"></view>
-      <view class="scan-corner scan-corner-br"></view>
-      <view class="scan-line"></view>
-    </view>
-    
     <!-- 拍照预览 -->
     <view class="photo-preview" wx:if="{{photoResult}}">
       <image src="{{photoResult}}" mode="aspectFit"></image>
@@ -34,27 +23,6 @@
       </view>
     </view>
     
-    <view class="toolbar-center">
-      <view class="mode-switch">
-        <view 
-          class="mode-item {{mode === 'scan' ? 'active' : ''}}"
-          data-mode="scan"
-          bindtap="switchMode"
-        >
-          <text class="cuIcon-scan"></text>
-          <text>扫码</text>
-        </view>
-        <view 
-          class="mode-item {{mode === 'photo' ? 'active' : ''}}"
-          data-mode="photo"
-          bindtap="switchMode"
-        >
-          <text class="cuIcon-camerafill"></text>
-          <text>拍照</text>
-        </view>
-      </view>
-    </view>
-    
     <view class="toolbar-right">
       <view class="tool-btn" bindtap="toggleFlash">
         <text class="cuIcon-{{flashEnabled ? 'lightfill' : 'light'}} text-white"></text>
@@ -64,29 +32,21 @@
   
   <!-- 操作提示 -->
   <view class="tips-container">
-    <view class="tips-text">{{tips[mode]}}</view>
+    <view class="tips-text">对准物品拍照进行识别</view>
   </view>
   
   <!-- 底部操作栏 -->
   <view class="bottom-toolbar">
     <view class="toolbar-left">
-      <view class="tool-btn" bindtap="chooseFromAlbum" wx:if="{{mode === 'photo'}}">
+      <view class="tool-btn" bindtap="chooseFromAlbum">
         <text class="cuIcon-pic text-white"></text>
         <text class="tool-text">相册</text>
       </view>
     </view>
     
     <view class="toolbar-center">
-      <!-- 扫码模式 -->
-      <view class="scan-status" wx:if="{{mode === 'scan'}}">
-        <view class="scan-indicator {{processing ? 'processing' : ''}}">
-          <text class="cuIcon-scan text-white"></text>
-        </view>
-        <view class="scan-text" wx:if="{{processing}}">处理中...</view>
-      </view>
-      
-      <!-- 拍照模式 -->
-      <view class="photo-controls" wx:if="{{mode === 'photo'}}">
+      <!-- 拍照控制 -->
+      <view class="photo-controls">
         <view class="photo-btn" bindtap="takePhoto" wx:if="{{!photoResult && !processing}}">
           <view class="photo-btn-inner"></view>
         </view>
@@ -113,7 +73,7 @@
     <view class="processing-content">
       <view class="cu-load loading"></view>
       <view class="processing-text">
-        {{mode === 'scan' ? '处理扫码结果...' : '识别物品中...'}}
+        识别物品中...
       </view>
     </view>
   </view>

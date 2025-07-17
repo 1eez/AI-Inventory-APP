@@ -16,85 +16,7 @@
   position: relative;
 }
 
-/* 扫描框 */
-.scan-frame {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 500rpx;
-  height: 500rpx;
-  transform: translate(-50%, -50%);
-  border: 4rpx solid rgba(255, 255, 255, 0.3);
-  border-radius: 20rpx;
-}
 
-/* 扫描框四角 */
-.scan-corner {
-  position: absolute;
-  width: 60rpx;
-  height: 60rpx;
-  border: 6rpx solid #00ff00;
-}
-
-.scan-corner-tl {
-  top: -6rpx;
-  left: -6rpx;
-  border-right: none;
-  border-bottom: none;
-  border-radius: 20rpx 0 0 0;
-}
-
-.scan-corner-tr {
-  top: -6rpx;
-  right: -6rpx;
-  border-left: none;
-  border-bottom: none;
-  border-radius: 0 20rpx 0 0;
-}
-
-.scan-corner-bl {
-  bottom: -6rpx;
-  left: -6rpx;
-  border-right: none;
-  border-top: none;
-  border-radius: 0 0 0 20rpx;
-}
-
-.scan-corner-br {
-  bottom: -6rpx;
-  right: -6rpx;
-  border-left: none;
-  border-top: none;
-  border-radius: 0 0 20rpx 0;
-}
-
-/* 扫描线 */
-.scan-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4rpx;
-  background: linear-gradient(90deg, transparent, #00ff00, transparent);
-  animation: scan-move 2s linear infinite;
-}
-
-@keyframes scan-move {
-  0% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(500rpx);
-    opacity: 0;
-  }
-}
 
 /* 拍照预览 */
 .photo-preview {
@@ -121,19 +43,19 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 120rpx;
+  height: 340rpx;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   padding: 20rpx 30rpx;
-  padding-top: calc(20rpx + env(safe-area-inset-top));
+  padding-top: calc(60rpx + env(safe-area-inset-top));
   z-index: 100;
 }
 
 .toolbar-left,
 .toolbar-right {
-  width: 120rpx;
+  width: 140rpx;
   display: flex;
   justify-content: center;
 }
@@ -144,46 +66,21 @@
   justify-content: center;
 }
 
-/* 模式切换 */
-.mode-switch {
-  display: flex;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 30rpx;
-  padding: 8rpx;
-}
 
-.mode-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-  padding: 20rpx 30rpx;
-  border-radius: 22rpx;
-  transition: all 0.3s;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 22rpx;
-}
-
-.mode-item.active {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-.mode-item .cuIcon-scan,
-.mode-item .cuIcon-camerafill {
-  font-size: 32rpx;
-}
 
 /* 工具按钮 */
 .tool-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8rpx;
-  padding: 15rpx;
+  justify-content: center;
+  width: 100rpx;
+  height: 100rpx;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10rpx);
   transition: all 0.3s;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
 }
 
 .tool-btn:active {
@@ -197,17 +94,22 @@
 .tool-btn .cuIcon-pic,
 .tool-btn .cuIcon-refresh {
   font-size: 36rpx;
+  color: white;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
 }
 
 .tool-text {
   font-size: 20rpx;
   color: white;
+  margin-top: 6rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+  font-weight: 500;
 }
 
 /* 操作提示 */
 .tips-container {
   position: absolute;
-  top: 200rpx;
+  top: 220rpx;
   left: 0;
   right: 0;
   display: flex;
@@ -238,50 +140,6 @@
   padding: 30rpx;
   padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
   z-index: 100;
-}
-
-/* 扫码状态 */
-.scan-status {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20rpx;
-}
-
-.scan-indicator {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 50%;
-  background: rgba(0, 255, 0, 0.2);
-  border: 4rpx solid #00ff00;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 48rpx;
-}
-
-.scan-indicator.processing {
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.scan-text {
-  color: white;
-  font-size: 24rpx;
 }
 
 /* 拍照控制 */
@@ -360,16 +218,6 @@
 
 /* 响应式设计 */
 @media (max-width: 750rpx) {
-  .scan-frame {
-    width: 400rpx;
-    height: 400rpx;
-  }
-  
-  .mode-item {
-    padding: 15rpx 20rpx;
-    font-size: 20rpx;
-  }
-  
   .photo-btn {
     width: 100rpx;
     height: 100rpx;

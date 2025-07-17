@@ -1,8 +1,8 @@
 // packageCamera/pages/camera/camera.js
 
 /**
- * 相机扫描页面
- * 用于扫描物品二维码或拍照识别物品
+ * 相机拍照页面
+ * 用于拍照识别物品
  */
 Page({
   /**
@@ -11,27 +11,16 @@ Page({
   data: {
     // 相机上下文
     cameraContext: null,
-    // 扫描模式：scan(扫码) | photo(拍照)
-    mode: 'scan',
-    // 是否显示扫描框
-    showScanFrame: true,
     // 闪光灯状态
     flashEnabled: false,
     // 相机设备位置：front(前置) | back(后置)
     devicePosition: 'back',
-    // 扫描结果
-    scanResult: null,
     // 拍照结果
     photoResult: null,
     // 处理状态
     processing: false,
     // 识别结果
     recognitionResult: null,
-    // 操作提示
-    tips: {
-      scan: '将二维码放入框内进行扫描',
-      photo: '对准物品拍照进行识别'
-    },
     // 页面参数
     boxId: '',
     bagId: ''
@@ -43,15 +32,11 @@ Page({
   onLoad(options) {
     console.log('相机页面加载', options);
     
-    // 获取扫描模式
-    const mode = options.mode || 'scan';
-    
     // 获取页面参数
     const boxId = options.box_id || '';
     const bagId = options.bag_id || '';
     
     this.setData({ 
-      mode,
       boxId,
       bagId
     });
@@ -110,94 +95,7 @@ Page({
     });
   },
 
-  /**
-   * 扫码成功
-   */
-  onScanCode(e) {
-    if (this.data.processing) return;
-    
-    const result = e.detail.result;
-    console.log('扫码结果:', result);
-    
-    this.setData({
-      scanResult: result,
-      processing: true
-    });
-    
-    // 处理扫码结果
-    this.processScanResult(result);
-  },
 
-  /**
-   * 处理扫码结果
-   */
-  async processScanResult(result) {
-    try {
-      wx.showLoading({ title: '处理中...' });
-      
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // 检查是否是物品二维码
-      if (result.startsWith('ITEM_')) {
-        // 物品二维码
-        const itemId = result.replace('ITEM_', '');
-        wx.hideLoading();
-        
-        wx.showModal({
-          title: '扫码成功',
-          content: '检测到物品二维码，是否查看物品详情？',
-          success: (res) => {
-            if (res.confirm) {
-              wx.navigateTo({
-                url: `/packageStorage/pages/item-detail/item-detail?itemId=${itemId}`
-              });
-            } else {
-              this.resetScan();
-            }
-          }
-        });
-      } else if (result.startsWith('BOX_')) {
-        // 收纳盒二维码
-        const boxId = result.replace('BOX_', '');
-        wx.hideLoading();
-        
-        wx.showModal({
-          title: '扫码成功',
-          content: '检测到收纳盒二维码，是否查看收纳盒详情？',
-          success: (res) => {
-            if (res.confirm) {
-              wx.navigateTo({
-                url: `/packageStorage/pages/box-detail/box-detail?boxId=${boxId}`
-              });
-            } else {
-              this.resetScan();
-            }
-          }
-        });
-      } else {
-        // 其他二维码
-        wx.hideLoading();
-        wx.showModal({
-          title: '扫码结果',
-          content: `扫描内容：${result}`,
-          showCancel: false,
-          success: () => {
-            this.resetScan();
-          }
-        });
-      }
-      
-    } catch (error) {
-      console.error('处理扫码结果失败:', error);
-      wx.hideLoading();
-      wx.showToast({
-        title: '处理失败，请重试',
-        icon: 'error'
-      });
-      this.resetScan();
-    }
-  },
 
   /**
    * 拍照
@@ -295,19 +193,7 @@ Page({
     }
   },
 
-  /**
-   * 切换模式
-   */
-  switchMode(e) {
-    const { mode } = e.currentTarget.dataset;
-    this.setData({ 
-      mode,
-      scanResult: null,
-      photoResult: null,
-      recognitionResult: null,
-      processing: false
-    });
-  },
+
 
   /**
    * 切换闪光灯
@@ -325,15 +211,7 @@ Page({
     this.setData({ devicePosition });
   },
 
-  /**
-   * 重置扫描
-   */
-  resetScan() {
-    this.setData({
-      scanResult: null,
-      processing: false
-    });
-  },
+
 
   /**
    * 重新拍照
