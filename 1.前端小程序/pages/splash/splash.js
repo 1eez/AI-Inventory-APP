@@ -183,7 +183,7 @@ Page({
   handleInitializationError(error) {
     this.setData({
       showError: true,
-      errorMessage: error.message || '初始化失败，请重试'
+      errorMessage: error.message +'，请联系作者' || '初始化失败，请重试'
     });
   },
 

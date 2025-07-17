@@ -61,6 +61,6 @@
   <!-- 底部信息 -->
   <view class="splash-footer">
     <text class="footer-text">智能识别 · 分类整理 · 快速查找</text>
-    <text class="version-text">v1.0.0</text>
+    <text class="version-text">v1.0.0 | Lordli All rights reserved.</text>
   </view>
 </view>
