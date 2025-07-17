@@ -25,7 +25,7 @@ class AddItemRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=200, description="物品标题")
     description: Optional[str] = Field(default="", max_length=1000, description="物品描述")
     category: Optional[str] = Field(default="", max_length=100, description="物品分类")
-    image_path: Optional[str] = Field(default="", max_length=500, description="图片路径")
+    image_filename: Optional[str] = Field(default="", max_length=255, description="图片文件名")
 
 def verify_bag_ownership(user_id: int, box_id: int, bag_id: int, db_manager: DatabaseManager) -> bool:
     """
@@ -49,26 +49,33 @@ def verify_bag_ownership(user_id: int, box_id: int, bag_id: int, db_manager: Dat
     result = db_manager.execute_query(query, (bag_id, box_id, user_id), fetch_one=True)
     return result['count'] > 0
 
-def get_next_sort_id(bag_id: int, db_manager: DatabaseManager) -> int:
+def get_next_sort_id(box_id: int, bag_id: int, db_manager: DatabaseManager) -> int:
     """
     获取袋子下一个物品排序ID
     
     Args:
-        bag_id: 袋子ID
+        box_id: 储物箱ID
+        bag_id: 袋子ID（可为空）
         db_manager: 数据库管理器实例
         
     Returns:
         int: 下一个排序ID
     """
-    query = "SELECT COALESCE(MAX(sort_id), 0) + 1 as next_sort_id FROM items_detail WHERE bag_id = ?"
-    result = db_manager.execute_query(query, (bag_id,), fetch_one=True)
+    if bag_id:
+        query = "SELECT COALESCE(MAX(sort_id), 0) + 1 as next_sort_id FROM items_detail WHERE box_id = ? AND bag_id = ?"
+        result = db_manager.execute_query(query, (box_id, bag_id), fetch_one=True)
+    else:
+        query = "SELECT COALESCE(MAX(sort_id), 0) + 1 as next_sort_id FROM items_detail WHERE box_id = ? AND bag_id IS NULL"
+        result = db_manager.execute_query(query, (box_id,), fetch_one=True)
     return result['next_sort_id']
 
-def create_item(bag_id: int, item_data: AddItemRequest, db_manager: DatabaseManager) -> int:
+def create_item(user_id: int, box_id: int, bag_id: int, item_data: AddItemRequest, db_manager: DatabaseManager) -> int:
     """
     创建新物品
     
     Args:
+        user_id: 用户ID
+        box_id: 储物箱ID
         bag_id: 袋子ID
         item_data: 物品数据
         db_manager: 数据库管理器实例
@@ -77,23 +84,24 @@ def create_item(bag_id: int, item_data: AddItemRequest, db_manager: DatabaseMana
         int: 新创建的物品ID
     """
     # 获取下一个排序ID
-    sort_id = get_next_sort_id(bag_id, db_manager)
+    sort_id = get_next_sort_id(box_id, bag_id, db_manager)
     
     # 插入物品数据
     query = """
-    INSERT INTO items_detail (bag_id, sort_id, title, description, category, image_path, created_at) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO items_detail (box_id, bag_id, sort_id, title, description, category, image_filename, created_at) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """
     
     return db_manager.execute_insert(
         query, 
         (
+            box_id,
             bag_id,
             sort_id,
             item_data.title,
             item_data.description,
             item_data.category,
-            item_data.image_path,
+            item_data.image_filename,
             datetime.now().isoformat()
         )
     )
@@ -110,7 +118,7 @@ def get_item_info(item_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
         Dict: 物品信息
     """
     query = """
-    SELECT item_id, bag_id, sort_id, title, description, category, image_path, created_at 
+    SELECT item_id, box_id, bag_id, sort_id, title, description, category, image_filename, created_at 
     FROM items_detail 
     WHERE item_id = ?
     """
@@ -147,7 +155,7 @@ async def add_item(item_data: AddItemRequest = Body(...)):
             raise HTTPException(status_code=403, detail="无权限在此袋子中添加物品")
         
         # 创建物品
-        item_id = create_item(item_data.bag_id, item_data, db_manager)
+        item_id = create_item(user_id, item_data.box_id, item_data.bag_id, item_data, db_manager)
         
         # 获取创建的物品信息
         item_info = get_item_info(item_id, db_manager)

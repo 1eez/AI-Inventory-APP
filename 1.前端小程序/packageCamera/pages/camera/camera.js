@@ -31,7 +31,10 @@ Page({
     tips: {
       scan: '将二维码放入框内进行扫描',
       photo: '对准物品拍照进行识别'
-    }
+    },
+    // 页面参数
+    boxId: '',
+    bagId: ''
   },
 
   /**
@@ -42,7 +45,16 @@ Page({
     
     // 获取扫描模式
     const mode = options.mode || 'scan';
-    this.setData({ mode });
+    
+    // 获取页面参数
+    const boxId = options.box_id || '';
+    const bagId = options.bag_id || '';
+    
+    this.setData({ 
+      mode,
+      boxId,
+      bagId
+    });
     
     // 初始化相机
     this.initCamera();
@@ -259,10 +271,18 @@ Page({
       
       wx.hideLoading();
       
-      // 跳转到确认页面
-      wx.navigateTo({
-        url: `/packageCamera/pages/item-confirm/item-confirm?image=${encodeURIComponent(imagePath)}&result=${encodeURIComponent(JSON.stringify(mockResult))}`
-      });
+      // 跳转到确认页面，传递box_id和bag_id参数
+      const { boxId, bagId } = this.data;
+      let url = `/packageCamera/pages/item-confirm/item-confirm?image=${encodeURIComponent(imagePath)}&result=${encodeURIComponent(JSON.stringify(mockResult))}`;
+      
+      if (boxId) {
+        url += `&box_id=${boxId}`;
+      }
+      if (bagId) {
+        url += `&bag_id=${bagId}`;
+      }
+      
+      wx.navigateTo({ url });
       
     } catch (error) {
       console.error('识别失败:', error);

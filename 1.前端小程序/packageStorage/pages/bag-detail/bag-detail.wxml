@@ -141,17 +141,11 @@
       <view class="quick-actions card">
         <view class="action-title">快速操作</view>
         <view class="action-buttons">
-          <view class="action-btn" bindtap="onAddItem">
-            <view class="action-icon bg-blue">
-              <text class="cuIcon-add"></text>
-            </view>
-            <text class="action-text">添加物品</text>
-          </view>
           <view class="action-btn" bindtap="onQuickScan">
             <view class="action-icon bg-green">
               <text class="cuIcon-camera"></text>
             </view>
-            <text class="action-text">拍照识别</text>
+            <text class="action-text">拍照添加物品</text>
           </view>
           <view class="action-btn" bindtap="onBatchOperation">
             <view class="action-icon bg-orange">

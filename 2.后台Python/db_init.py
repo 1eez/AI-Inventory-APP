@@ -110,17 +110,20 @@ class DatabaseInitializer:
         sql = """
         CREATE TABLE IF NOT EXISTS bags_summary (
             bag_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
             box_id INTEGER NOT NULL,
             sort_id INTEGER NOT NULL,
             name VARCHAR(100) NOT NULL,
             color VARCHAR(20) DEFAULT '#1296db',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users_summary(user_id),
             FOREIGN KEY (box_id) REFERENCES boxes_summary(box_id)
         )
         """
         cursor.execute(sql)
         
         # 创建索引
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_bags_user_id ON bags_summary(user_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_bags_box_id ON bags_summary(box_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_bags_sort_id ON bags_summary(box_id, sort_id)")
         
@@ -131,21 +134,27 @@ class DatabaseInitializer:
         sql = """
         CREATE TABLE IF NOT EXISTS items_detail (
             item_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            bag_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            box_id INTEGER NOT NULL,
+            bag_id INTEGER DEFAULT NULL,
             sort_id INTEGER NOT NULL,
             title VARCHAR(200) NOT NULL,
             description TEXT DEFAULT '',
             category VARCHAR(100) DEFAULT '',
-            image_path VARCHAR(500) DEFAULT '',
+            image_filename VARCHAR(255) DEFAULT '',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users_summary(user_id),
+            FOREIGN KEY (box_id) REFERENCES boxes_summary(box_id),
             FOREIGN KEY (bag_id) REFERENCES bags_summary(bag_id)
         )
         """
         cursor.execute(sql)
         
         # 创建索引
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_user_id ON items_detail(user_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_box_id ON items_detail(box_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_bag_id ON items_detail(bag_id)")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_sort_id ON items_detail(bag_id, sort_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_sort_id ON items_detail(box_id, sort_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_items_category ON items_detail(category)")
         
         print("物品表创建成功")

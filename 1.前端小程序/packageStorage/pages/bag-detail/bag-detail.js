@@ -485,10 +485,9 @@ Page({
 
   // 快速拍照
   onQuickScan() {
-    // TODO: 调用相机拍照识别
-    wx.showToast({
-      title: '拍照识别功能开发中',
-      icon: 'none'
+    // 跳转到相机页面，传递box_id和bag_id参数
+    wx.navigateTo({
+      url: `/packageCamera/pages/camera/camera?mode=photo&box_id=${this.data.boxId}&bag_id=${this.data.bagId}`
     });
   },
 

@@ -49,7 +49,7 @@ def get_items_by_bag(bag_id: int, db_manager: DatabaseManager) -> List[Dict[str,
         List[Dict]: 物品列表
     """
     query = """
-    SELECT item_id, bag_id, sort_id, title, description, category, image_path, created_at 
+    SELECT item_id, box_id, bag_id, sort_id, title, description, category, image_filename, created_at 
     FROM items_detail 
     WHERE bag_id = ? 
     ORDER BY sort_id ASC
@@ -73,7 +73,7 @@ def get_item_by_id(item_id: int, bag_id: int, box_id: int, user_id: int, db_mana
         Dict: 物品信息
     """
     query = """
-    SELECT i.item_id, i.bag_id, i.sort_id, i.title, i.description, i.category, i.image_path, i.created_at 
+    SELECT i.item_id, i.box_id, i.bag_id, i.sort_id, i.title, i.description, i.category, i.image_filename, i.created_at 
     FROM items_detail i 
     JOIN bags_summary b ON i.bag_id = b.bag_id 
     JOIN boxes_summary box ON b.box_id = box.box_id 

@@ -55,11 +55,12 @@ def get_next_sort_id(box_id: int, db_manager: DatabaseManager) -> int:
     result = db_manager.execute_query(query, (box_id,), fetch_one=True)
     return result['next_sort_id']
 
-def create_bag(box_id: int, bag_data: AddBagRequest, db_manager: DatabaseManager) -> int:
+def create_bag(user_id: int, box_id: int, bag_data: AddBagRequest, db_manager: DatabaseManager) -> int:
     """
     创建新袋子
     
     Args:
+        user_id: 用户ID
         box_id: 储物箱ID
         bag_data: 袋子数据
         db_manager: 数据库管理器实例
@@ -72,13 +73,14 @@ def create_bag(box_id: int, bag_data: AddBagRequest, db_manager: DatabaseManager
     
     # 插入袋子数据
     query = """
-    INSERT INTO bags_summary (box_id, sort_id, name, color, created_at) 
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO bags_summary (user_id, box_id, sort_id, name, color, created_at) 
+    VALUES (?, ?, ?, ?, ?, ?)
     """
     
     return db_manager.execute_insert(
         query, 
         (
+            user_id,
             box_id,
             sort_id,
             bag_data.name,
@@ -136,7 +138,7 @@ async def add_bag(bag_data: AddBagRequest = Body(...)):
             raise HTTPException(status_code=403, detail="无权限在此储物箱中添加袋子")
         
         # 创建袋子
-        bag_id = create_bag(bag_data.box_id, bag_data, db_manager)
+        bag_id = create_bag(user_id, bag_data.box_id, bag_data, db_manager)
         
         # 获取创建的袋子信息
         bag_info = get_bag_info(bag_id, db_manager)
