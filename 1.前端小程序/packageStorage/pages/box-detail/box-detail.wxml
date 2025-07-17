@@ -132,28 +132,17 @@
         <view class="bags-list">
           <view 
             wx:for="{{bags}}" 
-            wx:key="id"
-            class="bag-item list-item"
+            wx:key="bag_id"
+            class="bag-item"
             bindtap="onBagTap"
-            data-id="{{item.id}}"
+            data-id="{{item.bag_id}}"
           >
-            <view class="bag-icon list-item-icon" style="background-color: {{item.color}};">
-              <text class="{{item.icon}}"></text>
-            </view>
-            
-            <view class="bag-content list-item-content">
-              <view class="bag-header">
-                <text class="bag-name list-item-title">{{item.name}}</text>
-                <view class="bag-menu" bindtap="onBagMenu" data-id="{{item.id}}" catchtap="true">
-                  <text class="cuIcon-more"></text>
-                </view>
+            <view class="bag-preview" style="background: {{item.color}}">
+              <view class="bag-preview-info">
+                <view class="bag-preview-name">{{item.name}}</view>
               </view>
-              
-              <view class="bag-meta">
-                <view class="meta-item">
-                  <text class="cuIcon-goods meta-icon"></text>
-                  <text class="meta-text">{{item.itemCount}}件物品</text>
-                </view>
+              <view class="bag-menu" bindtap="onBagMenu" data-id="{{item.bag_id}}" catchtap="true">
+                <text class="cuIcon-more"></text>
               </view>
             </view>
           </view>

@@ -83,20 +83,57 @@
         </view>
       </view>
 
-      <!-- 袋子信息卡片 -->
-      <view class="bag-info-card card">
-        <view class="preview-container">
-          <view class="preview-bag" style="background: {{bagInfo.color}}">
-            <view class="preview-info">
-              <view class="preview-name">{{bagInfo.name || '收纳袋名称'}}</view>
-              <view class="preview-desc" wx:if="{{bagInfo.description}}">{{bagInfo.description}}</view>
+      <!-- 层级关系连接线 -->
+      <view class="hierarchy-connector">
+        <view class="connector-line"></view>
+      </view>
+
+      <!-- 袋子信息卡片 - 重新设计展示从属关系 -->
+      <view class="bag-info-card-new">
+        <!-- 袋子主体卡片 -->
+        <view class="bag-main-card">
+          <!-- 左侧袋子预览 -->
+          <view class="bag-preview-section">
+            <view class="bag-preview-container">
+              <view 
+                class="bag-preview-visual" 
+                style="background: linear-gradient(135deg, {{bagInfo.color}} 0%, {{bagInfo.color}}cc 100%)"
+              >
+                <view class="bag-icon">
+                  <text class="cuIcon-goods"></text>
+                </view>
+              </view>
             </view>
           </view>
-        </view>
-        
-        <!-- 袋子标签 -->
-        <view class="bag-tags" wx:if="{{bagInfo.tags && bagInfo.tags.length > 0}}">
-          <text wx:for="{{bagInfo.tags}}" wx:key="index" class="tag">{{item}}</text>
+          
+          <!-- 右侧袋子信息 -->
+          <view class="bag-info-section">
+            <view class="bag-header-info">
+              <view class="bag-title">{{bagInfo.name || '收纳袋名称'}}</view>
+              <view class="bag-subtitle">位于 "{{boxInfo.name}}" 中</view>
+            </view>
+            
+            <view class="bag-description" wx:if="{{bagInfo.description}}">
+              {{bagInfo.description}}
+            </view>
+            
+            <!-- 袋子标签 -->
+            <view class="bag-tags-new" wx:if="{{bagInfo.tags && bagInfo.tags.length > 0}}">
+              <text wx:for="{{bagInfo.tags}}" wx:key="index" class="bag-tag">{{item}}</text>
+            </view>
+            
+            <!-- 袋子统计信息 -->
+            <view class="bag-stats">
+              <view class="bag-stat-item">
+                <text class="stat-icon cuIcon-goods"></text>
+                <text class="stat-text">{{items.length || 0}} 件</text>
+              </view>
+              <view class="bag-stat-item" wx:if="{{bagInfo.createTime}}">
+                <text class="stat-icon cuIcon-time"></text>
+                <text class="stat-text">{{bagInfo.createTime}}</text>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
 

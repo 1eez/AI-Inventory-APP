@@ -185,7 +185,8 @@ Page({
       if (result.status === 'success') {
         // 格式化袋子数据以适配前端显示
         const formattedBags = result.data.bags.map(bag => ({
-          id: bag.bag_id,
+          bag_id: bag.bag_id, // 保持与后端数据结构一致
+          id: bag.bag_id, // 兼容旧代码
           name: bag.name,
           description: bag.description || '暂无描述',
           itemCount: bag.item_count || 0,
@@ -296,9 +297,14 @@ Page({
    */
   onBagTap(e) {
     const bagId = e.currentTarget.dataset.id;
-    const bag = this.data.bags.find(item => item.id === bagId);
+    console.log('点击袋子，bagId:', bagId);
+    
+    // 使用bag_id字段查找袋子数据
+    const bag = this.data.bags.find(item => item.bag_id == bagId || item.id == bagId);
+    console.log('找到的袋子数据:', bag);
     
     if (!bag) {
+      console.error('未找到袋子数据，bagId:', bagId, '袋子列表:', this.data.bags);
       wx.showToast({
         title: '袋子信息错误',
         icon: 'error'
@@ -435,9 +441,15 @@ Page({
    */
   onBagMenu(e) {
     const bagId = e.currentTarget.dataset.id;
-    const bag = this.data.bags.find(item => item.id === bagId);
+    console.log('袋子菜单，bagId:', bagId);
     
-    if (!bag) return;
+    // 使用bag_id字段查找袋子数据
+    const bag = this.data.bags.find(item => item.bag_id == bagId || item.id == bagId);
+    
+    if (!bag) {
+      console.error('菜单操作未找到袋子数据，bagId:', bagId);
+      return;
+    }
     
     wx.showActionSheet({
       itemList: ['编辑袋子', '删除袋子'],

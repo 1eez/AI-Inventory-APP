@@ -553,18 +553,85 @@ Page({
       confirmColor: '#e74c3c',
       success: (res) => {
         if (res.confirm) {
-          // TODO: 调用删除袋子API
-          wx.showToast({
-            title: '删除成功',
-            icon: 'success'
-          });
-          
-          setTimeout(() => {
-            wx.navigateBack();
-          }, 1500);
+          this.deleteBagFromAPI();
         }
       }
     });
+  },
+
+  // 调用后台API删除袋子
+  async deleteBagFromAPI() {
+    const baseUrl = app.globalData.baseUrl;
+    const openid = app.globalData.openid;
+    
+    if (!baseUrl || !openid) {
+      wx.showToast({
+        title: '缺少必要的配置信息',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 显示加载提示
+    wx.showLoading({
+      title: '删除中...'
+    });
+    
+    try {
+      const result = await new Promise((resolve, reject) => {
+        wx.request({
+          url: `${baseUrl}v2/bag/delete`,
+          method: 'POST',
+          header: {
+            'content-type': 'application/json'
+          },
+          data: {
+            openid: openid,
+            box_id: parseInt(this.data.boxId),
+            bag_id: parseInt(this.data.bagId)
+          },
+          success: (res) => {
+            console.log('删除袋子API响应:', res);
+            if (res.statusCode === 200 && res.data.status === 'success') {
+              resolve(res.data);
+            } else {
+              reject(new Error(res.data.message || '删除失败'));
+            }
+          },
+          fail: (error) => {
+            console.error('删除袋子API调用失败:', error);
+            reject(error);
+          }
+        });
+      });
+      
+      // 隐藏加载提示
+      wx.hideLoading();
+      
+      // 显示成功提示
+      wx.showToast({
+        title: result.message || '删除成功',
+        icon: 'success'
+      });
+      
+      // 延迟返回上一页
+      setTimeout(() => {
+        wx.navigateBack();
+      }, 1500);
+      
+    } catch (error) {
+      console.error('删除袋子失败:', error);
+      
+      // 隐藏加载提示
+      wx.hideLoading();
+      
+      // 显示错误提示
+      wx.showToast({
+        title: error.message || '删除失败，请重试',
+        icon: 'none',
+        duration: 2000
+      });
+    }
   },
 
   // 下拉刷新

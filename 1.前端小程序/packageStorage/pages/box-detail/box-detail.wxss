@@ -278,104 +278,44 @@
 }
 
 .bag-item {
+  margin-bottom: 20rpx;
+}
+
+/* 袋子预览样式 - 参考add-bag页面预览设计 */
+.bag-preview {
+  padding: 30rpx;
+  border-radius: 16rpx;
   display: flex;
   align-items: center;
-  padding: 30rpx;
-  background: #fff;
-  border-radius: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  justify-content: space-between;
+  background: linear-gradient(135deg, var(--color), var(--color));
+  box-shadow: 0 8rpx 25rpx rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
-.bag-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6rpx;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+.bag-preview:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 12rpx 35rpx rgba(0, 0, 0, 0.2);
 }
 
-.bag-item:active::before {
-  transform: scaleX(1);
-}
-
-.bag-item:active {
-  transform: translateY(-4rpx);
-  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
-}
-
-.bag-icon {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 16rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 24rpx;
-}
-
-.bag-icon text {
-  font-size: 36rpx;
-  color: #fff;
-}
-
-.bag-content {
+.bag-preview-info {
   flex: 1;
 }
 
-.bag-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12rpx;
-}
-
-.bag-name {
+.bag-preview-name {
   font-size: 32rpx;
   font-weight: 600;
-  color: #2c3e50;
-  flex: 1;
+  color: white;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
 }
 
 .bag-menu {
   padding: 10rpx;
-  color: #999;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 32rpx;
-}
-
-.bag-description {
-  font-size: 26rpx;
-  color: #666;
-  margin-bottom: 16rpx;
-  line-height: 1.4;
-}
-
-.bag-meta {
-  display: flex;
-  align-items: center;
-  gap: 30rpx;
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  font-size: 24rpx;
-  color: #999;
-}
-
-.meta-icon {
-  font-size: 24rpx;
-  margin-right: 8rpx;
-}
-
-.meta-text {
-  font-size: 24rpx;
+  z-index: 10;
 }
 
 /* 空状态 */
