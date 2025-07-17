@@ -135,12 +135,23 @@ Page({
    */
   async recognizePhoto(imagePath) {
     try {
-      wx.showLoading({ title: '识别中...' });
+      wx.showLoading({ title: '上传中...' });
       
-      // 模拟AI识别API调用
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // 获取全局配置
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
       
-      // 模拟识别结果
+      if (!openid) {
+        throw new Error('用户未登录');
+      }
+      
+      // 上传图片到后台
+      const uploadResult = await this.uploadImageToServer(imagePath, baseUrl, openid);
+      
+      console.log('图片上传成功:', uploadResult);
+      
+      // 暂时使用模拟识别结果，等待后台接口完善
       const mockResult = {
         items: [
           {
@@ -183,14 +194,52 @@ Page({
       wx.navigateTo({ url });
       
     } catch (error) {
-      console.error('识别失败:', error);
+      console.error('处理失败:', error);
       wx.hideLoading();
       wx.showToast({
-        title: '识别失败，请重试',
+        title: error.message || '处理失败，请重试',
         icon: 'error'
       });
       this.setData({ processing: false });
     }
+  },
+
+  /**
+   * 上传图片到服务器
+   */
+  uploadImageToServer(imagePath, baseUrl, openid) {
+    return new Promise((resolve, reject) => {
+      wx.uploadFile({
+        url: baseUrl + 'v3/image/upload',
+        filePath: imagePath,
+        name: 'image',
+        formData: {
+          'openid': openid
+        },
+        header: {
+          'content-type': 'multipart/form-data'
+        },
+        success: (res) => {
+          console.log('上传响应:', res);
+          
+          if (res.statusCode === 200) {
+            try {
+              const data = JSON.parse(res.data);
+              resolve(data);
+            } catch (parseError) {
+              console.error('解析响应数据失败:', parseError);
+              resolve({ message: '上传成功', data: res.data });
+            }
+          } else {
+            reject(new Error(`上传失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('上传请求失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
   },
 
 

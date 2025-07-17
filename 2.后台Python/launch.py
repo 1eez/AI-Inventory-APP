@@ -114,6 +114,11 @@ app.include_router(GetBagRouter)
 # -----------------------------------------------------------
 # 【 -- 物品管理 -- 】
 # -----------------------------------------------------------
+# 接口：/v3/image/upload  -- 请求方式POST
+# 【物品】图片上传与AI分析
+from v3_upload_image import router as UploadImageRouter
+app.include_router(UploadImageRouter)
+
 # 接口：/v3/item/add  -- 请求方式POST
 # 【物品】添加物品
 from v3_add_item import router as AddItemRouter
