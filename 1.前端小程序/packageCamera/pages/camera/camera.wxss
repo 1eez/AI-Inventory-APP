@@ -60,6 +60,18 @@
   justify-content: center;
 }
 
+/* 顶部工具栏区域 */
+.top-toolbar .toolbar-left,
+.top-toolbar .toolbar-right {
+  width: 120rpx;
+}
+
+/* 底部工具栏区域 */
+.bottom-toolbar .toolbar-left,
+.bottom-toolbar .toolbar-right {
+  width: 160rpx;
+}
+
 .toolbar-center {
   flex: 1;
   display: flex;
@@ -83,6 +95,18 @@
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
 }
 
+/* 顶部工具栏按钮 */
+.top-toolbar .tool-btn {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+/* 底部工具栏按钮 */
+.bottom-toolbar .tool-btn {
+  width: 120rpx;
+  height: 120rpx;
+}
+
 .tool-btn:active {
   transform: scale(0.9);
   background: rgba(0, 0, 0, 0.5);
@@ -104,6 +128,24 @@
   margin-top: 6rpx;
   text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
   font-weight: 500;
+}
+
+/* 顶部工具栏图标 */
+.top-toolbar .tool-btn .cuIcon-back,
+.top-toolbar .tool-btn .cuIcon-light,
+.top-toolbar .tool-btn .cuIcon-lightfill {
+  font-size: 28rpx;
+}
+
+/* 底部工具栏图标和文字 */
+.bottom-toolbar .tool-btn .cuIcon-pic,
+.bottom-toolbar .tool-btn .cuIcon-refresh {
+  font-size: 44rpx;
+}
+
+.bottom-toolbar .tool-text {
+  font-size: 24rpx;
+  margin-top: 8rpx;
 }
 
 /* 操作提示 */
