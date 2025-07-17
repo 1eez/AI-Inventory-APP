@@ -174,12 +174,14 @@
             <view class="selector-box-card">
               <view class="selector-box-color" style="background-color: {{item.color}};"></view>
               <view class="selector-box-info">
-                <view class="selector-box-name">{{item.name}}</view>
-                <view class="selector-box-desc" wx:if="{{item.location}}">
-                  <text class="cuIcon-locationfill"></text>
-                  <text>{{item.location}}</text>
+                <view class="selector-box-single-line">
+                  <view class="selector-box-name">{{item.name}}</view>
+                  <view class="selector-box-desc" wx:if="{{item.location}}">
+                    <text class="cuIcon-locationfill"></text>
+                    <text>{{item.location}}</text>
+                  </view>
+                  <view class="selector-box-count">{{item.itemCount}}</view>
                 </view>
-                <view class="selector-box-count">{{item.itemCount}} 个物品</view>
               </view>
               <view class="selector-box-arrow">
                 <text class="cuIcon-right"></text>

@@ -489,12 +489,18 @@
   margin-right: 20rpx;
 }
 
+.selector-box-single-line {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
 .selector-box-name {
   font-size: 32rpx;
   font-weight: 600;
   color: #333;
-  margin-bottom: 8rpx;
   line-height: 1.3;
+  flex-shrink: 0;
 }
 
 .selector-box-desc {
@@ -502,7 +508,7 @@
   align-items: center;
   font-size: 24rpx;
   color: #666;
-  margin-bottom: 8rpx;
+  flex-shrink: 0;
 }
 
 .selector-box-desc text:first-child {
@@ -514,6 +520,8 @@
 .selector-box-count {
   font-size: 24rpx;
   color: #999;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .selector-box-arrow {
