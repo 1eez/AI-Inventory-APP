@@ -8,6 +8,10 @@ Page({
     skeletonLoading: true,
     skeletonItems: [1, 2, 3, 4, 5],
     
+    // 物品详情弹窗
+    showItemDetail: false,
+    selectedItem: null,
+    
     // 袋子信息
     bagInfo: {
       id: null,
@@ -260,6 +264,14 @@ Page({
       return dateString;
     }
   },
+  
+  // 格式化日期（仅日期部分）
+  formatDateOnly(dateString) {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  },
 
   // 更新统计信息
   updateStatistics() {
@@ -318,16 +330,54 @@ Page({
     });
   },
 
-  // 物品点击
+  // 显示物品详情弹窗
+  onShowItemDetail(e) {
+    const item = e.currentTarget.dataset.item;
+    console.log('显示物品详情:', item);
+    
+    this.setData({
+      selectedItem: item,
+      showItemDetail: true
+    });
+  },
+  
+  // 隐藏物品详情弹窗
+  onHideItemDetail() {
+    this.setData({
+      showItemDetail: false,
+      selectedItem: null
+    });
+  },
+  
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 空函数，用于阻止弹窗内容区域的点击事件冒泡
+  },
+  
+  // 预览图片
+  onPreviewImage(e) {
+    const imageUrl = e.currentTarget.dataset.url;
+    if (imageUrl) {
+      wx.previewImage({
+        urls: [imageUrl],
+        current: imageUrl
+      });
+    }
+  },
+
+  // 物品点击（保留原有方法以防其他地方调用）
   onItemTap(e) {
     const itemId = e.currentTarget.dataset.id;
     console.log('点击物品:', itemId);
     
-    // TODO: 跳转到物品详情页
-    wx.showToast({
-      title: '物品详情页开发中',
-      icon: 'none'
-    });
+    // 找到对应的物品数据
+    const item = this.data.items.find(item => item.id === itemId);
+    if (item) {
+      this.setData({
+        selectedItem: item,
+        showItemDetail: true
+      });
+    }
   },
 
   // 物品菜单
@@ -427,9 +477,18 @@ Page({
   },
 
   // 删除物品
-  onDeleteItem(itemId) {
-    const item = this.data.items.find(item => item.id === itemId);
-    if (!item) return;
+  onDeleteItem(e) {
+    // 从事件对象或参数中获取物品ID
+    const itemId = e.currentTarget ? e.currentTarget.dataset.id : e;
+    const item = this.data.items.find(item => item.id == itemId);
+    
+    if (!item) {
+      wx.showToast({
+        title: '物品不存在',
+        icon: 'none'
+      });
+      return;
+    }
     
     wx.showModal({
       title: '确认删除',
@@ -437,17 +496,96 @@ Page({
       confirmColor: '#e74c3c',
       success: (res) => {
         if (res.confirm) {
-          // TODO: 调用删除API
-          const items = this.data.items.filter(item => item.id !== itemId);
-          this.setData({ items });
-          
-          wx.showToast({
-            title: '删除成功',
-            icon: 'success'
-          });
+          this.deleteItemFromAPI(itemId);
         }
       }
     });
+  },
+
+  // 调用后台API删除物品
+  async deleteItemFromAPI(itemId) {
+    const baseUrl = app.globalData.baseUrl;
+    const openid = app.globalData.openid;
+    
+    if (!baseUrl || !openid) {
+      wx.showToast({
+        title: '缺少必要的配置信息',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 显示加载提示
+    wx.showLoading({
+      title: '删除中...'
+    });
+    
+    try {
+      const result = await new Promise((resolve, reject) => {
+        wx.request({
+          url: `${baseUrl}v3/item/delete`,
+          method: 'POST',
+          header: {
+            'content-type': 'application/json'
+          },
+          data: {
+            openid: openid,
+            box_id: parseInt(this.data.boxId),
+            bag_id: parseInt(this.data.bagId),
+            item_id: parseInt(itemId)
+          },
+          success: (res) => {
+            console.log('删除物品API响应:', res);
+            if (res.statusCode === 200 && res.data.status === 'success') {
+              resolve(res.data);
+            } else {
+              reject(new Error(res.data.message || '删除失败'));
+            }
+          },
+          fail: (error) => {
+            console.error('删除物品API调用失败:', error);
+            reject(error);
+          }
+        });
+      });
+      
+      // 隐藏加载提示
+      wx.hideLoading();
+      
+      // 从本地数据中移除已删除的物品
+      const items = this.data.items.filter(item => item.id != itemId);
+      this.setData({ items });
+      
+      // 隐藏物品详情弹窗（如果正在显示）
+      if (this.data.showItemDetail && this.data.selectedItem && this.data.selectedItem.id == itemId) {
+        this.setData({
+          showItemDetail: false,
+          selectedItem: null
+        });
+      }
+      
+      // 更新统计信息
+      this.updateStatistics();
+      
+      // 显示成功提示
+      wx.showToast({
+        title: result.message || '删除成功',
+        icon: 'success'
+      });
+      
+    } catch (error) {
+      console.error('删除物品失败:', error);
+      
+      // 隐藏加载提示
+      wx.hideLoading();
+      
+      // 显示错误提示
+      wx.showToast({
+        title: error.message || '删除失败，请重试',
+        icon: 'none',
+        duration: 2000
+      });
+    }
   },
 
   // 删除袋子
