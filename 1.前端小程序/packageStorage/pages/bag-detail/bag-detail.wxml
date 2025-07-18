@@ -204,11 +204,7 @@
       <view wx:else class="empty-state">
         <text class="cuIcon-goods empty-icon"></text>
         <view class="empty-title">还没有物品</view>
-        <view class="empty-subtitle">点击下方按钮添加第一个物品\n开始记录你的收纳物品吧</view>
-        <button class="cu-btn bg-blue margin-top" bindtap="onAddItem">
-          <text class="cuIcon-add margin-right-xs"></text>
-          添加第一个物品
-        </button>
+        <view class="empty-subtitle">点击上面的拍照添加第一个物品吧</view>
       </view>
     </view>
   </view>

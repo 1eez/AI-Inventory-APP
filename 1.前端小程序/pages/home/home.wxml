@@ -161,7 +161,7 @@
       </view>
       
       <view class="selector-content">
-        <view class="selector-subtitle">{{quickScanMode ? '请选择要拍照的储物箱' : '请选择要添加收纳袋的储物箱'}}</view>
+        <view class="selector-subtitle">{{quickScanMode ? '请选择储物箱' : '请选择要添加收纳袋的储物箱'}}</view>
         
         <scroll-view class="selector-list" scroll-y="true">
           <view 
@@ -202,7 +202,7 @@
       </view>
       
       <view class="selector-content">
-        <view class="selector-subtitle">请选择要拍照的收纳袋</view>
+        <view class="selector-subtitle">请选择一个收纳袋</view>
         
         <scroll-view class="selector-list" scroll-y="true">
           <view 

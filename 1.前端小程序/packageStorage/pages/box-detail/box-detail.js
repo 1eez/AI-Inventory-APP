@@ -12,7 +12,10 @@ Page({
     searchKeyword: '',
     // 骨架屏配置
     skeletonLoading: true,
-    skeletonItems: [1, 2, 3, 4]
+    skeletonItems: [1, 2, 3, 4],
+    // 袋子选择浮层
+    showBagSelector: false, // 是否显示袋子选择浮层
+    selectorBags: [] // 浮层中的袋子列表
   },
 
   /**
@@ -445,6 +448,85 @@ Page({
           reject(new Error('网络请求失败'));
         }
       });
+    });
+  },
+
+  /**
+   * 快速拍照
+   */
+  onQuickScan() {
+    // 检查是否有袋子
+    if (this.data.bags.length === 0) {
+      wx.showModal({
+        title: '提示',
+        content: '该箱子下还没有收纳袋，请先创建一个收纳袋',
+        showCancel: true,
+        cancelText: '取消',
+        confirmText: '创建袋子',
+        success: (res) => {
+          if (res.confirm) {
+            this.onAddBag();
+          }
+        }
+      });
+      return;
+    }
+
+    // 显示袋子选择浮层
+    this.setData({
+      showBagSelector: true,
+      selectorBags: this.data.bags
+    });
+  },
+
+  /**
+   * 关闭袋子选择浮层
+   */
+  onCloseBagSelector() {
+    this.setData({
+      showBagSelector: false
+    });
+  },
+
+  /**
+   * 选择袋子
+   */
+  onSelectBag(e) {
+    const bagId = e.currentTarget.dataset.id;
+    const bag = this.data.selectorBags.find(item => item.bag_id === bagId);
+    const boxInfo = this.data.boxInfo;
+    
+    if (!bag || !boxInfo) {
+      wx.showToast({
+        title: '信息错误',
+        icon: 'error'
+      });
+      return;
+    }
+
+    // 关闭浮层
+    this.setData({
+      showBagSelector: false
+    });
+
+    // 跳转到相机页面，传递完整的box和bag信息
+    const params = {
+      mode: 'photo',
+      box_id: boxInfo.id,
+      bag_id: bag.bag_id,
+      box_name: encodeURIComponent(boxInfo.name || ''),
+      box_color: encodeURIComponent(boxInfo.color || '#1296db'),
+      box_location: encodeURIComponent(boxInfo.location || ''),
+      bag_name: encodeURIComponent(bag.name || ''),
+      bag_color: encodeURIComponent(bag.color || '#1296db')
+    };
+    
+    const queryString = Object.keys(params)
+      .map(key => `${key}=${params[key]}`)
+      .join('&');
+    
+    wx.navigateTo({
+      url: `/packageCamera/pages/camera/camera?${queryString}`
     });
   },
 
