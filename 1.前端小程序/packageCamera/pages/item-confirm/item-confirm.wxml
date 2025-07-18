@@ -20,50 +20,7 @@
     </view>
   </view>
 
-  <!-- AI识别结果 -->
-  <view class="recognition-section" wx:if="{{recognitionResult && recognitionResult.items.length > 0}}">
-    <view class="section-header">
-      <text class="cuIcon-ai text-blue"></text>
-      <text class="section-title">AI识别结果</text>
-      <button class="cu-btn bg-grey sm" bindtap="onManualInput">手动输入</button>
-    </view>
-    
-    <scroll-view class="recognition-list" scroll-x="{{true}}">
-      <view class="recognition-items">
-        <view 
-          class="recognition-item {{selectedItem && selectedItem.name === item.name ? 'selected' : ''}}"
-          wx:for="{{recognitionResult.items}}"
-          wx:key="name"
-          data-item="{{item}}"
-          bindtap="onSelectRecognizedItem"
-        >
-          <view class="item-confidence">
-            <text class="confidence-text">{{item.confidencePercent}}%</text>
-            <view class="confidence-bar">
-              <view class="confidence-fill" style="width: {{item.confidencePercent}}"></view>
-            </view>
-          </view>
-          <view class="item-name">{{item.name}}</view>
-          <view class="item-category">{{item.category}}</view>
-          <view class="item-desc">{{item.description}}</view>
-        </view>
-      </view>
-    </scroll-view>
-    
-    <!-- AI建议 -->
-    <view class="suggestions" wx:if="{{recognitionResult.suggestions.length > 0}}">
-      <view class="suggestions-title">
-        <text class="cuIcon-lightbulb text-orange"></text>
-        <text>智能建议</text>
-      </view>
-      <view class="suggestion-list">
-        <view class="suggestion-item" wx:for="{{recognitionResult.suggestions}}" wx:key="*this">
-          <text class="cuIcon-check text-green"></text>
-          <text>{{item}}</text>
-        </view>
-      </view>
-    </view>
-  </view>
+
 
   <!-- 物品信息编辑 -->
   <view class="edit-section">
@@ -157,13 +114,13 @@
             <text class="cuIcon-locationfill text-orange"></text>
             <view class="location-text">
               <view class="location-main" wx:if="{{itemInfo.location.boxName}}">
-                {{itemInfo.location.boxName}}
+                <text wx:if="{{boxInfo.location}}">{{boxInfo.location}} > </text>{{itemInfo.location.boxName}}
                 <text wx:if="{{itemInfo.location.bagName}}"> > {{itemInfo.location.bagName}}</text>
               </view>
               <view class="location-placeholder" wx:else>点击选择存放位置</view>
             </view>
           </view>
-          <text class="cuIcon-right"></text>
+          <text class="cuIcon-right" wx:if="{{!itemInfo.location.boxName}}"></text>
         </view>
       </view>
     </view>
@@ -212,23 +169,7 @@
         </view>
       </view>
       
-      <!-- 收纳袋选择 -->
-      <view class="picker-section" wx:if="{{itemInfo.location.boxId && storageOptions.bags.length > 0}}">
-        <view class="picker-label">收纳袋（可选）</view>
-        <view class="bag-list">
-          <view 
-            class="bag-item {{itemInfo.location.bagId === item.id ? 'selected' : ''}}"
-            wx:for="{{storageOptions.bags}}"
-            wx:key="id"
-            data-bag="{{item}}"
-            bindtap="onSelectBag"
-          >
-            <view class="bag-color" style="background: {{item.color}}"></view>
-            <view class="bag-name">{{item.name}}</view>
-            <text class="cuIcon-check text-green" wx:if="{{itemInfo.location.bagId === item.id}}"></text>
-          </view>
-        </view>
-      </view>
+
     </view>
     
     <view class="picker-actions">

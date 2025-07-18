@@ -148,18 +148,46 @@ def analyze_image_with_ai(image_data: bytes) -> tuple[str, Dict[str, Any]]:
         ai_content = response.choices[0].message.content
         
         # 尝试解析JSON
+        ai_result = None
+        
+        # 方法1：直接解析JSON
         try:
             ai_result = json.loads(ai_content)
-            return ai_content, ai_result
         except json.JSONDecodeError:
-            # 如果解析失败，返回原始内容
-            fallback_result = {
+            # 方法2：从markdown代码块中提取JSON
+            import re
+            # 匹配 ```json 和 ``` 之间的内容
+            json_pattern = r'```json\s*\n([\s\S]*?)\n```'
+            match = re.search(json_pattern, ai_content, re.IGNORECASE)
+            
+            if match:
+                json_str = match.group(1).strip()
+                try:
+                    ai_result = json.loads(json_str)
+                except json.JSONDecodeError:
+                    pass
+            
+            # 方法3：尝试匹配 ``` 代码块（不带json标识）
+            if ai_result is None:
+                code_pattern = r'```\s*\n([\s\S]*?)\n```'
+                match = re.search(code_pattern, ai_content)
+                if match:
+                    code_str = match.group(1).strip()
+                    try:
+                        ai_result = json.loads(code_str)
+                    except json.JSONDecodeError:
+                        pass
+        
+        # 如果所有解析方法都失败，返回默认结果
+        if ai_result is None:
+            ai_result = {
                 "name": "未知物品",
                 "description": ai_content,
                 "category": "其他",
                 "tags": []
             }
-            return ai_content, fallback_result
+        
+        return ai_content, ai_result
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI分析失败: {str(e)}")

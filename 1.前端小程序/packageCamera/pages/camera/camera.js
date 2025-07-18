@@ -35,10 +35,21 @@ Page({
     // 获取页面参数
     const boxId = options.box_id || '';
     const bagId = options.bag_id || '';
+    const boxName = decodeURIComponent(options.box_name || '');
+    const boxColor = decodeURIComponent(options.box_color || '#1296db');
+    const boxLocation = decodeURIComponent(options.box_location || '');
+    const bagName = decodeURIComponent(options.bag_name || '');
+    const bagColor = decodeURIComponent(options.bag_color || '#1296db');
+
     
     this.setData({ 
       boxId,
-      bagId
+      bagId,
+      boxName,
+      boxColor,
+      boxLocation,
+      bagName,
+      bagColor
     });
     
     // 初始化相机
@@ -151,47 +162,43 @@ Page({
       
       console.log('图片上传成功:', uploadResult);
       
-      // 暂时使用模拟识别结果，等待后台接口完善
-      const mockResult = {
-        items: [
-          {
-            name: '苹果数据线',
-            confidence: 0.95,
-            category: '电子配件',
-            description: '白色Lightning数据线'
-          },
-          {
-            name: '充电器',
-            confidence: 0.87,
-            category: '电子配件',
-            description: '苹果原装充电器'
-          }
-        ],
-        suggestions: [
-          '建议存放在电子设备收纳盒中',
-          '可以添加"常用"标签便于查找'
-        ]
-      };
+      // 使用后台返回的真实识别结果
+      const recognitionResult = uploadResult.data || uploadResult;
       
       this.setData({
-        recognitionResult: mockResult,
+        recognitionResult,
         processing: false
       });
       
       wx.hideLoading();
       
-      // 跳转到确认页面，传递box_id和bag_id参数
-      const { boxId, bagId } = this.data;
-      let url = `/packageCamera/pages/item-confirm/item-confirm?image=${encodeURIComponent(imagePath)}&result=${encodeURIComponent(JSON.stringify(mockResult))}`;
+      // 跳转到确认页面，传递完整的box和bag信息
+      const { boxId, bagId, boxName, boxColor, boxLocation, bagName, bagColor } = this.data;
+      const params = {
+        image: encodeURIComponent(imagePath),
+        result: encodeURIComponent(JSON.stringify(recognitionResult))
+      };
       
       if (boxId) {
-        url += `&box_id=${boxId}`;
+        params.box_id = boxId;
+        params.box_name = encodeURIComponent(boxName || '');
+        params.box_color = encodeURIComponent(boxColor || '#1296db');
+        params.box_location = encodeURIComponent(boxLocation || '');
       }
       if (bagId) {
-        url += `&bag_id=${bagId}`;
+        params.bag_id = bagId;
+        params.bag_name = encodeURIComponent(bagName || '');
+        params.bag_color = encodeURIComponent(bagColor || '#1296db');
+
       }
       
-      wx.navigateTo({ url });
+      const queryString = Object.keys(params)
+        .map(key => `${key}=${params[key]}`)
+        .join('&');
+      
+      wx.navigateTo({ 
+        url: `/packageCamera/pages/item-confirm/item-confirm?${queryString}`
+      });
       
     } catch (error) {
       console.error('处理失败:', error);

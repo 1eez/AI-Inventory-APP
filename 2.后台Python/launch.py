@@ -23,6 +23,7 @@ import uvicorn
 from configparser import ConfigParser
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import logging
 from contextlib import asynccontextmanager
 
@@ -62,6 +63,9 @@ app.add_middleware(
     allow_methods=["*"],  # 允许的方法，包括 "OPTIONS"
     allow_headers=["*"],  # 允许的请求头
 )
+
+# 配置静态文件服务 - 用于访问photos目录中的图片
+app.mount("/Photos", StaticFiles(directory="Photos"), name="Photos")
 
 # -----------------------------------------------------------
 # 【 -- v1版本 -- 第一代后台版本 -- 】

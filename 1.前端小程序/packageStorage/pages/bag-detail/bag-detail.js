@@ -110,14 +110,9 @@ Page({
   // 加载袋子信息
   async loadBagInfo() {
     try {
-      // TODO: 替换为真实API调用
-      const bagInfo = await this.mockGetBagInfo(this.data.bagId);
-      const boxInfo = await this.mockGetBoxInfo(this.data.boxId);
-      
-      this.setData({
-        bagInfo,
-        boxInfo
-      });
+      // 袋子和箱子信息现在通过 getItemsFromAPI 方法从后台获取
+      // 这里不再需要单独的API调用，数据会在 loadItems 中一并获取
+      console.log('袋子信息将通过 loadItems 方法获取');
     } catch (error) {
       console.error('加载袋子信息失败:', error);
       throw error;
@@ -278,116 +273,6 @@ Page({
     });
   },
 
-  // 模拟获取袋子信息
-  mockGetBagInfo(bagId) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          id: bagId,
-          name: '电子设备袋',
-          description: '存放各种电子设备和配件',
-          color: '#667eea',
-          icon: 'cuIcon-phone',
-          tags: ['电子产品', '数码配件'],
-          itemCount: 8,
-          totalValue: 2580,
-          createTime: '2024-01-15',
-          lastUsed: '2天前',
-          location: '书房-第二层'
-        });
-      }, 800);
-    });
-  },
-
-  // 模拟获取箱子信息
-  mockGetBoxInfo(boxId) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          id: boxId,
-          name: '书房收纳箱',
-          color: '#764ba2',
-          icon: 'cuIcon-home'
-        });
-      }, 500);
-    });
-  },
-
-  // 模拟获取物品列表
-  mockGetItems(bagId) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          {
-            id: '1',
-            name: 'iPhone 充电器',
-            description: '苹果原装20W快充充电器',
-            image: '/images/placeholder.png',
-            category: '电子配件',
-            tags: ['充电器', '苹果'],
-            value: 149,
-            quantity: 1,
-            condition: '良好',
-            purchaseDate: '2023-12-01',
-            lastUsed: '昨天'
-          },
-          {
-            id: '2',
-            name: 'AirPods Pro',
-            description: '苹果无线降噪耳机',
-            image: '/images/placeholder.png',
-            category: '音频设备',
-            tags: ['耳机', '苹果', '降噪'],
-            value: 1999,
-            quantity: 1,
-            condition: '优秀',
-            purchaseDate: '2023-10-15',
-            lastUsed: '今天'
-          },
-          {
-            id: '3',
-            name: 'USB-C 数据线',
-            description: '高速传输数据线 1米',
-            image: '/images/placeholder.png',
-            category: '电子配件',
-            tags: ['数据线', 'USB-C'],
-            value: 39,
-            quantity: 2,
-            condition: '良好',
-            purchaseDate: '2023-11-20',
-            lastUsed: '3天前'
-          },
-          {
-            id: '4',
-            name: '移动硬盘',
-            description: '1TB 便携式移动硬盘',
-            image: '/images/placeholder.png',
-            category: '存储设备',
-            tags: ['硬盘', '存储', '1TB'],
-            value: 299,
-            quantity: 1,
-            condition: '良好',
-            purchaseDate: '2023-09-10',
-            lastUsed: '1周前'
-          },
-          {
-            id: '5',
-            name: '蓝牙鼠标',
-            description: '罗技无线蓝牙鼠标',
-            image: '/images/placeholder.png',
-            category: '电脑配件',
-            tags: ['鼠标', '蓝牙', '罗技'],
-            value: 89,
-            quantity: 1,
-            condition: '良好',
-            purchaseDate: '2023-08-05',
-            lastUsed: '今天'
-          }
-        ]);
-      }, 1000);
-    });
-  },
-
   // 错误处理
   handleError(message) {
     this.setData({
@@ -485,9 +370,25 @@ Page({
 
   // 快速拍照
   onQuickScan() {
-    // 跳转到相机页面，传递box_id和bag_id参数
+    // 跳转到相机页面，传递完整的box和bag信息
+    const { boxInfo, bagInfo, boxId, bagId } = this.data;
+    const params = {
+      mode: 'photo',
+      box_id: boxId,
+      bag_id: bagId,
+      box_name: encodeURIComponent(boxInfo.name || ''),
+      box_color: encodeURIComponent(boxInfo.color || '#1296db'),
+      box_location: encodeURIComponent(boxInfo.location || ''),
+      bag_name: encodeURIComponent(bagInfo.name || ''),
+      bag_color: encodeURIComponent(bagInfo.color || '#1296db')
+    };
+    
+    const queryString = Object.keys(params)
+      .map(key => `${key}=${params[key]}`)
+      .join('&');
+    
     wx.navigateTo({
-      url: `/packageCamera/pages/camera/camera?mode=photo&box_id=${this.data.boxId}&bag_id=${this.data.bagId}`
+      url: `/packageCamera/pages/camera/camera?${queryString}`
     });
   },
 

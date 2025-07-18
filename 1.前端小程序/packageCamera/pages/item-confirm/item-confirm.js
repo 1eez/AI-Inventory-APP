@@ -30,8 +30,8 @@ Page({
     },
     // 可选分类
     categories: [
-      '电子设备', '生活用品', '文具用品', '服装配饰',
-      '化妆用品', '食品饮料', '书籍资料', '工具用品',
+      '服装配饰', '床上用品', '家居用品', '电子设备', '生活用品', 
+      '化妆用品', '食品饮料', '书籍资料', '工具用品', '文具用品', 
       '运动用品', '玩具游戏', '其他'
     ],
     // 常用标签
@@ -59,29 +59,57 @@ Page({
     const imagePath = decodeURIComponent(options.image || '');
     const resultStr = decodeURIComponent(options.result || '{}');
     
+    // 获取box和bag信息
+    const boxId = options.box_id || '';
+    const bagId = options.bag_id || '';
+    const boxName = decodeURIComponent(options.box_name || '');
+    const boxColor = decodeURIComponent(options.box_color || '#1296db');
+    const boxLocation = decodeURIComponent(options.box_location || '');
+    const bagName = decodeURIComponent(options.bag_name || '');
+    const bagColor = decodeURIComponent(options.bag_color || '#1296db');
+
+    
     try {
       const recognitionResult = JSON.parse(resultStr);
       
-      // 为每个识别结果添加百分比显示
-      if (recognitionResult.items) {
-        recognitionResult.items = recognitionResult.items.map(item => ({
-          ...item,
-          confidencePercent: Math.round(item.confidence * 100)
-        }));
-      }
+      // 从后台返回的嵌套数据结构中提取分析结果
+      const analysisResult = recognitionResult.data?.analysis_result || recognitionResult.analysis_result || recognitionResult;
+      
+      // 使用后台返回的数据作为预填信息
+      const itemInfo = {
+        name: analysisResult.name || '',
+        description: analysisResult.description || '',
+        category: analysisResult.category || '',
+        tags: analysisResult.tags || [],
+        location: {
+          boxId: boxId,
+          bagId: bagId,
+          boxName: boxName,
+          bagName: bagName
+        }
+      };
       
       this.setData({
         imagePath,
-        recognitionResult
+        recognitionResult,
+        itemInfo,
+        boxInfo: {
+          id: boxId,
+          name: boxName,
+          color: boxColor,
+          location: boxLocation
+        },
+        bagInfo: {
+          id: bagId,
+          name: bagName,
+          color: bagColor
+        }
       });
       
-      // 如果有识别结果，选择第一个作为默认
-      if (recognitionResult.items && recognitionResult.items.length > 0) {
-        this.selectItem(recognitionResult.items[0]);
+      // 加载收纳位置选项（如果没有预设位置）
+      if (!boxId) {
+        this.loadStorageOptions();
       }
-      
-      // 加载收纳位置选项
-      this.loadStorageOptions();
       
     } catch (error) {
       console.error('解析识别结果失败:', error);
@@ -95,36 +123,7 @@ Page({
     }
   },
 
-  /**
-   * 选择识别的物品
-   */
-  selectItem(item) {
-    const itemInfo = {
-      name: item.name,
-      description: item.description || '',
-      category: item.category || '',
-      tags: [],
-      location: {
-        boxId: '',
-        bagId: '',
-        boxName: '',
-        bagName: ''
-      }
-    };
-    
-    this.setData({
-      selectedItem: item,
-      itemInfo
-    });
-  },
 
-  /**
-   * 选择识别结果中的物品
-   */
-  onSelectRecognizedItem(e) {
-    const { item } = e.currentTarget.dataset;
-    this.selectItem(item);
-  },
 
   /**
    * 输入框内容变化
@@ -202,21 +201,10 @@ Page({
       'itemInfo.location.bagName': ''
     });
     
-    // 加载该收纳盒下的收纳袋
-    this.loadBagsForBox(box.id);
+
   },
 
-  /**
-   * 选择收纳袋
-   */
-  onSelectBag(e) {
-    const { bag } = e.currentTarget.dataset;
-    
-    this.setData({
-      'itemInfo.location.bagId': bag.id,
-      'itemInfo.location.bagName': bag.name
-    });
-  },
+
 
   /**
    * 确认位置选择
@@ -264,38 +252,7 @@ Page({
     }
   },
 
-  /**
-   * 加载指定收纳盒下的收纳袋
-   */
-  async loadBagsForBox(boxId) {
-    try {
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // 模拟收纳袋数据
-      const mockBags = [
-        {
-          id: 'bag_1',
-          name: '数据线收纳袋',
-          color: '#667eea',
-          type: 'electronics'
-        },
-        {
-          id: 'bag_2',
-          name: '充电器收纳袋',
-          color: '#fa709a',
-          type: 'electronics'
-        }
-      ];
-      
-      this.setData({
-        'storageOptions.bags': mockBags
-      });
-      
-    } catch (error) {
-      console.error('加载收纳袋失败:', error);
-    }
-  },
+
 
   /**
    * 重新拍照
@@ -304,26 +261,7 @@ Page({
     wx.navigateBack();
   },
 
-  /**
-   * 手动输入
-   */
-  onManualInput() {
-    this.setData({
-      selectedItem: null,
-      itemInfo: {
-        name: '',
-        description: '',
-        category: '',
-        tags: [],
-        location: {
-          boxId: '',
-          bagId: '',
-          boxName: '',
-          bagName: ''
-        }
-      }
-    });
-  },
+
 
   /**
    * 提交物品信息

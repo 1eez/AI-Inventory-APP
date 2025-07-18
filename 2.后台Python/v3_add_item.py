@@ -11,7 +11,7 @@
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from common_db import DatabaseManager
 
 # 创建路由器
@@ -26,6 +26,7 @@ class AddItemRequest(BaseModel):
     description: Optional[str] = Field(default="", max_length=1000, description="物品描述")
     category: Optional[str] = Field(default="", max_length=100, description="物品分类")
     image_filename: Optional[str] = Field(default="", max_length=255, description="图片文件名")
+    tags: Optional[List[str]] = Field(default=[], description="物品标签列表")
 
 def verify_bag_ownership(user_id: int, box_id: int, bag_id: int, db_manager: DatabaseManager) -> bool:
     """
@@ -69,6 +70,48 @@ def get_next_sort_id(box_id: int, bag_id: int, db_manager: DatabaseManager) -> i
         result = db_manager.execute_query(query, (box_id,), fetch_one=True)
     return result['next_sort_id']
 
+def get_or_create_tag(tag_name: str, db_manager: DatabaseManager) -> int:
+    """
+    获取或创建标签
+    
+    Args:
+        tag_name: 标签名称
+        db_manager: 数据库管理器实例
+        
+    Returns:
+        int: 标签ID
+    """
+    # 先尝试获取已存在的标签
+    query = "SELECT tag_id FROM tags WHERE name = ?"
+    result = db_manager.execute_query(query, (tag_name,), fetch_one=True)
+    
+    if result:
+        return result['tag_id']
+    
+    # 如果标签不存在，则创建新标签
+    insert_query = "INSERT INTO tags (name) VALUES (?)"
+    return db_manager.execute_insert(insert_query, (tag_name,))
+
+def create_item_tag_relations(item_id: int, tag_names: List[str], db_manager: DatabaseManager) -> None:
+    """
+    创建物品与标签的关联关系
+    
+    Args:
+        item_id: 物品ID
+        tag_names: 标签名称列表
+        db_manager: 数据库管理器实例
+    """
+    if not tag_names:
+        return
+    
+    for tag_name in tag_names:
+        if tag_name.strip():  # 确保标签名不为空
+            tag_id = get_or_create_tag(tag_name.strip(), db_manager)
+            
+            # 创建物品标签关联（使用INSERT OR IGNORE避免重复插入）
+            query = "INSERT OR IGNORE INTO items_tags (item_id, tag_id) VALUES (?, ?)"
+            db_manager.execute_query(query, (item_id, tag_id))
+
 def create_item(user_id: int, box_id: int, bag_id: int, item_data: AddItemRequest, db_manager: DatabaseManager) -> int:
     """
     创建新物品
@@ -92,7 +135,7 @@ def create_item(user_id: int, box_id: int, bag_id: int, item_data: AddItemReques
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """
     
-    return db_manager.execute_insert(
+    item_id = db_manager.execute_insert(
         query, 
         (
             box_id,
@@ -105,6 +148,12 @@ def create_item(user_id: int, box_id: int, bag_id: int, item_data: AddItemReques
             datetime.now().isoformat()
         )
     )
+    
+    # 处理标签关联
+    if item_data.tags:
+        create_item_tag_relations(item_id, item_data.tags, db_manager)
+    
+    return item_id
 
 def get_item_info(item_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
     """
@@ -115,8 +164,9 @@ def get_item_info(item_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
         db_manager: 数据库管理器实例
         
     Returns:
-        Dict: 物品信息
+        Dict: 物品信息（包含标签）
     """
+    # 获取物品基本信息
     query = """
     SELECT item_id, box_id, bag_id, sort_id, title, description, category, image_filename, created_at 
     FROM items_detail 
@@ -127,7 +177,20 @@ def get_item_info(item_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
     if not result:
         raise HTTPException(status_code=404, detail="物品不存在")
     
-    return dict(result)
+    item_info = dict(result)
+    
+    # 获取物品标签
+    tags_query = """
+    SELECT t.name 
+    FROM tags t 
+    JOIN items_tags it ON t.tag_id = it.tag_id 
+    WHERE it.item_id = ?
+    """
+    
+    tags_result = db_manager.execute_query(tags_query, (item_id,))
+    item_info['tags'] = [tag['name'] for tag in tags_result] if tags_result else []
+    
+    return item_info
 
 # 创建数据库管理器实例
 db_manager = DatabaseManager()
