@@ -78,7 +78,7 @@ def compress_image(image_file: UploadFile, quality: int = 85) -> bytes:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"图片压缩失败: {str(e)}")
 
-def analyze_image_with_ai(image_data: bytes) -> Dict[str, Any]:
+def analyze_image_with_ai(image_data: bytes) -> tuple[str, Dict[str, Any]]:
     """
     使用AI分析图片内容
     
@@ -86,7 +86,7 @@ def analyze_image_with_ai(image_data: bytes) -> Dict[str, Any]:
         image_data: 图片数据
         
     Returns:
-        Dict: AI分析结果
+        tuple: (AI原始响应内容, 解析后的结果字典)
     """
     try:
         # 将图片转换为base64
@@ -115,8 +115,8 @@ def analyze_image_with_ai(image_data: bytes) -> Dict[str, Any]:
 要求：
 1. name: 简洁准确的物品名称
 2. description: 一句话描述物品的特征、用途或状态
-3. category: 选择最合适的家居用品分类
-4. tags: 提供5-10个相关标签，包括颜色、材质、品牌、功能、风格等
+3. category: 选择最合适的家居用品分类，如衣服、公仔、床上用品、电子产品、书籍、厨具、装饰品等
+4. tags: 提供10个以上的相关标签，包括颜色（多种）、材质、触感、大小、功能、风格等
 
 请只返回JSON格式的结果，不要包含其他文字。
         """
@@ -141,39 +141,40 @@ def analyze_image_with_ai(image_data: bytes) -> Dict[str, Any]:
                     ]
                 }
             ],
-            temperature=temperature,
-            max_tokens=max_tokens
+            temperature=temperature
         )
         
-        # 解析AI返回的内容
+        # 获取AI返回的原始内容
         ai_content = response.choices[0].message.content
         
         # 尝试解析JSON
         try:
             ai_result = json.loads(ai_content)
-            return ai_result
+            return ai_content, ai_result
         except json.JSONDecodeError:
             # 如果解析失败，返回原始内容
-            return {
+            fallback_result = {
                 "name": "未知物品",
                 "description": ai_content,
                 "category": "其他",
                 "tags": []
             }
+            return ai_content, fallback_result
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI分析失败: {str(e)}")
 
-def save_image_and_analysis(image_data: bytes, ai_result: Dict[str, Any]) -> tuple[str, str]:
+def save_image_and_log(image_data: bytes, ai_raw_content: str, ai_result: Dict[str, Any]) -> tuple[str, str]:
     """
-    保存图片和AI分析结果
+    保存图片和AI原始响应日志
     
     Args:
         image_data: 图片数据
-        ai_result: AI分析结果
+        ai_raw_content: AI返回的原始内容
+        ai_result: 解析后的AI分析结果
         
     Returns:
-        tuple: (图片文件名, JSON文件名)
+        tuple: (图片文件名, 日志文件名)
     """
     try:
         # 确保目录存在
@@ -182,19 +183,26 @@ def save_image_and_analysis(image_data: bytes, ai_result: Dict[str, Any]) -> tup
         # 生成时间戳文件名
         timestamp = str(int(time.time()))
         image_filename = f"{timestamp}.jpg"
-        json_filename = f"{timestamp}.json"
+        log_filename = f"{timestamp}.log"
         
         # 保存图片
         image_path = os.path.join(temp_dir, image_filename)
         with open(image_path, 'wb') as f:
             f.write(image_data)
         
-        # 保存AI分析结果
-        json_path = os.path.join(temp_dir, json_filename)
-        with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(ai_result, f, ensure_ascii=False, indent=2)
+        # 保存AI原始响应日志
+        log_path = os.path.join(temp_dir, log_filename)
+        with open(log_path, 'w', encoding='utf-8') as f:
+            f.write(f"=== AI原始响应内容 ===\n")
+            f.write(f"时间戳: {timestamp}\n")
+            f.write(f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"图片文件: {image_filename}\n")
+            f.write(f"\n=== AI返回的原始文本 ===\n")
+            f.write(ai_raw_content)
+            f.write(f"\n\n=== 解析后的结构化数据 ===\n")
+            f.write(json.dumps(ai_result, ensure_ascii=False, indent=2))
         
-        return image_filename, json_filename
+        return image_filename, log_filename
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"文件保存失败: {str(e)}")
@@ -232,18 +240,19 @@ async def upload_image(
         compressed_image_data = compress_image(image)
         
         # AI分析图片
-        ai_result = analyze_image_with_ai(compressed_image_data)
+        ai_raw_content, ai_result = analyze_image_with_ai(compressed_image_data)
         
-        # 保存图片和分析结果
-        image_filename, json_filename = save_image_and_analysis(compressed_image_data, ai_result)
+        # 保存图片和日志
+        image_filename, log_filename = save_image_and_log(compressed_image_data, ai_raw_content, ai_result)
         
         return {
             "status": "success",
             "message": "图片上传和分析成功",
             "data": {
                 "image_filename": image_filename,
-                "json_filename": json_filename,
+                "log_filename": log_filename,
                 "analysis_result": ai_result,
+                "ai_raw_content": ai_raw_content,
                 "file_info": {
                     "original_filename": image.filename,
                     "content_type": image.content_type,
