@@ -63,8 +63,13 @@ def get_user_data(openid: str, db_manager: DatabaseManager) -> Dict[str, Any]:
     items_query = "SELECT COUNT(*) as item_count FROM items_detail id JOIN bags_summary bs ON id.bag_id = bs.bag_id JOIN boxes_summary bx ON bs.box_id = bx.box_id WHERE bx.user_id = ?"
     total_items = db_manager.execute_query(items_query, (user_id,), fetch_one=True)['item_count']
     
-    # 为每个箱子获取物品数量
+    # 为每个箱子获取袋子数量和物品数量
     for box in boxes:
+        # 获取箱子中的袋子数量
+        box_bags_query = "SELECT COUNT(*) as bag_count FROM bags_summary WHERE box_id = ?"
+        box['bag_count'] = db_manager.execute_query(box_bags_query, (box['box_id'],), fetch_one=True)['bag_count']
+        
+        # 获取箱子中的物品数量
         box_items_query = "SELECT COUNT(*) as item_count FROM items_detail id JOIN bags_summary bs ON id.bag_id = bs.bag_id WHERE bs.box_id = ?"
         box['item_count'] = db_manager.execute_query(box_items_query, (box['box_id'],), fetch_one=True)['item_count']
     

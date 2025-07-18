@@ -88,6 +88,8 @@ Page({
           id: box.box_id, // 映射后台字段
           icon: box.icon || icons[index % icons.length],
           itemCount: box.item_count || 0,
+          bag_count: box.bag_count || 0, // 袋子数量
+          item_count: box.item_count || 0, // 物品数量
           createTime: this.formatDate(box.created_at) // 格式化日期
         };
       });

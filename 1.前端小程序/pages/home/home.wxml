@@ -126,7 +126,7 @@
                     <text class="cuIcon-locationfill location-icon"></text>
                     <text class="location-text">{{item.location}}</text>
                   </view>
-                  <view class="box-count" style="color: {{item.color}}">{{item.itemCount}}</view>
+                  <view class="box-count" style="color: {{item.color}}">{{item.bag_count}} / {{item.item_count}}</view>
                 </view>
               </view>
             </view>
@@ -180,7 +180,7 @@
                     <text class="cuIcon-locationfill"></text>
                     <text>{{item.location}}</text>
                   </view>
-                  <view class="selector-box-count">{{item.itemCount}}</view>
+                  <view class="selector-box-count">{{item.bag_count}} / {{item.item_count}}</view>
                 </view>
               </view>
               <view class="selector-box-arrow">
