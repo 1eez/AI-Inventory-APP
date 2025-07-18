@@ -88,31 +88,6 @@
             <text class="contact-text">{{teamInfo.email}}</text>
             <text class="cuIcon-right"></text>
           </view>
-          
-          <view class="contact-item" bindtap="onCallPhone">
-            <text class="cuIcon-phone"></text>
-            <text class="contact-text">{{teamInfo.phone}}</text>
-            <text class="cuIcon-right"></text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- 技术栈 -->
-    <view class="tech-section">
-      <view class="section-title">
-        <text class="cuIcon-code text-green"></text>
-        <text>技术栈</text>
-      </view>
-      
-      <view class="tech-card">
-        <view class="tech-list">
-          <view class="tech-item" wx:for="{{techStack}}" wx:key="name">
-            <view class="tech-info">
-              <text class="tech-name">{{item.name}}</text>
-              <text class="tech-desc">{{item.description}}</text>
-            </view>
-          </view>
         </view>
       </view>
     </view>
@@ -138,47 +113,6 @@
             </view>
           </view>
         </view>
-      </view>
-    </view>
-
-    <!-- 第三方库 -->
-    <view class="libs-section">
-      <view class="section-title">
-        <text class="cuIcon-package text-cyan"></text>
-        <text>第三方库</text>
-      </view>
-      
-      <view class="libs-card">
-        <view class="libs-list">
-          <view class="lib-item" wx:for="{{thirdPartyLibs}}" wx:key="name">
-            <view class="lib-info">
-              <text class="lib-name">{{item.name}}</text>
-              <text class="lib-version">v{{item.version}}</text>
-            </view>
-            <text class="lib-license">{{item.license}}</text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- 操作按钮 -->
-    <view class="actions-section">
-      <view class="action-buttons">
-        <button class="cu-btn bg-blue lg" bindtap="onCheckUpdate">
-          <text class="cuIcon-refresh"></text> 检查更新
-        </button>
-        
-        <button class="cu-btn bg-green lg" bindtap="onFeedback">
-          <text class="cuIcon-message"></text> 意见反馈
-        </button>
-        
-        <button class="cu-btn bg-orange lg" bindtap="onRateApp">
-          <text class="cuIcon-favor"></text> 评分应用
-        </button>
-        
-        <button class="cu-btn bg-purple lg" bindtap="onShareApp">
-          <text class="cuIcon-share"></text> 分享应用
-        </button>
       </view>
     </view>
 

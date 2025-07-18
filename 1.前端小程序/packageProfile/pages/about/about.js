@@ -13,16 +13,16 @@ Page({
     appInfo: {
       name: '智能物品管理',
       version: '1.0.0',
-      buildNumber: '2024010101',
-      releaseDate: '2024-01-01',
+      buildNumber: '20250718',
+      releaseDate: '2025-07-18',
       description: '一款智能的个人物品收纳整理应用，帮助您轻松管理和查找物品。'
     },
     
     // 开发团队
     teamInfo: {
-      company: 'WiseNET Technology',
-      website: 'https://wisenet.com',
-      email: 'support@wisenet.com',
+      company: 'Lordli',
+      website: 'https://lord.li/',
+      email: 'support@lordli.com',
       phone: '400-123-4567'
     },
     
@@ -96,8 +96,8 @@ Page({
     // 许可证信息
     licenseInfo: {
       type: 'MIT License',
-      year: '2024',
-      holder: 'WiseNET Technology'
+      year: '2025',
+      holder: 'Lordli'
     },
     
     // 第三方库
@@ -109,8 +109,8 @@ Page({
     
     // 统计信息
     statistics: {
-      downloads: '10,000+',
-      users: '5,000+',
+      downloads: '10,000',
+      users: '5,000',
       rating: 4.8,
       reviews: 1250
     }
@@ -341,7 +341,7 @@ Page({
       showCancel: false,
       success: () => {
         wx.setClipboardData({
-          data: 'https://github.com/wisenet/ai-inventory-app'
+          data: 'https://github.com/1eez/AI-Inventory-APP'
         });
       }
     });

@@ -286,52 +286,6 @@
       </view>
     </view>
 
-    <!-- 存储管理 -->
-    <view class="settings-section">
-      <view class="section-title">
-        <text class="cuIcon-storage text-cyan"></text>
-        <text>存储管理</text>
-      </view>
-      
-      <view class="settings-card">
-        <view class="storage-info">
-          <view class="storage-item">
-            <text class="storage-label">已用空间</text>
-            <text class="storage-value">{{storageInfo.used}}MB / {{storageInfo.total}}MB</text>
-          </view>
-          <view class="storage-progress">
-            <view class="progress-bar">
-              <view class="progress-fill" style="width: {{storageInfo.used / storageInfo.total * 100}}%"></view>
-            </view>
-          </view>
-          
-          <view class="storage-details">
-            <view class="detail-item">
-              <text>物品数据: {{storageInfo.items}} 条</text>
-            </view>
-            <view class="detail-item">
-              <text>图片文件: {{storageInfo.images}} 张</text>
-            </view>
-          </view>
-        </view>
-        
-        <view class="action-buttons">
-          <button class="cu-btn bg-blue sm" bindtap="onClearCache">
-            <text class="cuIcon-delete"></text> 清理缓存
-          </button>
-          <button class="cu-btn bg-green sm" bindtap="onBackupData">
-            <text class="cuIcon-upload"></text> 备份数据
-          </button>
-          <button class="cu-btn bg-orange sm" bindtap="onRestoreData">
-            <text class="cuIcon-download"></text> 恢复数据
-          </button>
-          <button class="cu-btn bg-purple sm" bindtap="onExportData">
-            <text class="cuIcon-share"></text> 导出数据
-          </button>
-        </view>
-      </view>
-    </view>
-
     <!-- 系统信息 -->
     <view class="settings-section">
       <view class="section-title">

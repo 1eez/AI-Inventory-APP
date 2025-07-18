@@ -28,25 +28,11 @@ Page({
         color: '#667eea'
       },
       {
-        id: 'sync',
-        title: '数据同步',
-        subtitle: '多设备同步',
-        icon: 'cuIcon-refresh',
-        color: '#764ba2'
-      },
-      {
         id: 'export',
         title: '数据导出',
         subtitle: '导出为Excel',
         icon: 'cuIcon-down',
         color: '#f093fb'
-      },
-      {
-        id: 'import',
-        title: '数据导入',
-        subtitle: '从文件导入',
-        icon: 'cuIcon-up',
-        color: '#f5576c'
       }
     ],
     

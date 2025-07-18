@@ -108,31 +108,6 @@
         </view>
       </view>
 
-      <!-- 最近活动 -->
-      <view wx:if="{{recentActivities.length > 0}}" class="activities-card card">
-        <view class="card-header">
-          <view class="card-title">最近活动</view>
-          <text class="view-more" bindtap="onViewMoreActivities">查看更多</text>
-        </view>
-        
-        <view class="activities-list">
-          <view 
-            wx:for="{{recentActivities}}" 
-            wx:key="id" 
-            class="activity-item"
-          >
-            <view class="activity-icon" style="background-color: {{item.color}};">
-              <text class="{{item.icon}}"></text>
-            </view>
-            <view class="activity-content">
-              <view class="activity-title">{{item.title}}</view>
-              <view class="activity-description">{{item.description}}</view>
-              <view class="activity-time">{{item.time}}</view>
-            </view>
-          </view>
-        </view>
-      </view>
-
       <!-- 数据管理 -->
       <view class="settings-card card">
         <view class="card-title">数据管理</view>
