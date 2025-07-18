@@ -5,7 +5,7 @@
   <!-- 自定义导航栏 -->
   <cu-custom bgColor="bg-white" isBack="{{true}}">
     <view slot="backText">返回</view>
-    <view slot="content">{{boxId ? '编辑收纳盒' : '添加收纳盒'}}</view>
+    <view slot="content">{{boxId ? '编辑储物箱' : '添加储物箱'}}</view>
     <view slot="right">
       <text class="cuIcon-add" bindtap="onScanAdd"></text>
     </view>
@@ -26,11 +26,11 @@
         <view class="form-item">
           <view class="form-label">
             <text class="required">*</text>
-            收纳盒名称
+            储物箱名称
           </view>
           <input 
             class="form-input {{errors.name ? 'error' : ''}}"
-            placeholder="请输入收纳盒名称"
+            placeholder="请输入储物箱名称"
             value="{{formData.name}}"
             data-field="name"
             bindinput="onInputChange"
@@ -46,7 +46,7 @@
           <view class="form-label">描述信息</view>
           <textarea 
             class="form-textarea-narrow {{errors.description ? 'error' : ''}}"
-            placeholder="请输入收纳盒的用途"
+            placeholder="请输入储物箱的用途"
             value="{{formData.description}}"
             data-field="description"
             bindinput="onInputChange"
@@ -115,7 +115,7 @@
             style="background: linear-gradient(135deg, {{formData.color}} 0%, {{formData.color}}88 100%)"
           >
             <view class="preview-content">
-              <view class="preview-name">{{formData.name || '收纳盒名称'}}</view>
+              <view class="preview-name">{{formData.name || '储物箱名称'}}</view>
               <view class="preview-desc">{{formData.description || '暂无描述'}}</view>
               <view class="preview-meta">
                 <view class="preview-location">

@@ -140,6 +140,7 @@
             <view class="bag-preview" style="background: {{item.color}}">
               <view class="bag-preview-info">
                 <view class="bag-preview-name">{{item.name}}</view>
+                <view class="bag-preview-count">{{item.itemCount}}件物品</view>
               </view>
               <view class="bag-menu" bindtap="onBagMenu" data-id="{{item.bag_id}}" catchtap="true">
                 <text class="cuIcon-more"></text>

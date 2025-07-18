@@ -16,7 +16,12 @@ Page({
     boxesWithItems: 0, // 有物品的箱子数量
     // 箱子选择浮层
     showBoxSelector: false, // 是否显示箱子选择浮层
-    selectorBoxes: [] // 浮层中的箱子列表
+    selectorBoxes: [], // 浮层中的箱子列表
+    // 袋子选择浮层
+    showBagSelector: false, // 是否显示袋子选择浮层
+    selectorBags: [], // 浮层中的袋子列表
+    selectedBox: null, // 选中的箱子信息
+    quickScanMode: false // 是否为快速拍照模式
   },
 
   /*** 生命周期函数--监听页面加载   */
@@ -295,11 +300,27 @@ Page({
     const boxId = e.currentTarget.dataset.id;
     const box = this.data.boxes.find(item => item.id === boxId);
     
+    console.log('选择箱子，boxId:', boxId, 'box:', box);
+    
     if (!box) {
       wx.showToast({
         title: '箱子信息错误',
         icon: 'error'
       });
+      return;
+    }
+
+    // 如果是快速拍照模式，显示袋子选择浮层
+    if (this.data.quickScanMode) {
+      this.setData({
+        showBoxSelector: false,
+        selectedBox: box
+      });
+      
+      // 获取该箱子下的袋子列表
+      const actualBoxId = box.box_id || box.id;
+      console.log('传递给loadBagsByBoxId的参数:', actualBoxId);
+      this.loadBagsByBoxId(actualBoxId);
       return;
     }
 
@@ -311,6 +332,190 @@ Page({
     // 跳转到添加收纳袋页面，传递箱子信息
     wx.navigateTo({
       url: `/packageStorage/pages/add-bag/add-bag?boxId=${box.box_id || box.id}&boxName=${encodeURIComponent(box.name)}&boxLocation=${encodeURIComponent(box.location || '')}&boxColor=${encodeURIComponent(box.color || '#1296db')}`
+    });
+  },
+
+  /*** 快速拍照   */
+  onQuickScan() {
+    // 检查是否有箱子
+    if (this.data.boxes.length === 0) {
+      wx.showModal({
+        title: '提示',
+        content: '请先创建一个储物箱，然后再进行拍照',
+        showCancel: true,
+        cancelText: '取消',
+        confirmText: '创建箱子',
+        success: (res) => {
+          if (res.confirm) {
+            this.onAddBox();
+          }
+        }
+      });
+      return;
+    }
+
+    // 设置为快速拍照模式并显示箱子选择浮层
+    this.setData({
+      quickScanMode: true,
+      showBoxSelector: true,
+      selectorBoxes: this.data.boxes
+    });
+  },
+
+  /*** 获取指定箱子下的袋子列表   */
+  async loadBagsByBoxId(boxId) {
+    try {
+      wx.showLoading({ title: '加载中...' });
+      
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      
+      if (!openid) {
+        throw new Error('用户未登录');
+      }
+      
+      console.log('获取袋子列表，参数:', { openid, box_id: boxId });
+      
+      const bagData = await this.requestBagList(baseUrl, {
+        openid: openid,
+        box_id: boxId
+      });
+      
+      console.log('袋子列表API返回数据:', bagData);
+      wx.hideLoading();
+      
+      // 修正数据结构访问：后端返回的是 {data: {bags: Array}}
+      const bags = bagData && bagData.data && bagData.data.bags ? bagData.data.bags : [];
+      
+      if (bags.length > 0) {
+        // 显示袋子选择浮层
+        this.setData({
+          showBagSelector: true,
+          selectorBags: bags
+        });
+      } else {
+        // 没有袋子，提示用户先创建袋子
+        wx.showModal({
+          title: '提示',
+          content: '该箱子下还没有收纳袋，请先创建一个收纳袋',
+          showCancel: true,
+          cancelText: '取消',
+          confirmText: '创建袋子',
+          success: (res) => {
+            if (res.confirm) {
+              const box = this.data.selectedBox;
+              wx.navigateTo({
+                url: `/packageStorage/pages/add-bag/add-bag?boxId=${box.box_id || box.id}&boxName=${encodeURIComponent(box.name)}&boxLocation=${encodeURIComponent(box.location || '')}&boxColor=${encodeURIComponent(box.color || '#1296db')}`
+              });
+            }
+            // 重置快速拍照模式
+            this.setData({
+              quickScanMode: false,
+              selectedBox: null
+            });
+          }
+        });
+      }
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('获取袋子列表失败:', error);
+      wx.showToast({
+        title: '获取袋子列表失败',
+        icon: 'error'
+      });
+      // 重置快速拍照模式
+      this.setData({
+        quickScanMode: false,
+        selectedBox: null
+      });
+    }
+  },
+
+  /*** 发送获取袋子列表请求   */
+  requestBagList(baseUrl, params) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v2/bag/get',
+        method: 'GET',
+        data: params,
+        header: {
+          'content-type': 'application/json'
+        },
+        success: (res) => {
+          console.log('获取袋子列表接口响应:', res);
+          
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('获取袋子列表请求失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
+  },
+
+  /*** 关闭袋子选择浮层   */
+  onCloseBagSelector() {
+    this.setData({
+      showBagSelector: false,
+      quickScanMode: false,
+      selectedBox: null
+    });
+  },
+
+  /*** 选择袋子   */
+  onSelectBag(e) {
+    const bagId = e.currentTarget.dataset.id;
+    const bag = this.data.selectorBags.find(item => item.bag_id === bagId);
+    const box = this.data.selectedBox;
+    
+    if (!bag || !box) {
+      wx.showToast({
+        title: '信息错误',
+        icon: 'error'
+      });
+      return;
+    }
+
+    // 关闭浮层并重置状态
+    this.setData({
+      showBagSelector: false,
+      quickScanMode: false,
+      selectedBox: null
+    });
+
+    // 跳转到相机页面，传递完整的box和bag信息
+    const params = {
+      mode: 'photo',
+      box_id: box.box_id || box.id,
+      bag_id: bag.bag_id,
+      box_name: encodeURIComponent(box.name || ''),
+      box_color: encodeURIComponent(box.color || '#1296db'),
+      box_location: encodeURIComponent(box.location || ''),
+      bag_name: encodeURIComponent(bag.name || ''),
+      bag_color: encodeURIComponent(bag.color || '#1296db')
+    };
+    
+    const queryString = Object.keys(params)
+      .map(key => `${key}=${params[key]}`)
+      .join('&');
+    
+    wx.navigateTo({
+      url: `/packageCamera/pages/camera/camera?${queryString}`
+    });
+  },
+
+  /*** 批量导入   */
+  onBatchImport() {
+    wx.showToast({
+      title: '功能开发中',
+      icon: 'none'
     });
   },
 

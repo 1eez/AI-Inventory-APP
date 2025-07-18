@@ -156,12 +156,12 @@
   <view wx:if="{{showBoxSelector}}" class="box-selector-overlay" bindtap="onCloseBoxSelector">
     <view class="box-selector-modal" catchtap="">
       <view class="selector-header">
-        <text class="selector-title">选择储物箱</text>
+        <text class="selector-title">{{quickScanMode ? '选择储物箱' : '选择储物箱'}}</text>
         <text class="cuIcon-close selector-close" bindtap="onCloseBoxSelector"></text>
       </view>
       
       <view class="selector-content">
-        <view class="selector-subtitle">请选择要添加收纳袋的储物箱</view>
+        <view class="selector-subtitle">{{quickScanMode ? '请选择要拍照的储物箱' : '请选择要添加收纳袋的储物箱'}}</view>
         
         <scroll-view class="selector-list" scroll-y="true">
           <view 
@@ -184,6 +184,47 @@
                 </view>
               </view>
               <view class="selector-box-arrow">
+                <text class="cuIcon-right"></text>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 袋子选择浮层 -->
+  <view wx:if="{{showBagSelector}}" class="bag-selector-overlay" bindtap="onCloseBagSelector">
+    <view class="bag-selector-modal" catchtap="">
+      <view class="selector-header">
+        <text class="selector-title">选择收纳袋</text>
+        <text class="cuIcon-close selector-close" bindtap="onCloseBagSelector"></text>
+      </view>
+      
+      <view class="selector-content">
+        <view class="selector-subtitle">请选择要拍照的收纳袋</view>
+        
+        <scroll-view class="selector-list" scroll-y="true">
+          <view 
+            wx:for="{{selectorBags}}" 
+            wx:key="bag_id" 
+            class="selector-bag-item"
+            bindtap="onSelectBag"
+            data-id="{{item.bag_id}}"
+          >
+            <view class="selector-bag-card">
+              <view class="selector-bag-color" style="background-color: {{item.color}};"></view>
+              <view class="selector-bag-info">
+                <view class="selector-bag-single-line">
+                  <view class="selector-bag-name">{{item.name}}</view>
+                  <view class="selector-bag-desc" wx:if="{{item.description}}">
+                    <text class="cuIcon-text"></text>
+                    <text>{{item.description}}</text>
+                  </view>
+                  <view class="selector-bag-count">{{item.item_count || 0}}件</view>
+                </view>
+              </view>
+              <view class="selector-bag-arrow">
                 <text class="cuIcon-right"></text>
               </view>
             </view>

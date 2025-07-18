@@ -47,11 +47,9 @@ Page({
       // 等待系统就绪
       await this.waitForSystemReady();
       
-      // 加载箱子信息和袋子列表
-      await Promise.all([
-        this.loadBoxInfo(),
-        this.loadBags()
-      ]);
+      // 先加载箱子信息，再加载袋子列表（确保boxInfo对象完整初始化后再更新统计信息）
+      await this.loadBoxInfo();
+      await this.loadBags();
       
       // 关闭加载状态
       this.setData({
@@ -196,11 +194,25 @@ Page({
           lastUsed: bag.last_used ? this.formatDate(bag.last_used) : null
         }));
         
+        // 从API返回数据中获取统计信息
+        const totalBags = result.data.total_count || 0; // 使用API返回的total_count
+        const totalItems = formattedBags.reduce((sum, bag) => sum + (bag.itemCount || 0), 0);
+        
+        // 更新袋子列表和统计信息
         this.setData({
-          bags: formattedBags
+          bags: formattedBags,
+          'boxInfo.totalBags': totalBags,
+          'boxInfo.totalItems': totalItems
         });
         
+        console.log('统计信息更新完成:');
+        console.log('- 袋子总数:', totalBags);
+        console.log('- 物品总数:', totalItems);
+        console.log('- 当前boxInfo:', this.data.boxInfo);
+        
         console.log('袋子列表加载成功:', formattedBags);
+        console.log('API返回的统计信息 - total_count:', result.data.total_count);
+        console.log('统计信息更新 - 袋子数:', totalBags, '物品数:', totalItems);
       } else {
         throw new Error(result.message || '获取袋子列表失败');
       }

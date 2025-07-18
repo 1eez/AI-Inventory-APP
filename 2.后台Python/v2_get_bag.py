@@ -41,16 +41,31 @@ def verify_box_ownership(user_id: int, box_id: int, db_manager: DatabaseManager)
     result = db_manager.execute_query(query, (box_id, user_id), fetch_one=True)
     return result['count'] > 0
 
+def get_item_count_by_bag_id(bag_id: int, db_manager: DatabaseManager) -> int:
+    """
+    根据袋子ID获取物品数量
+    
+    Args:
+        bag_id: 袋子ID
+        db_manager: 数据库管理器实例
+        
+    Returns:
+        int: 物品数量
+    """
+    query = "SELECT COUNT(*) as count FROM items_detail WHERE bag_id = ?"
+    result = db_manager.execute_query(query, (bag_id,), fetch_one=True)
+    return result['count'] if result else 0
+
 def get_bags_by_box_id(box_id: int, db_manager: DatabaseManager) -> List[Dict[str, Any]]:
     """
-    根据储物箱ID获取所有袋子信息
+    根据储物箱ID获取所有袋子信息（包含物品数量）
     
     Args:
         box_id: 储物箱ID
         db_manager: 数据库管理器实例
         
     Returns:
-        List[Dict]: 袋子信息列表
+        List[Dict]: 袋子信息列表（包含item_count字段）
     """
     query = """
     SELECT * FROM bags_summary 
@@ -59,7 +74,13 @@ def get_bags_by_box_id(box_id: int, db_manager: DatabaseManager) -> List[Dict[st
     """
     
     results = db_manager.execute_query(query, (box_id,))
-    return [dict(row) for row in results]
+    bags = [dict(row) for row in results]
+    
+    # 为每个袋子添加物品数量
+    for bag in bags:
+        bag['item_count'] = get_item_count_by_bag_id(bag['bag_id'], db_manager)
+    
+    return bags
 
 def get_box_info_by_id(box_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
     """
