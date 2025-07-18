@@ -267,7 +267,7 @@ Page({
    * 提交物品信息
    */
   async onSubmit() {
-    const { itemInfo, imagePath } = this.data;
+    const { itemInfo, imagePath, recognitionResult } = this.data;
     
     // 验证必填信息
     if (!itemInfo.name.trim()) {
@@ -286,13 +286,72 @@ Page({
       return;
     }
     
+    if (!itemInfo.location.boxId) {
+      wx.showToast({
+        title: '请选择收纳盒',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    if (!itemInfo.location.bagId) {
+      wx.showToast({
+        title: '请选择收纳袋',
+        icon: 'none'
+      });
+      return;
+    }
+    
     try {
       this.setData({ submitting: true });
       
       wx.showLoading({ title: '添加中...' });
       
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // 获取全局数据
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      
+      // 提取图片文件名（从recognitionResult中获取）
+      const imageFilename = recognitionResult?.data?.image_filename || recognitionResult?.image_filename || '';
+      
+      // 构建请求数据
+      const requestData = {
+        openid: openid,
+        box_id: parseInt(itemInfo.location.boxId),
+        bag_id: parseInt(itemInfo.location.bagId),
+        title: itemInfo.name.trim(),
+        description: itemInfo.description || '',
+        category: itemInfo.category || '',
+        image_filename: imageFilename,
+        tags: itemInfo.tags || []
+      };
+      
+      console.log('提交物品数据:', requestData);
+      
+      // 调用后台接口
+      const result = await new Promise((resolve, reject) => {
+        wx.request({
+          url: baseUrl + 'v3/item/add',
+          method: 'POST',
+          header: {
+            'content-type': 'application/json'
+          },
+          data: requestData,
+          success: (res) => {
+            console.log('添加物品接口响应:', res);
+            if (res.statusCode === 200 && res.data && res.data.status === 'success') {
+              resolve(res.data);
+            } else {
+              reject(new Error(res.data?.message || '添加失败'));
+            }
+          },
+          fail: (error) => {
+            console.error('添加物品接口调用失败:', error);
+            reject(error);
+          }
+        });
+      });
       
       wx.hideLoading();
       
@@ -300,6 +359,8 @@ Page({
         title: '添加成功',
         icon: 'success'
       });
+      
+      console.log('物品添加成功:', result);
       
       // 返回首页并刷新
       setTimeout(() => {
@@ -312,7 +373,7 @@ Page({
       console.error('添加物品失败:', error);
       wx.hideLoading();
       wx.showToast({
-        title: '添加失败，请重试',
+        title: error.message || '添加失败，请重试',
         icon: 'error'
       });
     } finally {

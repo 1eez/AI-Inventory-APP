@@ -213,18 +213,23 @@ Page({
             
             // 处理物品列表
             const items = responseData.items_list || [];
+            const photosBaseUrl = `${baseUrl}Photos/`; // 图片基础URL
             const formattedItems = items.map(item => ({
-              id: item.id,
-              name: item.name || '未命名物品',
+              id: item.item_id,
+              name: item.title || '未命名物品',
               description: item.description || '',
-              image: item.image || '/images/placeholder.png',
+              image: item.image_filename ? `${photosBaseUrl}${item.image_filename}` : '/images/placeholder.png',
               category: item.category || '其他',
               tags: item.tags || [],
               value: item.value || 0,
               quantity: item.quantity || 1,
               condition: item.condition || '良好',
               purchaseDate: item.purchase_date || '',
-              lastUsed: item.last_used || ''
+              lastUsed: item.last_used || '',
+              sortId: item.sort_id || 0,
+              boxId: item.box_id,
+              bagId: item.bag_id,
+              createTime: this.formatDate(item.created_at)
             }));
             
             resolve(formattedItems);

@@ -8,6 +8,8 @@
 @Version: 3.0
 """
 
+import os
+import shutil
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel, Field
@@ -112,6 +114,55 @@ def create_item_tag_relations(item_id: int, tag_names: List[str], db_manager: Da
             query = "INSERT OR IGNORE INTO items_tags (item_id, tag_id) VALUES (?, ?)"
             db_manager.execute_query(query, (item_id, tag_id))
 
+def process_image_file(user_id: int, image_filename: str) -> Optional[str]:
+    """
+    处理图片文件：从temp目录移动到用户专属目录
+    
+    Args:
+        user_id: 用户ID
+        image_filename: 图片文件名
+        
+    Returns:
+        Optional[str]: 图片相对路径，如果处理失败则返回None
+    """
+    if not image_filename:
+        return None
+    
+    # 获取当前程序目录
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # 构建temp目录路径
+    temp_dir = os.path.join(current_dir, "Photos", "temp")
+    temp_file_path = os.path.join(temp_dir, image_filename)
+    
+    # 检查temp目录下的图片文件是否存在
+    if not os.path.exists(temp_file_path):
+        return None
+    
+    # 构建用户目录路径
+    user_dir = os.path.join(current_dir, "Photos", str(user_id))
+    
+    # 如果用户目录不存在，则创建
+    if not os.path.exists(user_dir):
+        os.makedirs(user_dir, exist_ok=True)
+    
+    # 构建目标文件路径
+    target_file_path = os.path.join(user_dir, image_filename)
+    
+    try:
+        # 如果目标文件已存在，先删除
+        if os.path.exists(target_file_path):
+            os.remove(target_file_path)
+        
+        # 移动文件（相当于剪切）
+        shutil.move(temp_file_path, target_file_path)
+        
+        # 返回相对路径
+        return f"{user_id}/{image_filename}"
+    except Exception:
+        # 如果移动失败，返回None
+        return None
+
 def create_item(user_id: int, box_id: int, bag_id: int, item_data: AddItemRequest, db_manager: DatabaseManager) -> int:
     """
     创建新物品
@@ -131,13 +182,14 @@ def create_item(user_id: int, box_id: int, bag_id: int, item_data: AddItemReques
     
     # 插入物品数据
     query = """
-    INSERT INTO items_detail (box_id, bag_id, sort_id, title, description, category, image_filename, created_at) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO items_detail (user_id, box_id, bag_id, sort_id, title, description, category, image_filename, created_at) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
     
     item_id = db_manager.execute_insert(
         query, 
         (
+            user_id,
             box_id,
             bag_id,
             sort_id,
@@ -216,6 +268,17 @@ async def add_item(item_data: AddItemRequest = Body(...)):
         # 验证袋子是否属于该用户的该储物箱
         if not verify_bag_ownership(user_id, item_data.box_id, item_data.bag_id, db_manager):
             raise HTTPException(status_code=403, detail="无权限在此袋子中添加物品")
+        
+        # 处理图片文件
+        image_relative_path = None
+        if item_data.image_filename:
+            image_relative_path = process_image_file(user_id, item_data.image_filename)
+            if image_relative_path is None:
+                raise HTTPException(status_code=400, detail="图片文件不存在或处理失败")
+        
+        # 更新item_data中的image_filename为处理后的相对路径
+        if image_relative_path:
+            item_data.image_filename = image_relative_path
         
         # 创建物品
         item_id = create_item(user_id, item_data.box_id, item_data.bag_id, item_data, db_manager)
