@@ -218,30 +218,7 @@ Page({
    */
   async loadStorageOptions() {
     try {
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // 模拟收纳盒数据
-      const mockBoxes = [
-        {
-          id: 'box_1',
-          name: '电子设备收纳盒',
-          color: '#4facfe',
-          location: '书房书桌下方'
-        },
-        {
-          id: 'box_2',
-          name: '生活用品收纳盒',
-          color: '#43e97b',
-          location: '客厅电视柜'
-        },
-        {
-          id: 'box_3',
-          name: '文具收纳盒',
-          color: '#f093fb',
-          location: '书房书架'
-        }
-      ];
+
       
       this.setData({
         'storageOptions.boxes': mockBoxes
@@ -362,10 +339,10 @@ Page({
       
       console.log('物品添加成功:', result);
       
-      // 返回首页并刷新
+      // 返回两层页面
       setTimeout(() => {
-        wx.switchTab({
-          url: '/pages/home/home'
+        wx.navigateBack({
+          delta: 2
         });
       }, 1500);
       
