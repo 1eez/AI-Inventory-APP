@@ -21,7 +21,8 @@ Page({
     showBagSelector: false, // 是否显示袋子选择浮层
     selectorBags: [], // 浮层中的袋子列表
     selectedBox: null, // 选中的箱子信息
-    quickScanMode: false // 是否为快速拍照模式
+    quickScanMode: false, // 是否为快速拍照模式
+    isAlbumImport: false // 是否为相册导入模式
   },
 
   /*** 生命周期函数--监听页面加载   */
@@ -310,7 +311,7 @@ Page({
       return;
     }
 
-    // 如果是快速拍照模式，显示袋子选择浮层
+    // 如果是快速拍照模式或相册导入模式，显示袋子选择浮层
     if (this.data.quickScanMode) {
       this.setData({
         showBoxSelector: false,
@@ -412,7 +413,8 @@ Page({
             // 重置快速拍照模式
             this.setData({
               quickScanMode: false,
-              selectedBox: null
+              selectedBox: null,
+              isAlbumImport: false
             });
           }
         });
@@ -428,7 +430,8 @@ Page({
       // 重置快速拍照模式
       this.setData({
         quickScanMode: false,
-        selectedBox: null
+        selectedBox: null,
+        isAlbumImport: false
       });
     }
   },
@@ -465,7 +468,122 @@ Page({
     this.setData({
       showBagSelector: false,
       quickScanMode: false,
-      selectedBox: null
+      selectedBox: null,
+      isAlbumImport: false
+    });
+  },
+
+  /*** 从相册选择图片   */
+  chooseImageFromAlbum(box, bag) {
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album'],
+      success: (res) => {
+        const imagePath = res.tempFilePaths[0];
+        console.log('选择相册图片成功:', imagePath);
+        
+        // 识别选择的图片
+        this.recognizeAlbumPhoto(imagePath, box, bag);
+      },
+      fail: (error) => {
+        console.error('选择图片失败:', error);
+        wx.showToast({
+          title: '选择图片失败',
+          icon: 'error'
+        });
+      }
+    });
+  },
+
+  /*** 识别相册照片   */
+  async recognizeAlbumPhoto(imagePath, box, bag) {
+    try {
+      wx.showLoading({ title: '上传中...' });
+      
+      // 获取全局配置
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      
+      if (!openid) {
+        throw new Error('用户未登录');
+      }
+      
+      // 上传图片到后台
+      const uploadResult = await this.uploadImageToServer(imagePath, baseUrl, openid);
+      
+      console.log('图片上传成功:', uploadResult);
+      
+      // 使用后台返回的真实识别结果
+      const recognitionResult = uploadResult.data || uploadResult;
+      
+      wx.hideLoading();
+      
+      // 跳转到确认页面，传递完整的box和bag信息
+      const params = {
+        image: encodeURIComponent(imagePath),
+        result: encodeURIComponent(JSON.stringify(recognitionResult)),
+        box_id: box.box_id || box.id,
+        bag_id: bag.bag_id,
+        box_name: encodeURIComponent(box.name || ''),
+        box_color: encodeURIComponent(box.color || '#1296db'),
+        box_location: encodeURIComponent(box.location || ''),
+        bag_name: encodeURIComponent(bag.name || ''),
+        bag_color: encodeURIComponent(bag.color || '#1296db')
+      };
+      
+      const queryString = Object.keys(params)
+        .map(key => `${key}=${params[key]}`)
+        .join('&');
+      
+      wx.navigateTo({ 
+        url: `/packageCamera/pages/item-confirm/item-confirm?${queryString}`
+      });
+      
+    } catch (error) {
+      console.error('处理失败:', error);
+      wx.hideLoading();
+      wx.showToast({
+        title: error.message || '处理失败，请重试',
+        icon: 'error'
+      });
+    }
+  },
+
+  /*** 上传图片到服务器   */
+  uploadImageToServer(imagePath, baseUrl, openid) {
+    return new Promise((resolve, reject) => {
+      wx.uploadFile({
+        url: baseUrl + 'v3/image/upload',
+        filePath: imagePath,
+        name: 'image',
+        formData: {
+          'openid': openid
+        },
+        header: {
+          'content-type': 'multipart/form-data'
+        },
+        success: (res) => {
+          console.log('上传响应:', res);
+          
+          if (res.statusCode === 200) {
+            try {
+              const data = JSON.parse(res.data);
+              resolve(data);
+            } catch (parseError) {
+              console.error('解析响应数据失败:', parseError);
+              resolve({ message: '上传成功', data: res.data });
+            }
+          } else {
+            reject(new Error(`上传失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('上传请求失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
     });
   },
 
@@ -480,6 +598,21 @@ Page({
         title: '信息错误',
         icon: 'error'
       });
+      return;
+    }
+
+    // 如果是相册导入模式，直接选择相册图片
+    if (this.data.isAlbumImport) {
+      // 关闭浮层并重置状态
+      this.setData({
+        showBagSelector: false,
+        quickScanMode: false,
+        selectedBox: null,
+        isAlbumImport: false
+      });
+      
+      // 选择相册图片
+      this.chooseImageFromAlbum(box, bag);
       return;
     }
 
@@ -513,9 +646,29 @@ Page({
 
   /*** 批量导入   */
   onBatchImport() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
+    // 检查是否有箱子
+    if (this.data.boxes.length === 0) {
+      wx.showModal({
+        title: '提示',
+        content: '请先创建一个储物箱，然后再进行相册导入',
+        showCancel: true,
+        cancelText: '取消',
+        confirmText: '创建箱子',
+        success: (res) => {
+          if (res.confirm) {
+            this.onAddBox();
+          }
+        }
+      });
+      return;
+    }
+
+    // 设置为相册导入模式并显示箱子选择浮层
+    this.setData({
+      quickScanMode: true, // 复用快速拍照的模式标识
+      showBoxSelector: true,
+      selectorBoxes: this.data.boxes,
+      isAlbumImport: true // 标识为相册导入模式
     });
   },
 

@@ -32,7 +32,7 @@
   
   <!-- 操作提示 -->
   <view class="tips-container">
-    <view class="tips-text">对准物品拍照进行识别</view>
+    <view class="tips-text">每次只拍一个物品，识别更准确</view>
   </view>
   
   <!-- 底部操作栏 -->
