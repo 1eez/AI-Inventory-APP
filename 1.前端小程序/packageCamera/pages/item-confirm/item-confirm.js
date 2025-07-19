@@ -47,7 +47,9 @@ Page({
     // 提交状态
     submitting: false,
     // 显示位置选择器
-    showLocationPicker: false
+    showLocationPicker: false,
+    // 自定义标签输入
+    customTagInput: ''
   },
 
   /**
@@ -172,6 +174,40 @@ Page({
     this.setData({
       'itemInfo.tags': tags
     });
+  },
+
+  /**
+   * 自定义标签输入变化
+   */
+  onCustomTagInput(e) {
+    this.setData({
+      customTagInput: e.detail.value
+    });
+  },
+
+  /**
+   * 添加自定义标签
+   */
+  onAddCustomTag(e) {
+    const tagValue = e.detail.value.trim();
+    
+    if (tagValue && tagValue.length > 0) {
+      const { tags } = this.data.itemInfo;
+      
+      // 检查标签是否已存在
+      if (!tags.includes(tagValue)) {
+        this.setData({
+          'itemInfo.tags': [...tags, tagValue],
+          customTagInput: '' // 清空输入框但不收起键盘
+        });
+      } else {
+        wx.showToast({
+          title: '标签已存在',
+          icon: 'none',
+          duration: 1500
+        });
+      }
+    }
   },
 
   /**

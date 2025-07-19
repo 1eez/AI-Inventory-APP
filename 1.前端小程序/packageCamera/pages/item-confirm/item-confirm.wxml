@@ -104,6 +104,20 @@
             <text>{{item}}</text>
           </view>
         </view>
+        
+        <!-- 自定义标签输入 -->
+        <view class="custom-tag-input">
+          <input 
+            class="tag-input"
+            type="text"
+            placeholder="输入自定义标签"
+            value="{{customTagInput}}"
+            confirm-type="next"
+            bindinput="onCustomTagInput"
+            bindconfirm="onAddCustomTag"
+            maxlength="10"
+          />
+        </view>
       </view>
       
       <!-- 存放位置 -->
