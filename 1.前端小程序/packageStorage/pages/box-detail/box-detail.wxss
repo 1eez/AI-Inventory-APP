@@ -109,6 +109,34 @@
   overflow: hidden;
 }
 
+/* 编辑按钮样式 */
+.box-edit-btn {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10rpx);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.box-edit-btn:active {
+  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.box-edit-btn .cuIcon-edit {
+  font-size: 32rpx;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.3);
+}
+
 .box-preview-content {
   position: relative;
   z-index: 2;

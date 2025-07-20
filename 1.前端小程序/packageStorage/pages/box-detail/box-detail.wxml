@@ -71,6 +71,10 @@
               </view>
             </view>
           </view>
+          <!-- 编辑按钮 -->
+          <view class="box-edit-btn" bindtap="onEditBox">
+            <text class="cuIcon-edit"></text>
+          </view>
         </view>
       </view>
 

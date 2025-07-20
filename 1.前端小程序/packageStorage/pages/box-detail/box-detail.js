@@ -346,8 +346,17 @@ Page({
    * 编辑箱子信息
    */
   onEditBox() {
+    const boxInfo = this.data.boxInfo;
+    if (!boxInfo) {
+      wx.showToast({
+        title: '箱子信息错误',
+        icon: 'error'
+      });
+      return;
+    }
+    
     wx.navigateTo({
-      url: `/packageStorage/pages/add-box/add-box?mode=edit&id=${this.boxId}`
+      url: `/packageStorage/pages/add-box/add-box?boxId=${boxInfo.id}`
     });
   },
 

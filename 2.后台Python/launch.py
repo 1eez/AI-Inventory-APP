@@ -102,6 +102,11 @@ app.include_router(DeleteBoxRouter)
 from v1_edit_box import router as EditBoxRouter
 app.include_router(EditBoxRouter)
 
+# 接口：/v1/box/get  -- 请求方式GET
+# 【储物箱】获取储物箱详细信息
+from v1_get_box import router as GetBoxRouter
+app.include_router(GetBoxRouter)
+
 # -----------------------------------------------------------
 # 【 -- 袋子管理 -- 】
 # -----------------------------------------------------------

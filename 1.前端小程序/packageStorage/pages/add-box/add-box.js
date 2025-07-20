@@ -56,35 +56,58 @@ Page({
     try {
       wx.showLoading({ title: '加载中...' });
       
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // 获取全局数据
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
       
-      // 模拟数据
-      const mockData = {
-        id: boxId,
-        name: '电子设备收纳盒',
-        description: '存放各种电子设备和配件',
-        color: '#4facfe',
-        location: '书房书桌下方'
-      };
+      if (!openid) {
+        throw new Error('用户未登录，请重新打开小程序');
+      }
       
-      this.setData({
-        formData: mockData
+      // 调用后台接口获取箱子详情
+      const result = await this.requestBoxDetail(baseUrl, {
+        openid: openid,
+        box_id: parseInt(boxId)
       });
       
-      // 更新页面标题
-      wx.setNavigationBarTitle({
-        title: '编辑收纳盒'
-      });
+      if (result.status === 'success' && result.data && result.data.box_info) {
+        const boxInfo = result.data.box_info;
+        
+        // 格式化数据以适配表单
+        const formData = {
+          name: boxInfo.name || '',
+          description: boxInfo.description || '',
+          color: boxInfo.color || '#e54d42',
+          location: boxInfo.location || ''
+        };
+        
+        this.setData({
+          formData: formData
+        });
+        
+        // 更新页面标题
+        wx.setNavigationBarTitle({
+          title: '编辑收纳盒'
+        });
+      } else {
+        throw new Error(result.message || '获取箱子信息失败');
+      }
       
       wx.hideLoading();
       
     } catch (error) {
+      console.error('加载箱子数据失败:', error);
       wx.hideLoading();
       wx.showToast({
-        title: '加载失败',
+        title: error.message || '加载失败',
         icon: 'error'
       });
+      
+      // 加载失败时返回上一页
+      setTimeout(() => {
+        wx.navigateBack();
+      }, 1500);
     }
   },
 
@@ -167,8 +190,8 @@ Page({
       });
       
       if (isEdit) {
-        // 编辑模式 - 暂时保持模拟调用，等待编辑接口
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // 编辑模式 - 调用后台编辑接口
+        await this.editBox(formData);
       } else {
         // 创建模式 - 调用后台接口
         await this.createBox(formData);
@@ -328,6 +351,95 @@ Page({
           icon: 'error'
         });
       }
+    });
+  },
+
+  /**
+   * 获取箱子详情
+   */
+  async requestBoxDetail(baseUrl, data) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v1/box/detail',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: data,
+        success: (res) => {
+          console.log('获取箱子详情接口响应:', res);
+          
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`服务器错误 (${res.statusCode})`));
+          }
+        },
+        fail: (error) => {
+          console.error('获取箱子详情接口调用失败:', error);
+          reject(new Error('网络请求失败，请检查网络连接'));
+        }
+      });
+    });
+  },
+
+  /**
+   * 调用后台接口编辑箱子
+   */
+  async editBox(formData) {
+    return new Promise((resolve, reject) => {
+      // 获取全局数据
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      
+      if (!openid) {
+        reject(new Error('用户未登录，请重新打开小程序'));
+        return;
+      }
+      
+      if (!this.boxId) {
+        reject(new Error('箱子ID缺失'));
+        return;
+      }
+      
+      // 构建请求数据
+      const requestData = {
+        openid: openid,
+        box_id: parseInt(this.boxId),
+        name: formData.name.trim(),
+        description: formData.description || '',
+        color: formData.color || '#1296db',
+        location: formData.location || ''
+      };
+      
+      console.log('编辑箱子请求数据:', requestData);
+      
+      wx.request({
+        url: baseUrl + 'v1/box/edit',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: requestData,
+        success: (res) => {
+          console.log('编辑箱子接口响应:', res);
+          
+          if (res.statusCode === 200) {
+            if (res.data && res.data.status === 'success') {
+              resolve(res.data);
+            } else {
+              reject(new Error(res.data?.message || '编辑失败'));
+            }
+          } else {
+            reject(new Error(`服务器错误 (${res.statusCode})`));
+          }
+        },
+        fail: (error) => {
+          console.error('编辑箱子接口调用失败:', error);
+          reject(new Error('网络请求失败，请检查网络连接'));
+        }
+      });
     });
   },
 
