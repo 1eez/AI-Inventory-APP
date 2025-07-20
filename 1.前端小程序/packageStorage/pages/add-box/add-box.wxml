@@ -5,7 +5,7 @@
   <!-- 自定义导航栏 -->
   <cu-custom bgColor="bg-white" isBack="{{true}}">
     <view slot="backText">返回</view>
-    <view slot="content">{{boxId ? '编辑储物箱' : '添加储物箱'}}</view>
+    <view slot="content">{{isEdit ? '编辑储物箱' : '添加储物箱'}}</view>
     <view slot="right">
       <text class="cuIcon-add" bindtap="onScanAdd"></text>
     </view>
@@ -152,7 +152,7 @@
         disabled="{{submitting || !formData.name}}"
         loading="{{submitting}}"
       >
-        {{boxId ? '保存' : '创建'}}
+        {{isEdit ? '保存' : '创建'}}
       </button>
     </view>
   </view>

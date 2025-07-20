@@ -235,6 +235,34 @@
   background: linear-gradient(90deg, #667eea, #764ba2);
 }
 
+/* 袋子编辑按钮样式 */
+.bag-edit-btn {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10rpx);
+  transition: all 0.3s ease;
+  z-index: 10;
+  border: 2rpx solid rgba(102, 126, 234, 0.2);
+}
+
+.bag-edit-btn:active {
+  transform: scale(0.9);
+  background: rgba(102, 126, 234, 0.2);
+}
+
+.bag-edit-btn .cuIcon-edit {
+  font-size: 32rpx;
+  color: #667eea;
+}
+
 /* 左侧袋子预览区域 */
 .bag-preview-section {
   margin-right: 30rpx;

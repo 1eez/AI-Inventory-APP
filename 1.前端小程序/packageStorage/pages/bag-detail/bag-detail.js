@@ -78,7 +78,7 @@ Page({
 
   onShow() {
     // 页面显示时刷新数据
-    if (this.data.bagId && !this.data.loading) {
+    if (this.data.bagId) {
       this.loadBagInfo();
       this.loadItems();
     }
@@ -407,10 +407,23 @@ Page({
 
   // 编辑袋子
   onEditBag() {
-    // TODO: 跳转到编辑袋子页面
-    wx.showToast({
-      title: '编辑袋子功能开发中',
-      icon: 'none'
+    const { bagInfo, boxInfo, bagId, boxId } = this.data;
+    
+    // 构建编辑页面参数
+    const params = {
+      bagId: bagId,
+      boxId: boxId,
+      boxName: encodeURIComponent(boxInfo.name || ''),
+      boxLocation: encodeURIComponent(boxInfo.location || ''),
+      boxColor: encodeURIComponent(boxInfo.color || '#1296db')
+    };
+    
+    const queryString = Object.keys(params)
+      .map(key => `${key}=${params[key]}`)
+      .join('&');
+    
+    wx.navigateTo({
+      url: `/packageStorage/pages/add-bag/add-bag?${queryString}`
     });
   },
 

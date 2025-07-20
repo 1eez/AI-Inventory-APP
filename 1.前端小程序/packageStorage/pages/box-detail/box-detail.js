@@ -143,6 +143,97 @@ Page({
   },
 
   /**
+   * 从服务器加载箱子信息（用于页面刷新）
+   */
+  async loadBoxInfoFromServer() {
+    try {
+      // 获取全局数据
+      const openid = app.globalData.openid;
+      const baseUrl = app.globalData.baseUrl;
+      
+      if (!openid) {
+        throw new Error('用户身份信息缺失');
+      }
+      
+      if (!this.boxId) {
+        throw new Error('箱子ID缺失');
+      }
+      
+      // 调用后台接口获取箱子详情
+      const result = await this.requestBoxDetail(baseUrl, {
+        openid: openid,
+        box_id: parseInt(this.boxId)
+      });
+      
+      if (result.status === 'success' && result.data && result.data.box_info) {
+        const boxData = result.data.box_info;
+        
+        // 格式化数据以适配WXML显示
+        const formattedBoxInfo = {
+          id: boxData.box_id || boxData.id,
+          name: boxData.name,
+          description: boxData.description,
+          color: boxData.color,
+          location: boxData.location,
+          icon: boxData.icon || 'cuIcon-goods',
+          createTime: this.formatDate(boxData.created_at),
+          totalBags: this.data.boxInfo?.totalBags || 0, // 保持当前袋子数量
+          totalItems: boxData.item_count || 0,
+          tags: [] // TODO: 从后台获取标签信息
+        };
+        
+        this.setData({
+          boxInfo: formattedBoxInfo
+        });
+        
+        // 更新页面标题
+        wx.setNavigationBarTitle({
+          title: formattedBoxInfo.name
+        });
+        
+        console.log('从服务器刷新箱子信息成功:', formattedBoxInfo);
+      } else {
+        throw new Error(result.message || '获取箱子信息失败');
+      }
+      
+    } catch (error) {
+      console.error('从服务器加载箱子信息失败:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * 获取箱子详情
+   */
+  async requestBoxDetail(baseUrl, data) {
+    return new Promise((resolve, reject) => {
+      // 构建GET请求的URL参数
+      const params = `openid=${encodeURIComponent(data.openid)}&box_id=${data.box_id}`;
+      
+      wx.request({
+        url: baseUrl + 'v1/box/get?' + params,
+        method: 'GET',
+        header: {
+          'content-type': 'application/json'
+        },
+        success: (res) => {
+          console.log('获取箱子详情接口响应:', res);
+          
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`服务器错误 (${res.statusCode})`));
+          }
+        },
+        fail: (error) => {
+          console.error('获取箱子详情接口调用失败:', error);
+          reject(new Error('网络请求失败，请检查网络连接'));
+        }
+      });
+    });
+  },
+
+  /**
    * 格式化日期显示
    */
   formatDate(dateString) {
@@ -627,10 +718,18 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow() {
+  async onShow() {
     // 页面显示时刷新数据
     if (!this.data.loading && this.data.boxInfo) {
-      this.loadBags();
+      try {
+        // 重新加载箱子信息和袋子列表，确保编辑后的数据能及时更新
+        await this.loadBoxInfoFromServer();
+        await this.loadBags();
+      } catch (error) {
+        console.error('页面显示时刷新数据失败:', error);
+        // 如果刷新失败，至少刷新袋子列表
+        this.loadBags();
+      }
     }
   },
 

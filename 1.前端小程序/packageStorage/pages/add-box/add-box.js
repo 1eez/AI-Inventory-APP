@@ -9,6 +9,10 @@ Page({
    * 页面的初始数据
    */
   data: {
+    // 编辑模式标识
+    isEdit: false,
+    boxId: null,
+    
     // 表单数据
     formData: {
       name: '',
@@ -44,6 +48,10 @@ Page({
     
     // 如果是编辑模式，加载现有数据
     if (options.boxId) {
+      this.setData({
+        isEdit: true,
+        boxId: options.boxId
+      });
       this.boxId = options.boxId;
       this.loadBoxData(options.boxId);
     }
@@ -359,13 +367,15 @@ Page({
    */
   async requestBoxDetail(baseUrl, data) {
     return new Promise((resolve, reject) => {
+      // 构建GET请求的URL参数
+      const params = `openid=${encodeURIComponent(data.openid)}&box_id=${data.box_id}`;
+      
       wx.request({
-        url: baseUrl + 'v1/box/detail',
-        method: 'POST',
+        url: baseUrl + 'v1/box/get?' + params,
+        method: 'GET',
         header: {
           'content-type': 'application/json'
         },
-        data: data,
         success: (res) => {
           console.log('获取箱子详情接口响应:', res);
           

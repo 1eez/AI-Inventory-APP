@@ -3,7 +3,7 @@
 <!-- 自定义导航栏 -->
 <cu-custom bgColor="bg-white" isBack="{{true}}">
   <view slot="backText">返回</view>
-  <view slot="content">{{bagId ? '编辑收纳袋' : '添加收纳袋'}}</view>
+  <view slot="content">{{isEdit ? '编辑收纳袋' : '添加收纳袋'}}</view>
 </cu-custom>
 
 <view class="page-container">
@@ -105,7 +105,7 @@
       disabled="{{submitting || !formData.name}}"
       loading="{{submitting}}"
     >
-      {{bagId ? '保存' : '创建'}}
+      {{isEdit ? '保存' : '创建'}}
     </button>
   </view>
 </view>

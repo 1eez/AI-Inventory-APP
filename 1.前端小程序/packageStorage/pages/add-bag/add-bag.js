@@ -9,6 +9,9 @@ Page({
    * 页面的初始数据
    */
   data: {
+    // 编辑模式标识
+    isEdit: false,
+    bagId: null,
     // 表单数据
     formData: {
       name: '',
@@ -72,6 +75,10 @@ Page({
     
     // 如果是编辑模式，加载现有数据
     if (options.bagId) {
+      this.setData({
+        isEdit: true,
+        bagId: options.bagId
+      });
       this.bagId = options.bagId;
       this.loadBagData(options.bagId);
     }
@@ -86,19 +93,15 @@ Page({
     try {
       wx.showLoading({ title: '加载中...' });
       
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // 模拟数据
-      const mockData = {
-        id: bagId,
-        name: '笔记本电脑袋',
-        color: '#667eea',
-        boxId: this.data.formData.boxId
-      };
+      // 调用后台API获取袋子详情
+      const bagData = await this.requestBagDetail(bagId);
       
       this.setData({
-        formData: mockData
+        formData: {
+          name: bagData.name,
+          color: bagData.color,
+          boxId: this.data.formData.boxId
+        }
       });
       
       // 更新页面标题
@@ -111,7 +114,7 @@ Page({
     } catch (error) {
       wx.hideLoading();
       wx.showToast({
-        title: '加载失败',
+        title: error.message || '加载失败',
         icon: 'error'
       });
     }
@@ -194,13 +197,23 @@ Page({
         throw new Error('用户未登录');
       }
       
-      // 调用后台接口添加袋子
-      const response = await this.addBagToServer({
-        openid: openid,
-        box_id: parseInt(formData.boxId),
-        name: formData.name.trim(),
-        color: formData.color
-      }, baseUrl);
+      // 根据编辑模式调用不同的接口
+      let response;
+      if (isEdit) {
+        response = await this.editBagToServer({
+          openid: openid,
+          bag_id: parseInt(this.bagId),
+          name: formData.name.trim(),
+          color: formData.color
+        }, baseUrl);
+      } else {
+        response = await this.addBagToServer({
+          openid: openid,
+          box_id: parseInt(formData.boxId),
+          name: formData.name.trim(),
+          color: formData.color
+        }, baseUrl);
+      }
       
       wx.hideLoading();
       
@@ -314,6 +327,82 @@ Page({
   },
 
 
+
+  /**
+   * 获取袋子详情
+   */
+  requestBagDetail(bagId) {
+    const app = getApp();
+    const baseUrl = app.globalData.baseUrl;
+    const openid = app.globalData.openid;
+    
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `${baseUrl}v3/item/get`,
+        method: 'GET',
+        data: {
+          openid: openid,
+          box_id: parseInt(this.data.formData.boxId),
+          bag_id: parseInt(bagId)
+        },
+        success: (res) => {
+          console.log('获取袋子详情接口响应:', res);
+          
+          if (res.statusCode === 200 && res.data.status === 'success') {
+            const responseData = res.data.data;
+            
+            // 检查袋子信息是否存在
+            if (responseData && responseData.bag_info) {
+              const bagInfo = responseData.bag_info;
+              resolve({
+                name: bagInfo.name,
+                color: bagInfo.color || '#f37b1d'
+              });
+            } else {
+              console.error('袋子信息不存在:', responseData);
+              reject(new Error('袋子信息不存在'));
+            }
+          } else {
+            console.error('API响应错误:', res.data);
+            reject(new Error(res.data.message || '获取袋子详情失败'));
+          }
+        },
+        fail: (error) => {
+          console.error('获取袋子详情接口失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
+  },
+
+  /**
+   * 调用后台接口编辑袋子
+   */
+  editBagToServer(bagData, baseUrl) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v2/bag/edit',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: bagData,
+        success: (res) => {
+          console.log('编辑袋子接口响应:', res);
+          
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('请求编辑袋子接口失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
+  },
 
   /**
    * 分享页面

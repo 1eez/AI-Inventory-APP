@@ -134,6 +134,11 @@
               </view>
             </view>
           </view>
+          
+          <!-- 编辑按钮 -->
+          <view class="bag-edit-btn" bindtap="onEditBag">
+            <text class="cuIcon-edit"></text>
+          </view>
         </view>
       </view>
 
