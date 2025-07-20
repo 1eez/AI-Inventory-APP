@@ -97,6 +97,11 @@ app.include_router(AddBoxRouter)
 from v1_delete_box import router as DeleteBoxRouter
 app.include_router(DeleteBoxRouter)
 
+# 接口：/v1/box/edit  -- 请求方式POST
+# 【储物箱】编辑储物箱
+from v1_edit_box import router as EditBoxRouter
+app.include_router(EditBoxRouter)
+
 # -----------------------------------------------------------
 # 【 -- 袋子管理 -- 】
 # -----------------------------------------------------------
@@ -114,6 +119,11 @@ app.include_router(DeleteBagRouter)
 # 【袋子】获取袋子信息
 from v2_get_bag import router as GetBagRouter
 app.include_router(GetBagRouter)
+
+# 接口：/v2/bag/edit  -- 请求方式POST
+# 【袋子】编辑袋子
+from v2_edit_bag import router as EditBagRouter
+app.include_router(EditBagRouter)
 
 # -----------------------------------------------------------
 # 【 -- 物品管理 -- 】
@@ -137,6 +147,11 @@ app.include_router(DeleteItemRouter)
 # 【物品】获取物品信息
 from v3_get_item import router as GetItemRouter
 app.include_router(GetItemRouter)
+
+# 接口：/v3/item/edit  -- 请求方式POST
+# 【物品】编辑物品
+from v3_edit_item import router as EditItemRouter
+app.include_router(EditItemRouter)
 
 # -----------------------------------------------------------
 # 【 -- 测试模块 -- 】
