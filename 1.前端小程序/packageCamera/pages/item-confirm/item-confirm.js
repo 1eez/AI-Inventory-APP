@@ -9,6 +9,10 @@ Page({
    * 页面的初始数据
    */
   data: {
+    // 编辑模式标识
+    isEdit: false,
+    // 物品ID（编辑模式使用）
+    itemId: '',
     // 拍摄的图片
     imagePath: '',
     // AI识别结果
@@ -58,31 +62,65 @@ Page({
   onLoad(options) {
     console.log('物品确认页面加载', options);
     
+    // 检查是否为编辑模式，兼容不同的参数格式
+    const itemId = options.item_id || options.itemId || '';
+    const isEdit = !!itemId;
+    
+    this.setData({
+      isEdit: isEdit,
+      itemId: itemId
+    });
+    
+    if (isEdit) {
+      // 编辑模式：加载现有物品数据
+      this.loadItemData(itemId, options);
+    } else {
+      // 添加模式：处理AI识别结果
+      this.handleAddMode(options);
+    }
+  },
+
+  /**
+   * 处理添加模式
+   */
+  handleAddMode(options) {
     const imagePath = decodeURIComponent(options.image || '');
     const resultStr = decodeURIComponent(options.result || '{}');
     
-    // 获取box和bag信息
-    const boxId = options.box_id || '';
-    const bagId = options.bag_id || '';
-    const boxName = decodeURIComponent(options.box_name || '');
-    const boxColor = decodeURIComponent(options.box_color || '#1296db');
-    const boxLocation = decodeURIComponent(options.box_location || '');
-    const bagName = decodeURIComponent(options.bag_name || '');
-    const bagColor = decodeURIComponent(options.bag_color || '#1296db');
+    // 获取box和bag信息，兼容新旧参数格式
+    const boxId = options.boxId || options.box_id || '';
+    const bagId = options.bagId || options.bag_id || '';
+    const boxName = decodeURIComponent(options.boxName || options.box_name || '');
+    const boxColor = decodeURIComponent(options.boxColor || options.box_color || '#1296db');
+    const boxLocation = decodeURIComponent(options.boxLocation || options.box_location || '');
+    const bagName = decodeURIComponent(options.bagName || options.bag_name || '');
+    const bagColor = decodeURIComponent(options.bagColor || options.bag_color || '#1296db');
 
-    
     try {
       const recognitionResult = JSON.parse(resultStr);
       
       // 从后台返回的嵌套数据结构中提取分析结果
       const analysisResult = recognitionResult.data?.analysis_result || recognitionResult.analysis_result || recognitionResult;
       
+      // 处理tags数据结构，将对象数组转换为字符串数组
+      let tags = [];
+      if (analysisResult.tags && Array.isArray(analysisResult.tags)) {
+        tags = analysisResult.tags.map(tag => {
+          // 如果tag是对象（包含tag_id和name），则提取name
+          if (typeof tag === 'object' && tag.name) {
+            return tag.name;
+          }
+          // 如果tag是字符串，直接返回
+          return tag;
+        });
+      }
+      
       // 使用后台返回的数据作为预填信息
       const itemInfo = {
         name: analysisResult.name || '',
         description: analysisResult.description || '',
         category: analysisResult.category || '',
-        tags: analysisResult.tags || [],
+        tags: tags,
         location: {
           boxId: boxId,
           bagId: bagId,
@@ -117,6 +155,75 @@ Page({
       console.error('解析识别结果失败:', error);
       wx.showToast({
         title: '数据错误',
+        icon: 'error'
+      });
+      setTimeout(() => {
+        wx.navigateBack();
+      }, 1500);
+    }
+  },
+
+  /**
+   * 加载物品数据（编辑模式）
+   */
+  async loadItemData(itemId, options) {
+    try {
+      wx.showLoading({ title: '加载中...' });
+      
+      // 获取box和bag信息，兼容新旧参数格式
+      const boxId = options.boxId || options.box_id || '';
+      const bagId = options.bagId || options.bag_id || '';
+      const boxName = decodeURIComponent(options.boxName || options.box_name || '');
+      const boxColor = decodeURIComponent(options.boxColor || options.box_color || '#1296db');
+      const boxLocation = decodeURIComponent(options.boxLocation || options.box_location || '');
+      const bagName = decodeURIComponent(options.bagName || options.bag_name || '');
+      const bagColor = decodeURIComponent(options.bagColor || options.bag_color || '#1296db');
+      
+      // 调用后台API获取物品详情
+      const itemData = await this.requestItemDetail(itemId, boxId, bagId);
+      
+      // 设置物品信息
+      const itemInfo = {
+        name: itemData.title || '',
+        description: itemData.description || '',
+        category: itemData.category || '',
+        tags: itemData.tags || [],
+        location: {
+          boxId: boxId,
+          bagId: bagId,
+          boxName: boxName,
+          bagName: bagName
+        }
+      };
+      
+      this.setData({
+        itemInfo,
+        imagePath: itemData.image_url || '',
+        boxInfo: {
+          id: boxId,
+          name: boxName,
+          color: boxColor,
+          location: boxLocation
+        },
+        bagInfo: {
+          id: bagId,
+          name: bagName,
+          color: bagColor
+        }
+      });
+      
+      // 更新页面标题
+      wx.setNavigationBarTitle({
+        title: '编辑物品'
+      });
+      
+      wx.hideLoading();
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载物品数据失败:', error);
+      wx.showToast({
+        title: error.message || '加载失败',
         icon: 'error'
       });
       setTimeout(() => {
@@ -250,6 +357,77 @@ Page({
   },
 
   /**
+   * 获取物品详情
+   */
+  requestItemDetail(itemId, boxId, bagId) {
+    const app = getApp();
+    const baseUrl = app.globalData.baseUrl;
+    const openid = app.globalData.openid;
+    
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `${baseUrl}v3/item/get`,
+        method: 'GET',
+        data: {
+          openid: openid,
+          box_id: parseInt(boxId),
+          bag_id: parseInt(bagId),
+          item_id: parseInt(itemId)
+        },
+        success: (res) => {
+          console.log('获取物品详情接口响应:', res);
+          
+          if (res.statusCode === 200 && res.data.status === 'success') {
+            const responseData = res.data.data;
+            
+            // 检查物品信息是否存在
+            if (responseData && responseData.item_info) {
+              const itemData = responseData.item_info;
+              
+              // 构建完整的图片URL
+              let imageUrl = '';
+              if (itemData.image_filename) {
+                imageUrl = `${baseUrl}Photos/${itemData.image_filename}`;
+              }
+              
+              // 处理tags数据结构，将对象数组转换为字符串数组
+              let tags = [];
+              if (itemData.tags && Array.isArray(itemData.tags)) {
+                tags = itemData.tags.map(tag => {
+                  // 如果tag是对象（包含tag_id和name），则提取name
+                  if (typeof tag === 'object' && tag.name) {
+                    return tag.name;
+                  }
+                  // 如果tag是字符串，直接返回
+                  return tag;
+                });
+              }
+              
+              resolve({
+                title: itemData.title,
+                description: itemData.description || '',
+                category: itemData.category || '',
+                tags: tags,
+                image_url: imageUrl
+              });
+            } else {
+              console.error('物品信息不存在:', responseData);
+              reject(new Error('物品信息不存在'));
+            }
+          } else {
+            console.error('API响应错误:', res.data);
+            reject(new Error(res.data.message || '获取物品详情失败'));
+          }
+        },
+        fail: (error) => {
+          console.error('获取物品详情接口失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
+  },
+
+  /**
    * 加载收纳位置选项
    */
   async loadStorageOptions() {
@@ -274,13 +452,71 @@ Page({
     wx.navigateBack();
   },
 
+  /**
+   * 添加物品到服务器
+   */
+  async addItemToServer(requestData, baseUrl) {
+    console.log('提交物品数据:', requestData);
+    
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v3/item/add',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: requestData,
+        success: (res) => {
+          console.log('添加物品接口响应:', res);
+          if (res.statusCode === 200 && res.data && res.data.status === 'success') {
+            resolve(res.data);
+          } else {
+            reject(new Error(res.data?.message || '添加失败'));
+          }
+        },
+        fail: (error) => {
+          console.error('添加物品接口调用失败:', error);
+          reject(error);
+        }
+      });
+    });
+  },
 
+  /**
+   * 编辑物品到服务器
+   */
+  async editItemToServer(requestData, baseUrl) {
+    console.log('编辑物品数据:', requestData);
+    
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v3/item/edit',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: requestData,
+        success: (res) => {
+          console.log('编辑物品接口响应:', res);
+          if (res.statusCode === 200 && res.data && res.data.status === 'success') {
+            resolve(res.data);
+          } else {
+            reject(new Error(res.data?.message || '编辑失败'));
+          }
+        },
+        fail: (error) => {
+          console.error('编辑物品接口调用失败:', error);
+          reject(error);
+        }
+      });
+    });
+  },
 
   /**
    * 提交物品信息
    */
   async onSubmit() {
-    const { itemInfo, imagePath, recognitionResult } = this.data;
+    const { itemInfo, imagePath, recognitionResult, isEdit, itemId } = this.data;
     
     // 验证必填信息
     if (!itemInfo.name.trim()) {
@@ -318,75 +554,66 @@ Page({
     try {
       this.setData({ submitting: true });
       
-      wx.showLoading({ title: '添加中...' });
+      const loadingTitle = isEdit ? '保存中...' : '添加中...';
+      wx.showLoading({ title: loadingTitle });
       
       // 获取全局数据
       const app = getApp();
       const baseUrl = app.globalData.baseUrl;
       const openid = app.globalData.openid;
       
-      // 提取图片文件名（从recognitionResult中获取）
-      const imageFilename = recognitionResult?.data?.image_filename || recognitionResult?.image_filename || '';
+      let result;
       
-      // 构建请求数据
-      const requestData = {
-        openid: openid,
-        box_id: parseInt(itemInfo.location.boxId),
-        bag_id: parseInt(itemInfo.location.bagId),
-        title: itemInfo.name.trim(),
-        description: itemInfo.description || '',
-        category: itemInfo.category || '',
-        image_filename: imageFilename,
-        tags: itemInfo.tags || []
-      };
-      
-      console.log('提交物品数据:', requestData);
-      
-      // 调用后台接口
-      const result = await new Promise((resolve, reject) => {
-        wx.request({
-          url: baseUrl + 'v3/item/add',
-          method: 'POST',
-          header: {
-            'content-type': 'application/json'
-          },
-          data: requestData,
-          success: (res) => {
-            console.log('添加物品接口响应:', res);
-            if (res.statusCode === 200 && res.data && res.data.status === 'success') {
-              resolve(res.data);
-            } else {
-              reject(new Error(res.data?.message || '添加失败'));
-            }
-          },
-          fail: (error) => {
-            console.error('添加物品接口调用失败:', error);
-            reject(error);
-          }
-        });
-      });
+      if (isEdit) {
+        // 编辑模式：调用编辑接口
+        result = await this.editItemToServer({
+          openid: openid,
+          item_id: parseInt(itemId),
+          title: itemInfo.name.trim(),
+          description: itemInfo.description || '',
+          category: itemInfo.category || '',
+          tags: itemInfo.tags || []
+        }, baseUrl);
+      } else {
+        // 添加模式：调用添加接口
+        const imageFilename = recognitionResult?.data?.image_filename || recognitionResult?.image_filename || '';
+        
+        result = await this.addItemToServer({
+          openid: openid,
+          box_id: parseInt(itemInfo.location.boxId),
+          bag_id: parseInt(itemInfo.location.bagId),
+          title: itemInfo.name.trim(),
+          description: itemInfo.description || '',
+          category: itemInfo.category || '',
+          image_filename: imageFilename,
+          tags: itemInfo.tags || []
+        }, baseUrl);
+      }
       
       wx.hideLoading();
       
+      const successTitle = isEdit ? '保存成功' : '添加成功';
       wx.showToast({
-        title: '添加成功',
+        title: successTitle,
         icon: 'success'
       });
       
-      console.log('物品添加成功:', result);
+      console.log(isEdit ? '物品编辑成功:' : '物品添加成功:', result);
       
-      // 返回两层页面
+      // 根据模式返回不同层数
+      const delta = isEdit ? 1 : 2;
       setTimeout(() => {
         wx.navigateBack({
-          delta: 2
+          delta: delta
         });
       }, 1500);
       
     } catch (error) {
-      console.error('添加物品失败:', error);
+      console.error(isEdit ? '编辑物品失败:' : '添加物品失败:', error);
       wx.hideLoading();
+      const errorTitle = isEdit ? '保存失败，请重试' : '添加失败，请重试';
       wx.showToast({
-        title: error.message || '添加失败，请重试',
+        title: error.message || errorTitle,
         icon: 'error'
       });
     } finally {

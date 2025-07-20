@@ -21,7 +21,6 @@ Page({
       icon: 'cuIcon-goods',
       tags: [],
       itemCount: 0,
-      totalValue: 0,
       createTime: '',
       lastUsed: '',
       location: ''
@@ -80,7 +79,17 @@ Page({
     // 页面显示时刷新数据
     if (this.data.bagId) {
       this.loadBagInfo();
-      this.loadItems();
+      this.loadItems().then(() => {
+        // 如果物品详情弹窗正在显示，更新selectedItem数据
+        if (this.data.showItemDetail && this.data.selectedItem) {
+          const updatedItem = this.data.items.find(item => item.id === this.data.selectedItem.id);
+          if (updatedItem) {
+            this.setData({
+              selectedItem: updatedItem
+            });
+          }
+        }
+      });
     }
   },
 
@@ -180,15 +189,27 @@ Page({
             
             // 更新袋子信息
             if (responseData.bag_info) {
+              // 处理袋子tags数据结构，将对象数组转换为字符串数组
+              let bagTags = [];
+              if (responseData.bag_info.tags && Array.isArray(responseData.bag_info.tags)) {
+                bagTags = responseData.bag_info.tags.map(tag => {
+                  // 如果tag是对象（包含tag_id和name），则提取name
+                  if (typeof tag === 'object' && tag.name) {
+                    return tag.name;
+                  }
+                  // 如果tag是字符串，直接返回
+                  return tag;
+                });
+              }
+              
               const bagInfo = {
                 id: responseData.bag_info.bag_id,
                 name: responseData.bag_info.name,
                 description: responseData.bag_info.description || '',
                 color: responseData.bag_info.color || '#1296db',
                 icon: responseData.bag_info.icon || 'cuIcon-goods',
-                tags: responseData.bag_info.tags || [],
+                tags: bagTags,
                 itemCount: responseData.total_count || 0,
-                totalValue: responseData.bag_info.total_value || 0,
                 createTime: this.formatDate(responseData.bag_info.created_at),
                 lastUsed: responseData.bag_info.last_used ? this.formatDate(responseData.bag_info.last_used) : '',
                 location: responseData.bag_info.location || ''
@@ -199,6 +220,19 @@ Page({
             
             // 更新箱子信息
             if (responseData.box_info) {
+              // 处理箱子tags数据结构，将对象数组转换为字符串数组
+              let boxTags = [];
+              if (responseData.box_info.tags && Array.isArray(responseData.box_info.tags)) {
+                boxTags = responseData.box_info.tags.map(tag => {
+                  // 如果tag是对象（包含tag_id和name），则提取name
+                  if (typeof tag === 'object' && tag.name) {
+                    return tag.name;
+                  }
+                  // 如果tag是字符串，直接返回
+                  return tag;
+                });
+              }
+              
               const boxInfo = {
                 id: responseData.box_info.box_id,
                 name: responseData.box_info.name,
@@ -209,7 +243,7 @@ Page({
                 createTime: this.formatDate(responseData.box_info.created_at),
                 totalBags: 0, // TODO: 从后台获取袋子数量
                 totalItems: responseData.box_info.item_count || 0,
-                tags: responseData.box_info.tags || []
+                tags: boxTags
               };
               
               this.setData({ boxInfo });
@@ -218,23 +252,36 @@ Page({
             // 处理物品列表
             const items = responseData.items_list || [];
             const photosBaseUrl = `${baseUrl}Photos/`; // 图片基础URL
-            const formattedItems = items.map(item => ({
-              id: item.item_id,
-              name: item.title || '未命名物品',
-              description: item.description || '',
-              image: item.image_filename ? `${photosBaseUrl}${item.image_filename}` : '/images/placeholder.png',
-              category: item.category || '其他',
-              tags: item.tags || [],
-              value: item.value || 0,
-              quantity: item.quantity || 1,
-              condition: item.condition || '良好',
-              purchaseDate: item.purchase_date || '',
-              lastUsed: item.last_used || '',
-              sortId: item.sort_id || 0,
-              boxId: item.box_id,
-              bagId: item.bag_id,
-              createTime: this.formatDate(item.created_at)
-            }));
+            const formattedItems = items.map(item => {
+              // 处理tags数据结构，将对象数组转换为字符串数组
+              let tags = [];
+              if (item.tags && Array.isArray(item.tags)) {
+                tags = item.tags.map(tag => {
+                  // 如果tag是对象（包含tag_id和name），则提取name
+                  if (typeof tag === 'object' && tag.name) {
+                    return tag.name;
+                  }
+                  // 如果tag是字符串，直接返回
+                  return tag;
+                });
+              }
+              
+              return {
+                id: item.item_id,
+                name: item.title || '未命名物品',
+                description: item.description || '',
+                image: item.image_filename ? `${photosBaseUrl}${item.image_filename}` : '/images/placeholder.png',
+                category: item.category || '其他',
+                tags: tags,
+                condition: item.condition || '良好',
+                purchaseDate: item.purchase_date || '',
+                lastUsed: item.last_used || '',
+                sortId: item.sort_id || 0,
+                boxId: item.box_id,
+                bagId: item.bag_id,
+                createTime: this.formatDate(item.created_at)
+              };
+            });
             
             resolve(formattedItems);
           } else {
@@ -277,16 +324,13 @@ Page({
   updateStatistics() {
     const items = this.data.items;
     const totalItems = items.length;
-    const totalValue = items.reduce((sum, item) => sum + (item.value || 0), 0);
     const categories = [...new Set(items.map(item => item.category))].length;
     
     this.setData({
       'statistics.totalItems': totalItems,
-      'statistics.totalValue': totalValue,
       'statistics.categories': categories,
       'statistics.lastUpdate': new Date().toLocaleDateString(),
-      'bagInfo.itemCount': totalItems,
-      'bagInfo.totalValue': totalValue
+      'bagInfo.itemCount': totalItems
     });
   },
 
@@ -470,12 +514,40 @@ Page({
   },
 
   // 编辑物品
-  onEditItem(itemId) {
+  onEditItem(e) {
+    // 从事件对象或参数中获取物品ID
+    const itemId = e.currentTarget ? e.currentTarget.dataset.id : e;
     console.log('编辑物品:', itemId);
-    // TODO: 跳转到编辑物品页面
-    wx.showToast({
-      title: '编辑物品功能开发中',
-      icon: 'none'
+    
+    const item = this.data.items.find(item => item.id == itemId);
+    if (!item) {
+      wx.showToast({
+        title: '物品不存在',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    const { bagInfo, boxInfo, bagId, boxId } = this.data;
+    
+    // 构建编辑页面参数
+    const params = {
+      item_id: itemId,
+      boxId: boxId,
+      bagId: bagId,
+      boxName: encodeURIComponent(boxInfo.name || ''),
+      boxLocation: encodeURIComponent(boxInfo.location || ''),
+      boxColor: encodeURIComponent(boxInfo.color || '#1296db'),
+      bagName: encodeURIComponent(bagInfo.name || ''),
+      bagColor: encodeURIComponent(bagInfo.color || '#1296db')
+    };
+    
+    const queryString = Object.keys(params)
+      .map(key => `${key}=${params[key]}`)
+      .join('&');
+    
+    wx.navigateTo({
+      url: `/packageCamera/pages/item-confirm/item-confirm?${queryString}`
     });
   },
 

@@ -3,7 +3,7 @@
 <!-- 自定义导航栏 -->
 <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
   <view slot="backText">返回</view>
-  <view slot="content">确认物品信息</view>
+  <view slot="content">{{isEdit ? '编辑物品信息' : '确认物品信息'}}</view>
 </cu-custom>
 
 <view class="page-container">
@@ -148,7 +148,7 @@
       disabled="{{submitting || !itemInfo.name || !itemInfo.category}}"
       loading="{{submitting}}"
     >
-      {{submitting ? '添加中...' : '确认添加'}}
+      {{submitting ? (isEdit ? '保存中...' : '添加中...') : (isEdit ? '保存变更' : '确认添加')}}
     </button>
   </view>
 </view>

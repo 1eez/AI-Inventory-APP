@@ -269,21 +269,7 @@
               <view class="detail-value">{{selectedItem.createTime}}</view>
             </view>
             
-            <view class="detail-item" wx:if="{{selectedItem.quantity > 1}}">
-              <view class="detail-label">
-                <text class="cuIcon-copy detail-icon"></text>
-                <text>数量</text>
-              </view>
-              <view class="detail-value">{{selectedItem.quantity}} 件</view>
-            </view>
-            
-            <view class="detail-item" wx:if="{{selectedItem.value}}">
-              <view class="detail-label">
-                <text class="cuIcon-moneybag detail-icon"></text>
-                <text>价值</text>
-              </view>
-              <view class="detail-value">¥{{selectedItem.value}}</view>
-            </view>
+
           </view>
           
           <!-- 物品标签 -->

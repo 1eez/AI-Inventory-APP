@@ -37,6 +37,27 @@ def verify_bag_ownership(user_id: int, box_id: int, bag_id: int, db_manager: Dat
     result = db_manager.execute_query(query, (bag_id, box_id, user_id), fetch_one=True)
     return result['count'] > 0
 
+def get_item_tags(item_id: int, db_manager: DatabaseManager) -> List[Dict[str, Any]]:
+    """
+    获取物品的标签列表
+    
+    Args:
+        item_id: 物品ID
+        db_manager: 数据库管理器实例
+        
+    Returns:
+        List[Dict]: 标签列表
+    """
+    query = """
+    SELECT t.tag_id, t.name 
+    FROM tags t 
+    JOIN items_tags it ON t.tag_id = it.tag_id 
+    WHERE it.item_id = ?
+    """
+    
+    results = db_manager.execute_query(query, (item_id,))
+    return [dict(row) for row in results]
+
 def get_items_by_bag(bag_id: int, db_manager: DatabaseManager) -> List[Dict[str, Any]]:
     """
     根据袋子ID获取物品列表
@@ -46,7 +67,7 @@ def get_items_by_bag(bag_id: int, db_manager: DatabaseManager) -> List[Dict[str,
         db_manager: 数据库管理器实例
         
     Returns:
-        List[Dict]: 物品列表
+        List[Dict]: 物品列表（包含标签信息）
     """
     query = """
     SELECT item_id, box_id, bag_id, sort_id, title, description, category, image_filename, created_at 
@@ -56,7 +77,15 @@ def get_items_by_bag(bag_id: int, db_manager: DatabaseManager) -> List[Dict[str,
     """
     
     results = db_manager.execute_query(query, (bag_id,))
-    return [dict(row) for row in results]
+    items_list = []
+    
+    for row in results:
+        item_dict = dict(row)
+        # 获取物品的标签信息
+        item_dict['tags'] = get_item_tags(item_dict['item_id'], db_manager)
+        items_list.append(item_dict)
+    
+    return items_list
 
 def get_item_by_id(item_id: int, bag_id: int, box_id: int, user_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
     """
@@ -70,7 +99,7 @@ def get_item_by_id(item_id: int, bag_id: int, box_id: int, user_id: int, db_mana
         db_manager: 数据库管理器实例
         
     Returns:
-        Dict: 物品信息
+        Dict: 物品信息（包含标签信息）
     """
     query = """
     SELECT i.item_id, i.box_id, i.bag_id, i.sort_id, i.title, i.description, i.category, i.image_filename, i.created_at 
@@ -84,7 +113,11 @@ def get_item_by_id(item_id: int, bag_id: int, box_id: int, user_id: int, db_mana
     if not result:
         raise HTTPException(status_code=404, detail="物品不存在或无权限查看")
     
-    return dict(result)
+    item_dict = dict(result)
+    # 获取物品的标签信息
+    item_dict['tags'] = get_item_tags(item_id, db_manager)
+    
+    return item_dict
 
 def get_bag_info(bag_id: int, box_id: int, user_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
     """
