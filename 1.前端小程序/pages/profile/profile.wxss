@@ -293,50 +293,10 @@
   flex-direction: column;
 }
 
-.setting-item {
-  /* 继承 list-item 样式 */
-}
-
-.setting-icon {
-  /* 继承 list-item-icon 样式 */
-}
-
-.setting-content {
-  /* 继承 list-item-content 样式 */
-}
-
-.setting-title {
-  /* 继承 list-item-title 样式 */
-}
-
-.setting-subtitle {
-  /* 继承 list-item-subtitle 样式 */
-}
-
 /* 其他列表 */
 .other-list {
   display: flex;
   flex-direction: column;
-}
-
-.other-item {
-  /* 继承 list-item 样式 */
-}
-
-.other-icon {
-  /* 继承 list-item-icon 样式 */
-}
-
-.other-content {
-  /* 继承 list-item-content 样式 */
-}
-
-.other-title {
-  /* 继承 list-item-title 样式 */
-}
-
-.other-subtitle {
-  /* 继承 list-item-subtitle 样式 */
 }
 
 /* 响应式设计 */
