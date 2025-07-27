@@ -15,15 +15,14 @@ Page({
       version: '1.0.0',
       buildNumber: '20250718',
       releaseDate: '2025-07-18',
-      description: '一款智能的个人物品收纳整理应用，帮助您轻松管理和查找物品。'
+      description: '一款个人物品收纳整理应用，帮助您轻松管理和查找物品。'
     },
     
     // 开发团队
     teamInfo: {
       company: 'Lordli',
-      website: 'https://lord.li/',
-      email: 'support@lordli.com',
-      phone: '400-123-4567'
+      website: 'https://lordli.com/',
+      email: 'cnPro@163.com'
     },
     
     // 功能特性
@@ -31,7 +30,7 @@ Page({
       {
         icon: 'cuIcon-scan',
         title: '智能扫描',
-        description: '支持二维码和图像识别，快速录入物品信息'
+        description: '支持图像识别，快速录入物品信息'
       },
       {
         icon: 'cuIcon-search',
@@ -44,7 +43,7 @@ Page({
         description: '分层级管理存储位置，清晰的物品归属'
       },
       {
-        icon: 'cuIcon-cloud',
+        icon: 'cuIcon-circle',
         title: '云端同步',
         description: '数据云端备份，多设备同步访问'
       },
@@ -64,7 +63,7 @@ Page({
     versionHistory: [
       {
         version: '1.0.0',
-        date: '2024-01-01',
+        date: '2025-07-27',
         changes: [
           '首次发布',
           '基础物品管理功能',
@@ -74,7 +73,7 @@ Page({
       },
       {
         version: '0.9.0',
-        date: '2023-12-15',
+        date: '2025-7-15',
         changes: [
           'Beta版本发布',
           '核心功能测试',
@@ -212,11 +211,8 @@ Page({
    * 查看隐私政策
    */
   onViewPrivacyPolicy() {
-    wx.showModal({
-      title: '隐私政策',
-      content: '我们重视您的隐私保护。本应用仅收集必要的功能数据，不会泄露您的个人信息。详细内容请访问我们的官网查看完整隐私政策。',
-      showCancel: false,
-      confirmText: '确定'
+    wx.navigateTo({
+      url: '/packageProfile/pages/privacy/privacy'
     });
   },
 

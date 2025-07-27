@@ -1,7 +1,7 @@
 <!--packageProfile/pages/profile/profile.wxml-->
 <view class="page-container">
   <!-- 自定义导航栏 -->
-  <cu-custom bgColor="bg-gradual-blue">
+  <cu-custom bgColor="bg-white" isBack="{{false}}" isTop="{{true}}">
     <view slot="content" class="nav-title">个人中心</view>
   </cu-custom>
 
@@ -15,14 +15,6 @@
         <view class="skeleton-content">
           <view class="skeleton skeleton-title"></view>
           <view class="skeleton skeleton-text" style="width: 60%;"></view>
-        </view>
-      </view>
-      
-      <!-- 统计信息骨架屏 -->
-      <view class="skeleton-stats">
-        <view wx:for="{{[1,2,3,4]}}" wx:key="index" class="skeleton-stat-item">
-          <view class="skeleton skeleton-number"></view>
-          <view class="skeleton skeleton-label"></view>
         </view>
       </view>
       
@@ -69,48 +61,9 @@
         </view>
       </view>
 
-      <!-- 统计信息 -->
-      <view class="statistics-card card">
-        <view class="card-title">我的统计</view>
-        <view class="statistics-grid">
-          <view 
-            class="stat-item"
-            bindtap="onStatisticTap"
-            data-type="boxes"
-          >
-            <view class="stat-number">{{statistics.totalBoxes}}</view>
-            <view class="stat-label">个箱子</view>
-          </view>
-          <view 
-            class="stat-item"
-            bindtap="onStatisticTap"
-            data-type="bags"
-          >
-            <view class="stat-number">{{statistics.totalBags}}</view>
-            <view class="stat-label">个袋子</view>
-          </view>
-          <view 
-            class="stat-item"
-            bindtap="onStatisticTap"
-            data-type="items"
-          >
-            <view class="stat-number">{{statistics.totalItems}}</view>
-            <view class="stat-label">件物品</view>
-          </view>
-          <view 
-            class="stat-item"
-            bindtap="onStatisticTap"
-            data-type="value"
-          >
-            <view class="stat-number">¥{{statistics.totalValue}}</view>
-            <view class="stat-label">总价值</view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 数据管理 -->
+      <!-- 应用设置 -->
       <view class="settings-card card">
-        <view class="card-title">数据管理</view>
+        <view class="card-title">应用设置</view>
         <view class="settings-list">
           <view 
             wx:for="{{settingsOptions}}" 
@@ -131,7 +84,7 @@
         </view>
       </view>
 
-      <!-- 其他设置 -->
+      <!-- 其他 -->
       <view class="other-card card">
         <view class="card-title">其他</view>
         <view class="other-list">

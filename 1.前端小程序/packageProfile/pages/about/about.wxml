@@ -3,9 +3,9 @@
 <!-- 关于页面 -->
 <view class="about-page">
   <!-- 自定义导航栏 -->
-  <cu-custom bgColor="bg-gradual-purple" isBack="{{true}}">
+  <cu-custom bgColor="bg-white" isBack="{{true}}" homePage="/pages/profile/profile">
     <view slot="backText">返回</view>
-    <view slot="content">关于应用</view>
+    <view slot="content">关于我们</view>
   </cu-custom>
 
   <!-- 主要内容 -->
@@ -13,7 +13,7 @@
     <!-- 应用信息 -->
     <view class="app-info-section">
       <view class="app-logo">
-        <image src="{{appInfo.logo}}" mode="aspectFit" class="logo-image"></image>
+        <image src="/assets/images/logo.png" mode="aspectFit" class="logo-image"></image>
       </view>
       
       <view class="app-details">
@@ -22,25 +22,7 @@
         <text class="app-description">{{appInfo.description}}</text>
       </view>
       
-      <!-- 统计信息 -->
-      <view class="statistics">
-        <view class="stat-item">
-          <text class="stat-number">{{statistics.downloads}}</text>
-          <text class="stat-label">下载量</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-number">{{statistics.users}}</text>
-          <text class="stat-label">用户数</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-number">{{statistics.rating}}</text>
-          <text class="stat-label">评分</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-number">{{statistics.reviews}}</text>
-          <text class="stat-label">评价数</text>
-        </view>
-      </view>
+
     </view>
 
     <!-- 功能特性 -->
@@ -53,7 +35,7 @@
       <view class="features-grid">
         <view class="feature-item" wx:for="{{features}}" wx:key="title">
           <view class="feature-icon">
-            <text class="{{item.icon}} text-white"></text>
+            <text class="{{item.icon}} text-blue"></text>
           </view>
           <view class="feature-content">
             <text class="feature-title">{{item.title}}</text>
@@ -67,13 +49,13 @@
     <view class="team-section">
       <view class="section-title">
         <text class="cuIcon-group text-orange"></text>
-        <text>开发团队</text>
+        <text>独立开发者</text>
       </view>
       
       <view class="team-card">
         <view class="team-info">
           <text class="company-name">{{teamInfo.company}}</text>
-          <text class="company-desc">专注于智能应用开发的技术团队</text>
+          <text class="company-desc">专注于智能应用开发的个人开发者</text>
         </view>
         
         <view class="contact-list">
@@ -137,11 +119,7 @@
             <text class="cuIcon-right"></text>
           </view>
           
-          <view class="legal-item" bindtap="onViewUserAgreement">
-            <text class="legal-title">用户协议</text>
-            <text class="legal-desc">使用条款和服务协议</text>
-            <text class="cuIcon-right"></text>
-          </view>
+
           
           <view class="legal-item" bindtap="onViewOpenSource">
             <text class="legal-title">开源项目</text>

@@ -37,7 +37,9 @@
       "name": "profile",
       "pages": [
         "pages/settings/settings",
-        "pages/about/about"
+        "pages/about/about",
+        "pages/privacy/privacy",
+        "pages/help/help"
       ]
     }
   ],
@@ -68,12 +70,6 @@
         "text": "首页",
         "iconPath": "assets/icons/home.png",
         "selectedIconPath": "assets/icons/home-active.png"
-      },
-      {
-        "pagePath": "pages/search/search",
-        "text": "搜索",
-        "iconPath": "assets/icons/search.png",
-        "selectedIconPath": "assets/icons/search-active.png"
       },
       {
         "pagePath": "pages/profile/profile",

@@ -1,0 +1,270 @@
+/* packageProfile/pages/help/help.wxss */
+
+.page-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  color: #666;
+  font-size: 28rpx;
+}
+
+/* 内容容器 */
+.content-container {
+  padding: 40rpx;
+}
+
+/* 页面头部 */
+.page-header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.page-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.page-subtitle {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 帮助章节 */
+.help-sections {
+  margin-bottom: 40rpx;
+}
+
+/* 章节卡片 */
+.section-card {
+  background: white;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* 章节头部 */
+.section-header {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.section-header:active {
+  background-color: #f8f9fa;
+}
+
+.section-icon {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.section-icon text {
+  color: white;
+  font-size: 32rpx;
+}
+
+.section-title {
+  flex: 1;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.section-arrow {
+  transition: transform 0.3s ease;
+}
+
+.section-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.section-arrow text {
+  color: #999;
+  font-size: 24rpx;
+}
+
+/* 章节内容 */
+.section-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.section-content.show {
+  max-height: 2000rpx;
+}
+
+/* 内容项 */
+.content-item {
+  display: flex;
+  padding: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.content-item:first-child {
+  border-top: none;
+}
+
+/* 步骤编号 */
+.step-number {
+  width: 60rpx;
+  height: 60rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.step-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 功能项 */
+.feature-item {
+  padding: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.feature-item:first-child {
+  border-top: none;
+}
+
+.feature-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.feature-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+/* 问答项 */
+.qa-item {
+  padding: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.qa-item:first-child {
+  border-top: none;
+}
+
+.question {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.answer {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+  padding-left: 20rpx;
+}
+
+/* 支持区域 */
+.support-section {
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.support-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.support-desc {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 30rpx;
+  line-height: 1.6;
+}
+
+.support-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #667eea;
+  font-size: 26rpx;
+}
+
+.support-contact text:first-child {
+  margin-right: 12rpx;
+  font-size: 28rpx;
+}
+
+/* 颜色类 */
+.bg-blue {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-orange {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.bg-green {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.bg-purple {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+.bg-cyan {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.bg-red {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}

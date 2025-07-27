@@ -77,6 +77,11 @@ app.mount("/Photos", StaticFiles(directory="Photos"), name="Photos")
 # 【系统】获取微信小程序openid
 from v0_auth import router as AuthRouter
 app.include_router(AuthRouter)
+
+# 接口：/v0/user/edit_nickname  -- 请求方式POST
+# 【系统】编辑用户昵称
+from v0_edit_nickname import router as EditNicknameRouter
+app.include_router(EditNicknameRouter)
 # -----------------------------------------------------------
 # 【 -- 首页 -- 】
 # -----------------------------------------------------------

@@ -3,7 +3,7 @@
 /* 页面容器 */
 .about-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #f8f9fa;
   padding-bottom: 40rpx;
 }
 
@@ -97,7 +97,7 @@
   align-items: center;
   padding: 20rpx 30rpx;
   margin-bottom: 20rpx;
-  color: #fff;
+  color: #333;
   font-size: 32rpx;
   font-weight: 600;
 }
@@ -151,7 +151,7 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 40rpx;
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, #ececec, #f7f3f3);
   display: flex;
   align-items: center;
   justify-content: center;
