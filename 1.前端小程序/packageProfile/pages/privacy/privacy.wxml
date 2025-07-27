@@ -25,46 +25,46 @@
       <view class="content-section">
         <view class="section-title">1. 信息收集</view>
         <view class="section-content">
-          我们可能收集以下类型的信息：
-          • 您主动上传提交的信息（如数据信息、照片等）
-          • 使用数据（如功能使用情况、操作记录等）
+          <view>我们可能收集以下类型的信息：</view>
+          <view>• 您主动上传提交的信息（如数据信息、照片等）</view>
+          <view>• 使用数据（如功能使用情况、操作记录等）</view>
         </view>
       </view>
       
       <view class="content-section">
         <view class="section-title">2. 信息使用</view>
         <view class="section-content">
-          我们使用收集的信息用于：
-          • 提供和维护我们的服务
-          • 改善用户体验
+          <view>我们使用收集的信息用于：</view>
+          <view>• 提供和维护我们的服务</view>
+          <view>• 改善用户体验</view>
         </view>
       </view>
       
       <view class="content-section">
         <view class="section-title">3. 信息保护</view>
         <view class="section-content">
-          我们采取以下措施保护您的信息：
-          • 使用加密技术保护数据传输
-          • 限制员工访问个人信息
-          • 定期审查安全措施
-          • 遵守相关法律法规
+          <view>我们采取以下措施保护您的信息：</view>
+          <view>• 使用加密技术保护数据传输</view>
+          <view>• 限制员工访问个人信息</view>
+          <view>• 定期审查安全措施</view>
+          <view>• 遵守相关法律法规</view>
         </view>
       </view>
       
       <view class="content-section">
         <view class="section-title">4. 信息共享</view>
         <view class="section-content">
-          我们不会向第三方出售、交易或转让您的个人信息，除非：
-          • 获得您的明确同意
-          • 法律要求或政府部门要求
+          <view>我们不会向第三方出售、交易或转让您的个人信息，除非：</view>
+          <view>• 获得您的明确同意</view>
+          <view>• 法律要求或政府部门要求</view>
         </view>
       </view>
       
       <view class="content-section">
         <view class="section-title">5. 联系我们</view>
         <view class="section-content">
-          如果您对本隐私政策有任何疑问，请通过以下方式联系我们：
-          • 邮箱：cnPro@163.com
+          <view>如果您对本隐私政策有任何疑问，请通过以下方式联系我们：</view>
+          <view>• 邮箱：cnPro@163.com</view>
         </view>
       </view>
     </view>

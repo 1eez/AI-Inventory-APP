@@ -92,7 +92,7 @@
       <!-- 箱子列表 -->
       <view wx:if="{{boxes.length > 0}}" class="boxes-section">
         <view class="section-title">
-          <text class="title-text">我的箱子</text>
+          <text class="title-text">{{userNickname ? userNickname + '的箱子' : '我的箱子'}}</text>
           <text class="title-count">({{boxes.length}})</text>
         </view>
         

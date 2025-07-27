@@ -8,6 +8,8 @@ Page({
     systemReady: false,
     boxes: [],
     searchKeyword: '',
+    // 用户信息
+    userNickname: '', // 用户昵称
     // 骨架屏配置
     skeletonLoading: true,
     skeletonItems: [1, 2, 3, 4, 5], // 显示5个骨架屏项目
@@ -82,7 +84,7 @@ Page({
         return;
       }
       
-      const { statistics, boxes } = userHomeData.data;
+      const { statistics, boxes, user_info } = userHomeData.data;
       
       // 处理箱子数据，为每个箱子添加默认的显示属性
       const processedBoxes = boxes.map((box, index) => {
@@ -100,10 +102,14 @@ Page({
         };
       });
       
+      // 获取用户昵称
+      const userNickname = user_info && user_info.nickname ? user_info.nickname : '';
+      
       this.setData({
         boxes: processedBoxes,
         totalItems: statistics.total_bags || 0,
-        boxesWithItems: statistics.total_items || 0
+        boxesWithItems: statistics.total_items || 0,
+        userNickname: userNickname
       });
       
       console.log('箱子数据加载完成:', {

@@ -5,7 +5,10 @@ Page({
   data: {
     // 用户信息
     userInfo: {},
-    hasUserInfo: false,
+    
+    // 昵称编辑相关
+    editingNickname: false,
+    editNickname: '',
     
     // 应用设置选项
     settingsOptions: [
@@ -98,17 +101,67 @@ Page({
   // 加载用户数据
   async loadUserData() {
     try {
-      // 获取用户信息
-      const userInfo = app.globalData.userInfo || {};
+      // 先尝试从全局数据获取
+      let userInfo = app.globalData.userInfo || {};
+      
+      // 如果全局数据中没有用户信息，则从首页数据中获取
+      if (!userInfo.nickname && app.globalData.userHomeData && app.globalData.userHomeData.data && app.globalData.userHomeData.data.user_info) {
+        userInfo = app.globalData.userHomeData.data.user_info;
+        // 更新全局数据
+        app.globalData.userInfo = userInfo;
+      }
+      
+      // 如果仍然没有用户信息，则直接调用接口获取
+      if (!userInfo.nickname) {
+        const homeData = await this.fetchUserHomeData();
+        if (homeData && homeData.data && homeData.data.user_info) {
+          userInfo = homeData.data.user_info;
+          // 更新全局数据
+          app.globalData.userInfo = userInfo;
+          app.globalData.userHomeData = homeData;
+        }
+      }
       
       this.setData({
-        userInfo,
-        hasUserInfo: Object.keys(userInfo).length > 0
+        userInfo
       });
     } catch (error) {
       console.error('加载用户数据失败:', error);
       throw error;
     }
+  },
+
+  // 获取用户首页数据
+  fetchUserHomeData() {
+    return new Promise((resolve, reject) => {
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      
+      if (!openid) {
+        reject(new Error('用户未登录'));
+        return;
+      }
+      
+      const url = `${baseUrl}v0/home/info?openid=${openid}`;
+      
+      wx.request({
+        url: url,
+        method: 'GET',
+        success: (res) => {
+          console.log('后台接口响应:', res);
+          
+          if (res.statusCode === 200 && res.data) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`接口请求失败: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          console.error('接口请求失败:', error);
+          reject(error);
+        }
+      });
+    });
   },
 
 
@@ -127,42 +180,119 @@ Page({
     });
   },
 
-  // 获取用户信息
-  onGetUserProfile() {
-    wx.getUserProfile({
-      desc: '用于完善用户资料',
-      success: (res) => {
-        console.log('获取用户信息成功:', res.userInfo);
-        
-        // 保存用户信息
-        app.globalData.userInfo = res.userInfo;
-        
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        });
-        
-        // TODO: 上传用户信息到服务器
-        this.uploadUserInfo(res.userInfo);
-      },
-      fail: (error) => {
-        console.error('获取用户信息失败:', error);
-        wx.showToast({
-          title: '获取用户信息失败',
-          icon: 'none'
-        });
-      }
+
+
+  // 开始编辑昵称
+  startEditNickname() {
+    const currentNickname = this.data.userInfo.nickname || '';
+    this.setData({
+      editingNickname: true,
+      editNickname: currentNickname
     });
   },
 
-  // 上传用户信息
-  async uploadUserInfo(userInfo) {
-    try {
-      // TODO: 调用API上传用户信息
-      console.log('上传用户信息:', userInfo);
-    } catch (error) {
-      console.error('上传用户信息失败:', error);
+  // 昵称输入事件
+  onNicknameInput(e) {
+    this.setData({
+      editNickname: e.detail.value
+    });
+  },
+
+  // 取消编辑昵称
+  cancelEditNickname() {
+    this.setData({
+      editingNickname: false,
+      editNickname: ''
+    });
+  },
+
+  // 确认编辑昵称
+  async confirmEditNickname() {
+    const nickname = this.data.editNickname.trim();
+    
+    if (!nickname) {
+      wx.showToast({
+        title: '昵称不能为空',
+        icon: 'none'
+      });
+      return;
     }
+
+    if (nickname.length > 20) {
+      wx.showToast({
+        title: '昵称不能超过20个字符',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      wx.showLoading({
+        title: '保存中...'
+      });
+
+      // 调用后台接口修改昵称
+      await this.updateNickname(nickname);
+      
+      // 更新本地数据
+      const updatedUserInfo = {
+        ...this.data.userInfo,
+        nickname: nickname
+      };
+      
+      this.setData({
+        userInfo: updatedUserInfo,
+        editingNickname: false,
+        editNickname: ''
+      });
+      
+      // 更新全局数据
+      app.globalData.userInfo = updatedUserInfo;
+      
+      wx.hideLoading();
+      wx.showToast({
+        title: '昵称修改成功',
+        icon: 'success'
+      });
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('修改昵称失败:', error);
+      wx.showToast({
+        title: error.message || '修改失败，请重试',
+        icon: 'none'
+      });
+    }
+  },
+
+  // 调用后台接口修改昵称
+  async updateNickname(nickname) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: app.globalData.baseUrl + 'v0/user/edit_nickname',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: {
+          openid: app.globalData.openid,
+          nickname: nickname
+        },
+        success: (res) => {
+          console.log('修改昵称接口响应:', res);
+          
+          if (res.statusCode === 200 && res.data && res.data.status === 'success') {
+            resolve(res.data);
+          } else {
+            reject(new Error(res.data?.message || '修改昵称失败'));
+          }
+        },
+        fail: (error) => {
+          console.error('请求修改昵称接口失败:', error);
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
   },
 
   // 设置选项点击

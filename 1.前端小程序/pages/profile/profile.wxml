@@ -34,29 +34,38 @@
       <view class="user-info-card">
         <view class="user-header">
           <view class="user-avatar-container">
-            <image 
-              wx:if="{{hasUserInfo}}"
-              class="user-avatar" 
-              src="{{userInfo.avatarUrl}}" 
-              mode="aspectFill"
-            ></image>
-            <view wx:else class="user-avatar-placeholder">
+            <view class="user-avatar-placeholder">
               <text class="cuIcon-people"></text>
             </view>
           </view>
           
           <view class="user-info">
-            <view wx:if="{{hasUserInfo}}" class="user-name">{{userInfo.nickName}}</view>
-            <view wx:else class="user-name-placeholder">未登录</view>
+            <view class="user-name-container">
+              <view wx:if="{{!editingNickname}}" class="user-name" bindtap="startEditNickname">{{userInfo.nickname || '点击修改昵称'}}</view>
+              <view wx:else class="nickname-edit-container">
+                <input 
+                  class="nickname-input" 
+                  value="{{editNickname}}" 
+                  placeholder="请输入昵称" 
+                  maxlength="20"
+                  bindinput="onNicknameInput"
+                  bindconfirm="confirmEditNickname"
+                  focus="{{editingNickname}}"
+                />
+                <view class="nickname-actions">
+                  <text class="nickname-btn confirm" bindtap="confirmEditNickname">确定</text>
+                  <text class="nickname-btn cancel" bindtap="cancelEditNickname">取消</text>
+                </view>
+              </view>
+            </view>
             
             <view class="user-subtitle">
-              <text wx:if="{{hasUserInfo}}">欢迎使用物品管理系统</text>
-              <text wx:else class="login-btn" bindtap="onGetUserProfile">点击登录</text>
+              <text>欢迎使用物品管理系统</text>
             </view>
           </view>
           
-          <view class="user-actions">
-            <text class="cuIcon-right"></text>
+          <view class="user-actions" wx:if="{{!editingNickname}}">
+            <text class="cuIcon-edit" bindtap="startEditNickname"></text>
           </view>
         </view>
       </view>

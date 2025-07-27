@@ -202,7 +202,7 @@ App({
   /**
    * 注册系统就绪回调
    */
-  onSystemReady(callback) {
+  registerSystemReadyCallback(callback) {
     if (this.globalData.systemReady) {
       callback();
     } else {
