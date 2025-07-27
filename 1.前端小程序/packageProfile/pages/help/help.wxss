@@ -131,7 +131,7 @@
 .step-number {
   width: 60rpx;
   height: 60rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #007aff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -246,7 +246,7 @@
 
 /* 颜色类 */
 .bg-blue {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #007aff;
 }
 
 .bg-orange {
