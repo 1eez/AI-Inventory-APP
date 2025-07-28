@@ -82,6 +82,11 @@ app.include_router(AuthRouter)
 # 【系统】编辑用户昵称
 from v0_edit_nickname import router as EditNicknameRouter
 app.include_router(EditNicknameRouter)
+
+# 接口：/v0/user/watch_ad  -- 请求方式POST
+# 【系统】用户观看广告奖励
+from v0_watch_ad import router as WatchAdRouter
+app.include_router(WatchAdRouter)
 # -----------------------------------------------------------
 # 【 -- 首页 -- 】
 # -----------------------------------------------------------
