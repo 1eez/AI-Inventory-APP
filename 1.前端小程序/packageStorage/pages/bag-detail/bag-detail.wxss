@@ -214,7 +214,6 @@
 }
 
 .bag-main-card {
-  background: #fff;
   border-radius: 24rpx;
   padding: 40rpx;
   display: flex;
@@ -349,21 +348,18 @@
 .bag-title {
   font-size: 36rpx;
   font-weight: 700;
-  color: #2c3e50;
   margin-bottom: 8rpx;
   line-height: 1.3;
 }
 
 .bag-subtitle {
   font-size: 26rpx;
-  color: #667eea;
   font-weight: 500;
   opacity: 0.8;
 }
 
 .bag-description {
   font-size: 28rpx;
-  color: #666;
   line-height: 1.5;
   margin-bottom: 20rpx;
 }
@@ -405,7 +401,6 @@
 
 .stat-text {
   font-size: 24rpx;
-  color: #666;
   font-weight: 500;
 }
 
@@ -586,6 +581,8 @@
 .quick-actions {
   margin-bottom: 30rpx;
   padding: 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
 }
 
 .action-title {
@@ -1173,7 +1170,8 @@
 
 .modal-footer {
   display: flex;
-  gap: 20rpx;
+  justify-content: center;
+  gap: 80rpx;
   padding: 30rpx;
   border-top: 1rpx solid #f0f0f0;
 }

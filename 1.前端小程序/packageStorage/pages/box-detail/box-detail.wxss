@@ -232,6 +232,7 @@
 .quick-actions {
   margin-bottom: 30rpx;
   padding: 30rpx;
+  border-radius: 16rpx;
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
 }
 

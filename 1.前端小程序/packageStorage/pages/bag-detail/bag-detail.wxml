@@ -89,7 +89,7 @@
       </view>
 
       <!-- 袋子信息卡片 - 重新设计展示从属关系 -->
-      <view class="bag-info-card-new">
+      <view class="bag-info-card-new bg-white">
         <!-- 袋子主体卡片 -->
         <view class="bag-main-card">
           <!-- 左侧袋子预览 -->
@@ -143,7 +143,7 @@
       </view>
 
       <!-- 快速操作 -->
-      <view class="quick-actions card">
+      <view class="quick-actions card bg-white">
         <view class="action-title">快速操作</view>
         <view class="action-buttons">
           <view class="action-btn" bindtap="onQuickScan">
