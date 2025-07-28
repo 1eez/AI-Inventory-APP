@@ -2,15 +2,15 @@
 <view class="page-container">
   <!-- 自定义导航栏 -->
   <cu-custom bgColor="bg-white" isBack="{{false}}" isTop="{{true}}">
-    <view slot="content" class="nav-title">物品管理</view>
+    <view slot="content" class="nav-title text-black">物品管理</view>
   </cu-custom>
 
   <!-- 搜索栏 -->
   <view class="search-container">
-    <view class="search-box" bindtap="onSearch">
-      <text class="cuIcon-search search-icon"></text>
+    <view class="search-box bg-white" bindtap="onSearch">
+      <text class="cuIcon-search search-icon text-gray"></text>
       <input 
-        class="search-input" 
+        class="search-input text-black" 
         placeholder="搜索物品、箱子或袋子" 
         value="{{searchKeyword}}"
         bindinput="onSearchInput"
@@ -25,7 +25,7 @@
     <!-- 骨架屏加载状态 -->
     <view wx:if="{{skeletonLoading}}" class="skeleton-container">
       <view wx:for="{{skeletonItems}}" wx:key="index" class="skeleton-item">
-        <view class="skeleton-box-item">
+        <view class="skeleton-box-item bg-white">
           <view class="skeleton skeleton-avatar"></view>
           <view class="skeleton-content">
             <view class="skeleton skeleton-title"></view>
@@ -39,52 +39,52 @@
     <!-- 箱子列表 -->
     <view wx:else class="box-list">
       <!-- 统计信息 -->
-      <view class="stats-card card">
+      <view class="stats-card card bg-white">
         <view class="stats-content">
           <view class="stat-item">
-            <text class="stat-number">{{boxes.length}}</text>
-            <text class="stat-label">储物箱</text>
+            <text class="stat-number text-blue">{{boxes.length}}</text>
+            <text class="stat-label text-gray">储物箱</text>
           </view>
-          <view class="stat-divider"></view>
+          <view class="stat-divider bg-gray"></view>
           <view class="stat-item">
-            <text class="stat-number">{{totalItems}}</text>
-            <text class="stat-label">收纳袋</text>
+            <text class="stat-number text-blue">{{totalItems}}</text>
+            <text class="stat-label text-gray">收纳袋</text>
           </view>
-          <view class="stat-divider"></view>
+          <view class="stat-divider bg-gray"></view>
           <view class="stat-item">
-            <text class="stat-number">{{boxesWithItems}}</text>
-            <text class="stat-label">物品</text>
+            <text class="stat-number text-blue">{{boxesWithItems}}</text>
+            <text class="stat-label text-gray">物品</text>
           </view>
         </view>
       </view>
 
       <!-- 快速操作 -->
-      <view class="quick-actions card">
-        <view class="action-title">快速操作</view>
+      <view class="quick-actions card bg-white">
+        <view class="action-title text-black">快速操作</view>
         <view class="action-buttons">
           <view class="action-btn" bindtap="onAddBox">
             <view class="action-icon bg-blue">
               <text class="cuIcon-shop"></text>
             </view>
-            <text class="action-text">新建储物箱</text>
+            <text class="action-text text-gray">新建储物箱</text>
           </view>
           <view class="action-btn" bindtap="onAddBag">
             <view class="action-icon bg-orange">
               <text class="cuIcon-goods"></text>
             </view>
-            <text class="action-text">新建收纳袋</text>
+            <text class="action-text text-gray">新建收纳袋</text>
           </view>
           <view class="action-btn" bindtap="onQuickScan">
             <view class="action-icon bg-green">
               <text class="cuIcon-camera"></text>
             </view>
-            <text class="action-text">快速拍照</text>
+            <text class="action-text text-gray">快速拍照</text>
           </view>
           <view class="action-btn" bindtap="onBatchImport">
             <view class="action-icon bg-red">
               <text class="cuIcon-pic"></text>
             </view>
-            <text class="action-text">相册导入</text>
+            <text class="action-text text-gray">相册导入</text>
           </view>
         </view>
       </view>
@@ -92,8 +92,8 @@
       <!-- 箱子列表 -->
       <view wx:if="{{boxes.length > 0}}" class="boxes-section">
         <view class="section-title">
-          <text class="title-text">{{userNickname ? userNickname + '的箱子' : '我的箱子'}}</text>
-          <text class="title-count">({{boxes.length}})</text>
+          <text class="title-text text-black">{{userNickname ? userNickname + '的箱子' : '我的箱子'}}</text>
+          <text class="title-count text-gray">({{boxes.length}})</text>
         </view>
         
         <view class="boxes-grid">
@@ -104,26 +104,26 @@
             bindtap="onBoxTap"
             data-id="{{item.id}}"
           >
-            <view class="box-card">
+            <view class="box-card bg-white">
               <!-- 顶部色彩条 -->
               <view class="box-color-bar" style="background-color: {{item.color}};"></view>
               
               <!-- 卡片内容 -->
               <view class="box-content">
                 <view class="box-header">
-                  <view class="box-title">{{item.name}}</view>
-                  <view class="box-menu" bindtap="onBoxMenu" data-id="{{item.id}}" catchtap="true">
+                  <view class="box-title text-black">{{item.name}}</view>
+                  <view class="box-menu text-gray" bindtap="onBoxMenu" data-id="{{item.id}}" catchtap="true">
                     <text class="cuIcon-more"></text>
                   </view>
                 </view>
                 
                 <view class="box-info">
-                  <view class="box-desc" wx:if="{{item.description}}">{{item.description}}</view>
+                  <view class="box-desc text-gray" wx:if="{{item.description}}">{{item.description}}</view>
                 </view>
                 
                 <view class="box-footer">
-                  <view class="box-location" wx:if="{{item.location}}">
-                    <text class="cuIcon-locationfill location-icon"></text>
+                  <view class="box-location text-gray" wx:if="{{item.location}}">
+                    <text class="cuIcon-locationfill location-icon text-gray"></text>
                     <text class="location-text">{{item.location}}</text>
                   </view>
                   <view class="box-count" style="color: {{item.color}}">{{item.bag_count}} / {{item.item_count}}</view>
@@ -136,9 +136,9 @@
 
       <!-- 空状态 -->
       <view wx:else class="empty-state">
-        <text class="cuIcon-shop empty-icon"></text>
-        <view class="empty-title">还没有箱子</view>
-        <view class="empty-subtitle">点击按钮创建第一个储物箱\n开始整理您的物品吧</view>
+        <text class="cuIcon-shop empty-icon text-gray"></text>
+        <view class="empty-title text-gray">还没有箱子</view>
+        <view class="empty-subtitle text-gray">点击按钮创建第一个储物箱\n开始整理您的物品吧</view>
         <button class="cu-btn bg-blue margin-top" bindtap="onAddBox">
           <text class="cuIcon-add margin-right-xs"></text>
           创建第一个箱子
@@ -154,14 +154,14 @@
 
   <!-- 箱子选择浮层 -->
   <view wx:if="{{showBoxSelector}}" class="box-selector-overlay" bindtap="onCloseBoxSelector">
-    <view class="box-selector-modal" catchtap="">
+    <view class="box-selector-modal bg-white" catchtap="">
       <view class="selector-header">
-        <text class="selector-title">{{quickScanMode ? '选择储物箱' : '选择储物箱'}}</text>
-        <text class="cuIcon-close selector-close" bindtap="onCloseBoxSelector"></text>
+        <text class="selector-title text-black">{{quickScanMode ? '选择储物箱' : '选择储物箱'}}</text>
+        <text class="cuIcon-close selector-close text-gray" bindtap="onCloseBoxSelector"></text>
       </view>
       
       <view class="selector-content">
-        <view class="selector-subtitle">{{quickScanMode ? '请选择储物箱' : '请选择要添加收纳袋的储物箱'}}</view>
+        <view class="selector-subtitle text-gray">{{quickScanMode ? '请选择储物箱' : '请选择要添加收纳袋的储物箱'}}</view>
         
         <scroll-view class="selector-list" scroll-y="true">
           <view 
@@ -171,19 +171,19 @@
             bindtap="onSelectBox"
             data-id="{{item.id}}"
           >
-            <view class="selector-box-card">
+            <view class="selector-box-card bg-white">
               <view class="selector-box-color" style="background-color: {{item.color}};"></view>
               <view class="selector-box-info">
                 <view class="selector-box-single-line">
-                  <view class="selector-box-name">{{item.name}}</view>
-                  <view class="selector-box-desc" wx:if="{{item.location}}">
+                  <view class="selector-box-name text-black">{{item.name}}</view>
+                  <view class="selector-box-desc text-gray" wx:if="{{item.location}}">
                     <text class="cuIcon-locationfill"></text>
                     <text>{{item.location}}</text>
                   </view>
-                  <view class="selector-box-count">{{item.bag_count}} / {{item.item_count}}</view>
+                  <view class="selector-box-count text-blue">{{item.bag_count}} / {{item.item_count}}</view>
                 </view>
               </view>
-              <view class="selector-box-arrow">
+              <view class="selector-box-arrow text-gray">
                 <text class="cuIcon-right"></text>
               </view>
             </view>
@@ -195,14 +195,14 @@
 
   <!-- 袋子选择浮层 -->
   <view wx:if="{{showBagSelector}}" class="bag-selector-overlay" bindtap="onCloseBagSelector">
-    <view class="bag-selector-modal" catchtap="">
+    <view class="bag-selector-modal bg-white" catchtap="">
       <view class="selector-header">
-        <text class="selector-title">选择收纳袋</text>
-        <text class="cuIcon-close selector-close" bindtap="onCloseBagSelector"></text>
+        <text class="selector-title text-black">选择收纳袋</text>
+        <text class="cuIcon-close selector-close text-gray" bindtap="onCloseBagSelector"></text>
       </view>
       
       <view class="selector-content">
-        <view class="selector-subtitle">请选择一个收纳袋</view>
+        <view class="selector-subtitle text-gray">请选择一个收纳袋</view>
         
         <scroll-view class="selector-list" scroll-y="true">
           <view 
@@ -212,19 +212,19 @@
             bindtap="onSelectBag"
             data-id="{{item.bag_id}}"
           >
-            <view class="selector-bag-card">
+            <view class="selector-bag-card bg-white">
               <view class="selector-bag-color" style="background-color: {{item.color}};"></view>
               <view class="selector-bag-info">
                 <view class="selector-bag-single-line">
-                  <view class="selector-bag-name">{{item.name}}</view>
-                  <view class="selector-bag-desc" wx:if="{{item.description}}">
+                  <view class="selector-bag-name text-black">{{item.name}}</view>
+                  <view class="selector-bag-desc text-gray" wx:if="{{item.description}}">
                     <text class="cuIcon-text"></text>
                     <text>{{item.description}}</text>
                   </view>
-                  <view class="selector-bag-count">{{item.item_count || 0}}件</view>
+                  <view class="selector-bag-count text-blue">{{item.item_count || 0}}件</view>
                 </view>
               </view>
-              <view class="selector-bag-arrow">
+              <view class="selector-bag-arrow text-gray">
                 <text class="cuIcon-right"></text>
               </view>
             </view>

@@ -4,7 +4,6 @@
 .nav-title {
   font-size: 36rpx;
   font-weight: 600;
-  color: var(--text-primary);
 }
 
 .nav-right {
@@ -14,7 +13,6 @@
 
 .nav-icon {
   font-size: 40rpx;
-  color: var(--text-primary);
   padding: 10rpx;
 }
 
@@ -31,9 +29,7 @@
   display: flex;
   align-items: center;
   padding: 30rpx;
-  background: var(--card-background);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
+  border-radius: 12rpx;
 }
 
 .skeleton-content {
@@ -63,20 +59,17 @@
 .stat-number {
   font-size: 48rpx;
   font-weight: 700;
-  color: var(--primary-color);
   line-height: 1.2;
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: var(--text-secondary);
   margin-top: 8rpx;
 }
 
 .stat-divider {
   width: 1rpx;
   height: 60rpx;
-  background: var(--border-color);
   margin: 0 20rpx;
 }
 
@@ -89,7 +82,6 @@
 .action-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: var(--text-primary);
   margin-bottom: 30rpx;
 }
 
@@ -120,7 +112,6 @@
 
 .action-text {
   font-size: 24rpx;
-  color: var(--text-secondary);
   text-align: center;
 }
 
@@ -135,12 +126,10 @@
 .title-text {
   font-size: 32rpx;
   font-weight: 600;
-  color: var(--text-primary);
 }
 
 .title-count {
   font-size: 24rpx;
-  color: var(--text-secondary);
   margin-left: 8rpx;
 }
 
@@ -161,11 +150,8 @@
 
 /* 箱子卡片样式 */
 .box-card {
-  background: #fff;
   border-radius: 16rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
-  border: 1rpx solid #f0f0f0;
 }
 
 /* 顶部色彩条 */
@@ -190,7 +176,6 @@
 .box-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
   line-height: 1.3;
   flex: 1;
   margin-right: 16rpx;
@@ -203,7 +188,6 @@
 
 .box-menu {
   padding: 8rpx;
-  color: #999;
   font-size: 20rpx;
   border-radius: 50%;
   transition: all 0.2s ease;
@@ -211,7 +195,7 @@
 }
 
 .box-menu:active {
-  background: #f5f5f5;
+  opacity: 0.7;
 }
 
 /* 箱子信息 */
@@ -221,7 +205,6 @@
 
 .box-desc {
   font-size: 24rpx;
-  color: #666;
   line-height: 1.4;
   margin-bottom: 12rpx;
   display: -webkit-box;
@@ -234,12 +217,10 @@
   display: flex;
   align-items: center;
   font-size: 22rpx;
-  color: #888;
 }
 
 .location-icon {
   font-size: 20rpx;
-  color: #999;
   margin-right: 6rpx;
 }
 
@@ -282,20 +263,17 @@
 
 .empty-state .empty-icon {
   font-size: 160rpx;
-  color: #e5e5e5;
   margin-bottom: 20rpx;
 }
 
 .empty-state .empty-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: var(--text-secondary);
   margin-bottom: 20rpx;
 }
 
 .empty-state .empty-subtitle {
   font-size: 24rpx;
-  color: var(--text-placeholder);
   line-height: 1.8;
   margin-bottom: 20rpx;
   white-space: pre-line;
@@ -379,20 +357,7 @@
   }
 }
 
-/* 深色模式适配 */
-@media (prefers-color-scheme: dark) {
-  .skeleton {
-    background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 37%, #2a2a2a 63%);
-  }
-  
-  .stat-divider {
-    background: #3a3a3a;
-  }
-  
-  .empty-state .empty-icon {
-    color: #3a3a3a;
-  }
-}
+
 
 /* 箱子选择浮层样式 */
 .box-selector-overlay {
@@ -401,7 +366,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
   z-index: 9999;
   display: flex;
   align-items: flex-end;
@@ -411,7 +375,6 @@
 .box-selector-modal {
   width: 100%;
   max-height: 80vh;
-  background: #fff;
   border-radius: 24rpx 24rpx 0 0;
   animation: slideUp 0.3s ease;
 }
@@ -421,25 +384,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 40rpx 30rpx 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
 }
 
 .selector-title {
   font-size: 36rpx;
   font-weight: 600;
-  color: #333;
 }
 
 .selector-close {
   font-size: 32rpx;
-  color: #999;
   padding: 10rpx;
   border-radius: 50%;
   transition: all 0.2s ease;
 }
 
 .selector-close:active {
-  background: #f5f5f5;
+  opacity: 0.7;
 }
 
 .selector-content {
@@ -448,7 +408,6 @@
 
 .selector-subtitle {
   font-size: 28rpx;
-  color: #666;
   margin-bottom: 30rpx;
   text-align: center;
 }
@@ -470,10 +429,7 @@
   display: flex;
   align-items: center;
   padding: 24rpx;
-  background: #fff;
   border-radius: 16rpx;
-  border: 1rpx solid #f0f0f0;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
 }
 
 .selector-box-color {
@@ -498,7 +454,6 @@
 .selector-box-name {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
   line-height: 1.3;
   flex-shrink: 0;
 }
@@ -507,25 +462,21 @@
   display: flex;
   align-items: center;
   font-size: 24rpx;
-  color: #666;
   flex-shrink: 0;
 }
 
 .selector-box-desc text:first-child {
   font-size: 20rpx;
   margin-right: 6rpx;
-  color: #999;
 }
 
 .selector-box-count {
   font-size: 24rpx;
-  color: #999;
   margin-left: auto;
   flex-shrink: 0;
 }
 
 .selector-box-arrow {
-  color: #ccc;
   font-size: 24rpx;
   flex-shrink: 0;
 }
@@ -537,7 +488,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
   z-index: 9999;
   display: flex;
   align-items: flex-end;
@@ -547,7 +497,6 @@
 .bag-selector-modal {
   width: 100%;
   max-height: 80vh;
-  background: #fff;
   border-radius: 24rpx 24rpx 0 0;
   animation: slideUp 0.3s ease;
 }
@@ -565,10 +514,7 @@
   display: flex;
   align-items: center;
   padding: 24rpx;
-  background: #fff;
   border-radius: 16rpx;
-  border: 1rpx solid #f0f0f0;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
 }
 
 .selector-bag-color {
@@ -593,7 +539,6 @@
 .selector-bag-name {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
   line-height: 1.3;
   flex-shrink: 0;
 }
@@ -602,25 +547,21 @@
   display: flex;
   align-items: center;
   font-size: 24rpx;
-  color: #666;
   flex-shrink: 0;
 }
 
 .selector-bag-desc text:first-child {
   font-size: 20rpx;
   margin-right: 6rpx;
-  color: #999;
 }
 
 .selector-bag-count {
   font-size: 24rpx;
-  color: #999;
   margin-left: auto;
   flex-shrink: 0;
 }
 
 .selector-bag-arrow {
-  color: #ccc;
   font-size: 24rpx;
   flex-shrink: 0;
 }
