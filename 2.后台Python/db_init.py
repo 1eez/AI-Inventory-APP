@@ -70,6 +70,9 @@ class DatabaseInitializer:
             openid VARCHAR(64) NOT NULL UNIQUE,
             nickname VARCHAR(100) DEFAULT '',
             status INTEGER DEFAULT 1,
+            item_limit INTEGER DEFAULT 30,
+            ads_watched_count INTEGER DEFAULT 0,
+            last_ad_watched_at DATETIME DEFAULT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )

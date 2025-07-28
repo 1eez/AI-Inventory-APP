@@ -42,7 +42,7 @@ def get_user_data(openid: str, db_manager: DatabaseManager) -> Dict[str, Any]:
         Dict: 用户完整数据
     """
     # 获取用户基本信息
-    user_query = "SELECT user_id, openid, nickname, status, created_at, updated_at FROM users_summary WHERE openid = ?"
+    user_query = "SELECT user_id, openid, nickname, status, item_limit, ads_watched_count, last_ad_watched_at, created_at, updated_at FROM users_summary WHERE openid = ?"
     user_row = db_manager.execute_query(user_query, (openid,), fetch_one=True)
     
     if not user_row:
@@ -80,6 +80,9 @@ def get_user_data(openid: str, db_manager: DatabaseManager) -> Dict[str, Any]:
             "openid": user_row['openid'],
             "nickname": user_row['nickname'],
             "status": user_row['status'],
+            "item_limit": user_row['item_limit'],
+            "ads_watched_count": user_row['ads_watched_count'],
+            "last_ad_watched_at": user_row['last_ad_watched_at'],
             "created_at": user_row['created_at'],
             "updated_at": user_row['updated_at']
         },
@@ -132,6 +135,9 @@ async def get_home_info(openid: str = Query(..., description="微信小程序ope
                         "openid": openid,
                         "nickname": "",
                         "status": 1,
+                        "item_limit": 30,
+                        "ads_watched_count": 0,
+                        "last_ad_watched_at": None,
                         "created_at": datetime.now().isoformat(),
                         "updated_at": datetime.now().isoformat()
                     },
