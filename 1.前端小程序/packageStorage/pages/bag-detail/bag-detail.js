@@ -471,15 +471,6 @@ Page({
     });
   },
 
-  // 添加物品
-  onAddItem() {
-    // TODO: 跳转到添加物品页面
-    wx.showToast({
-      title: '添加物品功能开发中',
-      icon: 'none'
-    });
-  },
-
   // 快速拍照
   onQuickScan() {
     // 跳转到相机页面，传递完整的box和bag信息

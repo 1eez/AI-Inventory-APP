@@ -215,7 +215,7 @@
   </view>
 
   <!-- 悬浮添加按钮 -->
-  <view class="btn-fab" bindtap="onAddItem" wx:if="{{items.length > 0}}">
+  <view class="btn-fab" bindtap="onQuickScan" wx:if="{{items.length > 0}}">
     <text class="cuIcon-add"></text>
   </view>
 
