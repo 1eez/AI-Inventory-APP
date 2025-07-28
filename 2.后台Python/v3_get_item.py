@@ -229,7 +229,7 @@ async def get_items(
             }
         else:
             # 获取袋子中的所有物品
-            items_list = get_items_by_bag(validated_bag_id, validated_box_id, user_id, db_manager)
+            items_list = get_items_by_bag(validated_bag_id, db_manager)
             return {
                 "status": "success",
                 "message": "物品列表获取成功",
