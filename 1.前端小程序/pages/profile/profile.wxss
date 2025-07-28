@@ -3,14 +3,12 @@
 /* 页面容器 */
 .page-container {
   min-height: 100vh;
-  background: var(--background-color);
 }
 
 /* 导航栏 */
 .nav-title {
   font-size: 36rpx;
   font-weight: 600;
-  color: var(--text-primary);
 }
 
 /* 主容器 */
@@ -28,10 +26,8 @@
   display: flex;
   align-items: center;
   padding: 40rpx;
-  background: rgba(255, 255, 255, 0.1);
   border-radius: 24rpx;
   margin-bottom: 30rpx;
-  backdrop-filter: blur(10rpx);
 }
 
 .skeleton-avatar-large {
@@ -41,13 +37,10 @@
   margin-right: 30rpx;
 }
 
-
-
 .skeleton-option-item {
   display: flex;
   align-items: center;
   padding: 30rpx;
-  background: #fff;
   border-radius: 20rpx;
   margin-bottom: 20rpx;
 }
@@ -59,11 +52,9 @@
 
 /* 用户信息卡片 */
 .user-info-card {
-  background: var(--card-background);
-  border-radius: var(--border-radius-large);
+  border-radius: 24rpx;
   padding: 40rpx;
   margin-bottom: 30rpx;
-  box-shadow: var(--shadow-light);
 }
 
 .user-header {
@@ -79,23 +70,19 @@
   width: 120rpx;
   height: 120rpx;
   border-radius: 60rpx;
-  border: 4rpx solid var(--border-color);
 }
 
 .user-avatar-placeholder {
   width: 120rpx;
   height: 120rpx;
   border-radius: 60rpx;
-  background: var(--background-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 4rpx solid var(--border-color);
 }
 
 .user-avatar-placeholder text {
   font-size: 60rpx;
-  color: var(--text-placeholder);
 }
 
 .user-info {
@@ -105,19 +92,14 @@
 .user-name-placeholder {
   font-size: 40rpx;
   font-weight: 700;
-  color: var(--text-secondary);
   margin-bottom: 12rpx;
 }
 
 .user-subtitle {
   font-size: 26rpx;
-  color: var(--text-secondary);
 }
 
-
-
 .user-actions {
-  color: var(--text-placeholder);
   font-size: 32rpx;
 }
 
@@ -129,15 +111,10 @@
 .user-name {
   font-size: 40rpx;
   font-weight: 700;
-  color: var(--text-primary);
   margin-bottom: 12rpx;
   padding: 8rpx 12rpx;
   border-radius: 8rpx;
   transition: all 0.3s ease;
-}
-
-.user-name:active {
-  background: var(--background-color);
 }
 
 .nickname-edit-container {
@@ -200,17 +177,14 @@
 
 /* 卡片通用样式 */
 .card {
-  background: var(--card-background);
-  border-radius: var(--border-radius-large);
+  border-radius: 24rpx;
   padding: 40rpx;
   margin-bottom: 30rpx;
-  box-shadow: var(--shadow-light);
 }
 
 .card-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: var(--text-primary);
   margin-bottom: 30rpx;
 }
 
@@ -223,7 +197,6 @@
 
 .view-more {
   font-size: 26rpx;
-  color: var(--primary-color);
   font-weight: 500;
 }
 
@@ -234,7 +207,6 @@
   display: flex;
   align-items: center;
   padding: 30rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
   transition: all 0.3s ease;
 }
 
@@ -243,7 +215,6 @@
 }
 
 .list-item:active {
-  background: #f8f9fa;
   margin: 0 -40rpx;
   padding-left: 40rpx;
   padding-right: 40rpx;
@@ -272,18 +243,15 @@
 .list-item-title {
   font-size: 28rpx;
   font-weight: 600;
-  color: var(--text-primary);
   margin-bottom: 6rpx;
 }
 
 .list-item-subtitle {
   font-size: 24rpx;
-  color: var(--text-secondary);
 }
 
 .list-item-arrow {
   font-size: 28rpx;
-  color: var(--text-placeholder);
   margin-left: 16rpx;
 }
 
@@ -325,48 +293,5 @@
     font-size: 26rpx;
     padding: 14rpx 28rpx;
     min-width: 100rpx;
-  }
-}
-
-/* 深色模式适配 */
-@media (prefers-color-scheme: dark) {
-  .page-container {
-    background: #1a1a1a;
-  }
-  
-  .card {
-    background: #2d2d2d;
-  }
-  
-  .card-title {
-    color: #ffffff;
-  }
-  
-  .user-info-card {
-    background: #2d2d2d;
-  }
-  
-  .user-name {
-    color: #ffffff;
-  }
-  
-  .user-name-placeholder {
-    color: #a0a0a0;
-  }
-  
-  .user-subtitle {
-    color: #a0a0a0;
-  }
-  
-  .list-item:active {
-    background: #3a3a3a;
-  }
-  
-  .list-item-title {
-    color: #ffffff;
-  }
-  
-  .list-item-subtitle {
-    color: #a0a0a0;
   }
 }

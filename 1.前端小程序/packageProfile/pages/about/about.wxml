@@ -11,15 +11,15 @@
   <!-- 主要内容 -->
   <view class="main-container">
     <!-- 应用信息 -->
-    <view class="app-info-section">
+    <view class="app-info-section bg-white">
       <view class="app-logo">
         <image src="/assets/images/logo.png" mode="aspectFit" class="logo-image"></image>
       </view>
       
       <view class="app-details">
-        <text class="app-name">{{appInfo.name}}</text>
-        <text class="app-version" bindtap="onCopyVersionInfo">v{{appInfo.version}} ({{appInfo.buildNumber}})</text>
-        <text class="app-description">{{appInfo.description}}</text>
+        <text class="app-name text-black">{{appInfo.name}}</text>
+        <text class="app-version text-gray" bindtap="onCopyVersionInfo">v{{appInfo.version}} ({{appInfo.buildNumber}})</text>
+        <text class="app-description text-gray">{{appInfo.description}}</text>
       </view>
       
 
@@ -27,19 +27,19 @@
 
     <!-- 功能特性 -->
     <view class="features-section">
-      <view class="section-title">
+      <view class="section-title bg-white">
         <text class="cuIcon-apps text-blue"></text>
-        <text>功能特性</text>
+        <text class="text-black">功能特性</text>
       </view>
       
-      <view class="features-grid">
+      <view class="features-grid bg-white">
         <view class="feature-item" wx:for="{{features}}" wx:key="title">
           <view class="feature-icon">
             <text class="{{item.icon}} text-blue"></text>
           </view>
           <view class="feature-content">
-            <text class="feature-title">{{item.title}}</text>
-            <text class="feature-desc">{{item.description}}</text>
+            <text class="feature-title text-black">{{item.title}}</text>
+            <text class="feature-desc text-gray">{{item.description}}</text>
           </view>
         </view>
       </view>
@@ -47,28 +47,28 @@
 
     <!-- 开发团队 -->
     <view class="team-section">
-      <view class="section-title">
+      <view class="section-title bg-white">
         <text class="cuIcon-group text-orange"></text>
-        <text>独立开发者</text>
+        <text class="text-black">独立开发者</text>
       </view>
       
-      <view class="team-card">
+      <view class="team-card bg-white">
         <view class="team-info">
-          <text class="company-name">{{teamInfo.company}}</text>
-          <text class="company-desc">专注于智能应用开发的个人开发者</text>
+          <text class="company-name text-black">{{teamInfo.company}}</text>
+          <text class="company-desc text-gray">专注于智能应用开发的个人开发者</text>
         </view>
         
         <view class="contact-list">
           <view class="contact-item" bindtap="onVisitWebsite">
-            <text class="cuIcon-global"></text>
-            <text class="contact-text">{{teamInfo.website}}</text>
-            <text class="cuIcon-right"></text>
+            <text class="cuIcon-global text-blue"></text>
+            <text class="contact-text text-black">{{teamInfo.website}}</text>
+            <text class="cuIcon-right text-gray"></text>
           </view>
           
           <view class="contact-item" bindtap="onContactEmail">
-            <text class="cuIcon-mail"></text>
-            <text class="contact-text">{{teamInfo.email}}</text>
-            <text class="cuIcon-right"></text>
+            <text class="cuIcon-mail text-blue"></text>
+            <text class="contact-text text-black">{{teamInfo.email}}</text>
+            <text class="cuIcon-right text-gray"></text>
           </view>
         </view>
       </view>
@@ -76,21 +76,21 @@
 
     <!-- 版本历史 -->
     <view class="version-section">
-      <view class="section-title">
+      <view class="section-title bg-white">
         <text class="cuIcon-time text-purple"></text>
-        <text>版本历史</text>
+        <text class="text-black">版本历史</text>
       </view>
       
-      <view class="version-card">
+      <view class="version-card bg-white">
         <view class="version-list">
           <view class="version-item" wx:for="{{versionHistory}}" wx:key="version">
             <view class="version-header">
-              <text class="version-number">v{{item.version}}</text>
-              <text class="version-date">{{item.date}}</text>
+              <text class="version-number text-black">v{{item.version}}</text>
+              <text class="version-date text-gray">{{item.date}}</text>
             </view>
             <view class="version-changes">
               <view class="change-item" wx:for="{{item.changes}}" wx:for-item="change" wx:key="*this">
-                <text class="change-text">• {{change}}</text>
+                <text class="change-text text-gray">• {{change}}</text>
               </view>
             </view>
           </view>
@@ -100,41 +100,41 @@
 
     <!-- 法律信息 -->
     <view class="legal-section">
-      <view class="section-title">
+      <view class="section-title bg-white">
         <text class="cuIcon-document text-red"></text>
-        <text>法律信息</text>
+        <text class="text-black">法律信息</text>
       </view>
       
-      <view class="legal-card">
+      <view class="legal-card bg-white">
         <view class="legal-list">
           <view class="legal-item" bindtap="onViewLicense">
-            <text class="legal-title">开源许可证</text>
-            <text class="legal-desc">{{licenseInfo.type}}</text>
-            <text class="cuIcon-right"></text>
+            <text class="legal-title text-black">开源许可证</text>
+            <text class="legal-desc text-gray">{{licenseInfo.type}}</text>
+            <text class="cuIcon-right text-gray"></text>
           </view>
           
           <view class="legal-item" bindtap="onViewPrivacyPolicy">
-            <text class="legal-title">隐私政策</text>
-            <text class="legal-desc">了解我们如何保护您的隐私</text>
-            <text class="cuIcon-right"></text>
+            <text class="legal-title text-black">隐私政策</text>
+            <text class="legal-desc text-gray">了解我们如何保护您的隐私</text>
+            <text class="cuIcon-right text-gray"></text>
           </view>
           
 
           
           <view class="legal-item" bindtap="onViewOpenSource">
-            <text class="legal-title">开源项目</text>
-            <text class="legal-desc">查看项目源代码</text>
-            <text class="cuIcon-right"></text>
+            <text class="legal-title text-black">开源项目</text>
+            <text class="legal-desc text-gray">查看项目源代码</text>
+            <text class="cuIcon-right text-gray"></text>
           </view>
         </view>
       </view>
     </view>
 
     <!-- 版权信息 -->
-    <view class="copyright-section">
-      <text class="copyright-text">Copyright © {{licenseInfo.year}} {{licenseInfo.holder}}</text>
-      <text class="copyright-text">All rights reserved.</text>
-      <text class="build-info">Build {{appInfo.buildNumber}} • {{appInfo.releaseDate}}</text>
+    <view class="copyright-section bg-white">
+      <text class="copyright-text text-gray">Copyright © {{licenseInfo.year}} {{licenseInfo.holder}}</text>
+      <text class="copyright-text text-gray">All rights reserved.</text>
+      <text class="build-info text-gray">Build {{appInfo.buildNumber}} • {{appInfo.releaseDate}}</text>
     </view>
   </view>
 </view>

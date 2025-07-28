@@ -17,14 +17,14 @@ Page({
         title: '系统更新',
         subtitle: '检查应用更新',
         icon: 'cuIcon-refresh',
-        color: '#667eea'
+        color: '#4facfe'
       },
       {
         id: 'about',
         title: '关于',
         subtitle: '版本信息',
         icon: 'cuIcon-info',
-        color: '#43e97b'
+        color: '#4facfe'
       },
       {
         id: 'contact',
@@ -42,14 +42,14 @@ Page({
         title: '隐私政策',
         subtitle: '了解隐私保护',
         icon: 'cuIcon-lock',
-        color: '#fa709a'
+        color: '#4facfe'
       },
       {
         id: 'help',
         title: '使用帮助',
         subtitle: '使用指南和常见问题',
         icon: 'cuIcon-question',
-        color: '#ffecd2'
+        color: '#4facfe'
       }
     ],
     

@@ -14,17 +14,17 @@
 
   <!-- 隐私政策内容 -->
   <view wx:else class="content-container">
-    <view class="markdown-content">
+    <view class="markdown-content bg-white">
       <!-- 标题 -->
-      <view class="title">隐私政策</view>
+      <view class="title text-black">隐私政策</view>
       
       <!-- 更新时间 -->
-      <view class="update-time">最后更新：2025年7月27日</view>
+      <view class="update-time text-gray">最后更新：2025年7月27日</view>
       
       <!-- 内容区域 -->
       <view class="content-section">
-        <view class="section-title">1. 信息收集</view>
-        <view class="section-content">
+        <view class="section-title text-black">1. 信息收集</view>
+        <view class="section-content text-gray">
           <view>我们可能收集以下类型的信息：</view>
           <view>• 您主动上传提交的信息（如数据信息、照片等）</view>
           <view>• 使用数据（如功能使用情况、操作记录等）</view>
@@ -32,8 +32,8 @@
       </view>
       
       <view class="content-section">
-        <view class="section-title">2. 信息使用</view>
-        <view class="section-content">
+        <view class="section-title text-black">2. 信息使用</view>
+        <view class="section-content text-gray">
           <view>我们使用收集的信息用于：</view>
           <view>• 提供和维护我们的服务</view>
           <view>• 改善用户体验</view>
@@ -41,8 +41,8 @@
       </view>
       
       <view class="content-section">
-        <view class="section-title">3. 信息保护</view>
-        <view class="section-content">
+        <view class="section-title text-black">3. 信息保护</view>
+        <view class="section-content text-gray">
           <view>我们采取以下措施保护您的信息：</view>
           <view>• 使用加密技术保护数据传输</view>
           <view>• 限制员工访问个人信息</view>
@@ -52,8 +52,8 @@
       </view>
       
       <view class="content-section">
-        <view class="section-title">4. 信息共享</view>
-        <view class="section-content">
+        <view class="section-title text-black">4. 信息共享</view>
+        <view class="section-content text-gray">
           <view>我们不会向第三方出售、交易或转让您的个人信息，除非：</view>
           <view>• 获得您的明确同意</view>
           <view>• 法律要求或政府部门要求</view>
@@ -61,8 +61,8 @@
       </view>
       
       <view class="content-section">
-        <view class="section-title">5. 联系我们</view>
-        <view class="section-content">
+        <view class="section-title text-black">5. 联系我们</view>
+        <view class="section-content text-gray">
           <view>如果您对本隐私政策有任何疑问，请通过以下方式联系我们：</view>
           <view>• 邮箱：cnPro@163.com</view>
         </view>

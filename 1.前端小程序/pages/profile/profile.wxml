@@ -8,43 +8,43 @@
   <!-- 主要内容区域 -->
   <view class="container">
     <!-- 骨架屏加载状态 -->
-    <view wx:if="{{skeletonLoading}}" class="skeleton-container">
-      <!-- 用户信息骨架屏 -->
-      <view class="skeleton-user-info">
-        <view class="skeleton skeleton-avatar-large"></view>
-        <view class="skeleton-content">
-          <view class="skeleton skeleton-title"></view>
-          <view class="skeleton skeleton-text" style="width: 60%;"></view>
+      <view wx:if="{{skeletonLoading}}" class="skeleton-container">
+        <!-- 用户信息骨架屏 -->
+        <view class="skeleton-user-info bg-white">
+          <view class="skeleton skeleton-avatar-large"></view>
+          <view class="skeleton-content">
+            <view class="skeleton skeleton-title"></view>
+            <view class="skeleton skeleton-text" style="width: 60%;"></view>
+          </view>
+        </view>
+        
+        <!-- 选项列表骨架屏 -->
+        <view wx:for="{{[1,2,3,4,5]}}" wx:key="index" class="skeleton-option-item bg-white">
+          <view class="skeleton skeleton-avatar"></view>
+          <view class="skeleton-content">
+            <view class="skeleton skeleton-title"></view>
+            <view class="skeleton skeleton-text" style="width: 70%;"></view>
+          </view>
         </view>
       </view>
-      
-      <!-- 选项列表骨架屏 -->
-      <view wx:for="{{[1,2,3,4,5]}}" wx:key="index" class="skeleton-option-item">
-        <view class="skeleton skeleton-avatar"></view>
-        <view class="skeleton-content">
-          <view class="skeleton skeleton-title"></view>
-          <view class="skeleton skeleton-text" style="width: 70%;"></view>
-        </view>
-      </view>
-    </view>
 
     <!-- 用户信息和功能列表 -->
     <view wx:else>
       <!-- 用户信息卡片 -->
-      <view class="user-info-card">
+      <view class="user-info-card bg-white">
         <view class="user-header">
           <view class="user-avatar-container">
-            <view class="user-avatar-placeholder">
-              <text class="cuIcon-people"></text>
+            <view class="user-avatar-placeholder bg-grey">
+              <text class="cuIcon-people text-white"></text>
             </view>
           </view>
           
           <view class="user-info">
             <view class="user-name-container">
-              <view wx:if="{{!editingNickname}}" class="user-name" bindtap="startEditNickname">{{userInfo.nickname || '点击修改昵称'}}</view>
+              <view wx:if="{{!editingNickname}}" class="user-name text-black" bindtap="startEditNickname">{{userInfo.nickname || '点击修改昵称'}}</view>
               <view wx:else class="nickname-edit-container">
                 <input 
-                  class="nickname-input" 
+                  class="nickname-input bg-white" 
                   value="{{editNickname}}" 
                   placeholder="请输入昵称" 
                   maxlength="20"
@@ -53,26 +53,26 @@
                   focus="{{editingNickname}}"
                 />
                 <view class="nickname-actions">
-                  <text class="nickname-btn confirm" bindtap="confirmEditNickname">确定</text>
-                  <text class="nickname-btn cancel" bindtap="cancelEditNickname">取消</text>
+                  <text class="nickname-btn confirm bg-blue text-white" bindtap="confirmEditNickname">确定</text>
+                  <text class="nickname-btn cancel bg-grey text-gray" bindtap="cancelEditNickname">取消</text>
                 </view>
               </view>
             </view>
             
-            <view class="user-subtitle">
+            <view class="user-subtitle text-gray">
               <text>欢迎使用：收纳空间</text>
             </view>
           </view>
           
-          <view class="user-actions" wx:if="{{!editingNickname}}">
+          <view class="user-actions text-gray" wx:if="{{!editingNickname}}">
             <text class="cuIcon-edit" bindtap="startEditNickname"></text>
           </view>
         </view>
       </view>
 
       <!-- 应用设置 -->
-      <view class="settings-card card">
-        <view class="card-title">应用设置</view>
+      <view class="settings-card card bg-white">
+        <view class="card-title text-black">应用设置</view>
         <view class="settings-list">
           <view 
             wx:for="{{settingsOptions}}" 
@@ -82,20 +82,20 @@
             data-id="{{item.id}}"
           >
             <view class="setting-icon list-item-icon" style="background-color: {{item.color}};">
-              <text class="{{item.icon}}"></text>
+              <text class="{{item.icon}} text-white"></text>
             </view>
             <view class="setting-content list-item-content">
-              <view class="setting-title list-item-title">{{item.title}}</view>
-              <view class="setting-subtitle list-item-subtitle">{{item.subtitle}}</view>
+              <view class="setting-title list-item-title text-black">{{item.title}}</view>
+              <view class="setting-subtitle list-item-subtitle text-gray">{{item.subtitle}}</view>
             </view>
-            <text class="cuIcon-right list-item-arrow"></text>
+            <text class="cuIcon-right list-item-arrow text-gray"></text>
           </view>
         </view>
       </view>
 
       <!-- 其他 -->
-      <view class="other-card card">
-        <view class="card-title">其他</view>
+      <view class="other-card card bg-white">
+        <view class="card-title text-black">其他</view>
         <view class="other-list">
           <view 
             wx:for="{{otherOptions}}" 
@@ -105,13 +105,13 @@
             data-id="{{item.id}}"
           >
             <view class="other-icon list-item-icon" style="background-color: {{item.color}};">
-              <text class="{{item.icon}}"></text>
+              <text class="{{item.icon}} text-white"></text>
             </view>
             <view class="other-content list-item-content">
-              <view class="other-title list-item-title">{{item.title}}</view>
-              <view class="other-subtitle list-item-subtitle">{{item.subtitle}}</view>
+              <view class="other-title list-item-title text-black">{{item.title}}</view>
+              <view class="other-subtitle list-item-subtitle text-gray">{{item.subtitle}}</view>
             </view>
-            <text class="cuIcon-right list-item-arrow"></text>
+            <text class="cuIcon-right list-item-arrow text-gray"></text>
           </view>
         </view>
       </view>

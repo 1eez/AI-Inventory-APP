@@ -14,198 +14,193 @@
 
   <!-- 帮助内容 -->
   <view wx:else class="content-container">
-    <!-- 页面标题 -->
-    <view class="page-header">
-      <view class="page-title">使用帮助</view>
-      <view class="page-subtitle">快速掌握物品管理技巧</view>
-    </view>
 
     <!-- 帮助章节 -->
     <view class="help-sections">
       <!-- 快速开始 -->
-      <view class="section-card">
+      <view class="section-card bg-white">
         <view class="section-header" bindtap="onToggleSection" data-id="getting-started">
           <view class="section-icon bg-grey">
-            <text class="cuIcon-home"></text>
+            <text class="cuIcon-home text-white"></text>
           </view>
-          <view class="section-title">快速开始</view>
+          <view class="section-title text-black">快速开始</view>
           <view class="section-arrow {{sections[0].expanded ? 'expanded' : ''}}">
-            <text class="cuIcon-down"></text>
+            <text class="cuIcon-down text-gray"></text>
           </view>
         </view>
         <view class="section-content {{sections[0].expanded ? 'show' : ''}}">
           <view class="content-item">
             <view class="step-content">
-              <view class="step-title">创建储物箱</view>
-              <view class="step-desc">在首页点击"新建储物箱"，为您的物品创建一个存储空间</view>
+              <view class="step-title text-black">创建储物箱</view>
+              <view class="step-desc text-gray">在首页点击"新建储物箱"，为您的物品创建一个存储空间</view>
             </view>
           </view>
           <view class="content-item">
             <view class="step-content">
-              <view class="step-title">添加收纳袋</view>
-              <view class="step-desc">在储物箱中创建收纳袋，用于分类存放不同类型的物品</view>
+              <view class="step-title text-black">添加收纳袋</view>
+              <view class="step-desc text-gray">在储物箱中创建收纳袋，用于分类存放不同类型的物品</view>
             </view>
           </view>
           <view class="content-item">
             <view class="step-content">
-              <view class="step-title">拍照添加物品</view>
-              <view class="step-desc">使用拍照功能记录物品信息，系统会自动识别物品名称</view>
+              <view class="step-title text-black">拍照添加物品</view>
+              <view class="step-desc text-gray">使用拍照功能记录物品信息，系统会自动识别物品名称</view>
             </view>
           </view>
         </view>
       </view>
 
       <!-- 储物箱管理 -->
-      <view class="section-card">
+      <view class="section-card bg-white">
         <view class="section-header" bindtap="onToggleSection" data-id="box-management">
           <view class="section-icon bg-grey">
-            <text class="cuIcon-shop"></text>
+            <text class="cuIcon-shop text-white"></text>
           </view>
-          <view class="section-title">储物箱管理</view>
+          <view class="section-title text-black">储物箱管理</view>
           <view class="section-arrow {{sections[1].expanded ? 'expanded' : ''}}">
-            <text class="cuIcon-down"></text>
+            <text class="cuIcon-down text-gray"></text>
           </view>
         </view>
         <view class="section-content {{sections[1].expanded ? 'show' : ''}}">
           <view class="feature-item">
-            <view class="feature-title">创建储物箱</view>
-            <view class="feature-desc">• 设置箱子名称和描述\n• 选择合适的颜色标识\n• 添加位置信息便于查找</view>
+            <view class="feature-title text-black">创建储物箱</view>
+            <view class="feature-desc text-gray">• 设置箱子名称和描述\n• 选择合适的颜色标识\n• 添加位置信息便于查找</view>
           </view>
           <view class="feature-item">
-            <view class="feature-title">编辑储物箱</view>
-            <view class="feature-desc">• 点击箱子卡片右上角菜单\n• 选择编辑修改基本信息\n• 支持修改名称、描述、颜色等</view>
+            <view class="feature-title text-black">编辑储物箱</view>
+            <view class="feature-desc text-gray">• 点击箱子卡片右上角菜单\n• 选择编辑修改基本信息\n• 支持修改名称、描述、颜色等</view>
           </view>
           <view class="feature-item">
-            <view class="feature-title">删除储物箱</view>
-            <view class="feature-desc">• 在箱子详情页面选择删除\n• 删除前会提示确认\n• 删除后箱子内所有数据将清空</view>
+            <view class="feature-title text-black">删除储物箱</view>
+            <view class="feature-desc text-gray">• 在箱子详情页面选择删除\n• 删除前会提示确认\n• 删除后箱子内所有数据将清空</view>
           </view>
         </view>
       </view>
 
       <!-- 收纳袋管理 -->
-      <view class="section-card">
+      <view class="section-card bg-white">
         <view class="section-header" bindtap="onToggleSection" data-id="bag-management">
           <view class="section-icon bg-grey">
-            <text class="cuIcon-goods"></text>
+            <text class="cuIcon-goods text-white"></text>
           </view>
-          <view class="section-title">收纳袋管理</view>
+          <view class="section-title text-black">收纳袋管理</view>
           <view class="section-arrow {{sections[2].expanded ? 'expanded' : ''}}">
-            <text class="cuIcon-down"></text>
+            <text class="cuIcon-down text-gray"></text>
           </view>
         </view>
         <view class="section-content {{sections[2].expanded ? 'show' : ''}}">
           <view class="feature-item">
-            <view class="feature-title">创建收纳袋</view>
-            <view class="feature-desc">• 在储物箱中点击"新建收纳袋"\n• 设置袋子名称和用途\n• 选择颜色便于区分</view>
+            <view class="feature-title text-black">创建收纳袋</view>
+            <view class="feature-desc text-gray">• 在储物箱中点击"新建收纳袋"\n• 设置袋子名称和用途\n• 选择颜色便于区分</view>
           </view>
           <view class="feature-item">
-            <view class="feature-title">管理收纳袋</view>
-            <view class="feature-desc">• 查看袋子内物品数量\n• 编辑袋子基本信息\n• 移动袋子到其他箱子</view>
+            <view class="feature-title text-black">管理收纳袋</view>
+            <view class="feature-desc text-gray">• 查看袋子内物品数量\n• 编辑袋子基本信息\n• 移动袋子到其他箱子</view>
           </view>
           <view class="feature-item">
-            <view class="feature-title">分类建议</view>
-            <view class="feature-desc">• 按物品类型分类（如：电子产品、服装等）\n• 按使用频率分类（如：常用、备用等）\n• 按季节分类（如：春夏、秋冬等）</view>
+            <view class="feature-title text-black">分类建议</view>
+            <view class="feature-desc text-gray">• 按物品类型分类（如：电子产品、服装等）\n• 按使用频率分类（如：常用、备用等）\n• 按季节分类（如：春夏、秋冬等）</view>
           </view>
         </view>
       </view>
 
       <!-- 物品管理 -->
-      <view class="section-card">
+      <view class="section-card bg-white">
         <view class="section-header" bindtap="onToggleSection" data-id="item-management">
           <view class="section-icon bg-grey">
-            <text class="cuIcon-camera"></text>
+            <text class="cuIcon-camera text-white"></text>
           </view>
-          <view class="section-title">物品管理</view>
+          <view class="section-title text-black">物品管理</view>
           <view class="section-arrow {{sections[3].expanded ? 'expanded' : ''}}">
-            <text class="cuIcon-down"></text>
+            <text class="cuIcon-down text-gray"></text>
           </view>
         </view>
         <view class="section-content {{sections[3].expanded ? 'show' : ''}}">
           <view class="feature-item">
-            <view class="feature-title">拍照添加</view>
-            <view class="feature-desc">• 使用相机拍摄物品照片\n• 系统自动识别物品信息\n• 确认并保存到指定位置</view>
+            <view class="feature-title text-black">拍照添加</view>
+            <view class="feature-desc text-gray">• 使用相机拍摄物品照片\n• 系统自动识别物品信息\n• 确认并保存到指定位置</view>
           </view>
           <view class="feature-item">
-            <view class="feature-title">相册导入</view>
-            <view class="feature-desc">• 从手机相册选择物品照片\n• 批量导入多张图片\n• 逐一确认物品信息</view>
+            <view class="feature-title text-black">相册导入</view>
+            <view class="feature-desc text-gray">• 从手机相册选择物品照片\n• 批量导入多张图片\n• 逐一确认物品信息</view>
           </view>
           <view class="feature-item">
-            <view class="feature-title">编辑物品</view>
-            <view class="feature-desc">• 修改物品名称和描述\n• 添加自定义标签\n• 调整物品分类</view>
+            <view class="feature-title text-black">编辑物品</view>
+            <view class="feature-desc text-gray">• 修改物品名称和描述\n• 添加自定义标签\n• 调整物品分类</view>
           </view>
           <view class="feature-item">
-            <view class="feature-title">删除物品</view>
-            <view class="feature-desc">• 在物品详情中选择删除\n• 支持批量删除操作\n• 删除前会确认提示</view>
+            <view class="feature-title text-black">删除物品</view>
+            <view class="feature-desc text-gray">• 在物品详情中选择删除\n• 支持批量删除操作\n• 删除前会确认提示</view>
           </view>
         </view>
       </view>
 
       <!-- 搜索技巧 -->
-      <view class="section-card">
+      <view class="section-card bg-white">
         <view class="section-header" bindtap="onToggleSection" data-id="search-tips">
           <view class="section-icon bg-grey">
-            <text class="cuIcon-search"></text>
+            <text class="cuIcon-search text-white"></text>
           </view>
-          <view class="section-title">搜索技巧</view>
+          <view class="section-title text-black">搜索技巧</view>
           <view class="section-arrow {{sections[4].expanded ? 'expanded' : ''}}">
-            <text class="cuIcon-down"></text>
+            <text class="cuIcon-down text-gray"></text>
           </view>
         </view>
         <view class="section-content {{sections[4].expanded ? 'show' : ''}}">
           <view class="feature-item">
-            <view class="feature-title">关键词搜索</view>
-            <view class="feature-desc">• 输入物品名称快速查找\n• 支持模糊匹配\n• 搜索结果按相关度排序</view>
+            <view class="feature-title text-black">关键词搜索</view>
+            <view class="feature-desc text-gray">• 输入物品名称快速查找\n• 支持模糊匹配\n• 搜索结果按相关度排序</view>
           </view>
           <view class="feature-item">
-            <view class="feature-title">标签筛选</view>
-            <view class="feature-desc">• 使用标签快速筛选\n• 支持多标签组合\n• 常用标签：重要、常用、备用等</view>
+            <view class="feature-title text-black">标签筛选</view>
+            <view class="feature-desc text-gray">• 使用标签快速筛选\n• 支持多标签组合\n• 常用标签：重要、常用、备用等</view>
           </view>
           <view class="feature-item">
-            <view class="feature-title">位置查找</view>
-            <view class="feature-desc">• 按储物箱查找\n• 按收纳袋查找\n• 查看物品具体位置</view>
+            <view class="feature-title text-black">位置查找</view>
+            <view class="feature-desc text-gray">• 按储物箱查找\n• 按收纳袋查找\n• 查看物品具体位置</view>
           </view>
         </view>
       </view>
 
       <!-- 常见问题 -->
-      <view class="section-card">
+      <view class="section-card bg-white">
         <view class="section-header" bindtap="onToggleSection" data-id="common-issues">
           <view class="section-icon bg-grey">
-            <text class="cuIcon-question"></text>
+            <text class="cuIcon-question text-white"></text>
           </view>
-          <view class="section-title">常见问题</view>
+          <view class="section-title text-black">常见问题</view>
           <view class="section-arrow {{sections[5].expanded ? 'expanded' : ''}}">
-            <text class="cuIcon-down"></text>
+            <text class="cuIcon-down text-gray"></text>
           </view>
         </view>
         <view class="section-content {{sections[5].expanded ? 'show' : ''}}">
           <view class="qa-item">
-            <view class="question">Q: 拍照识别不准确怎么办？</view>
-            <view class="answer">A: 可以手动编辑物品信息，确保光线充足，物品清晰可见。</view>
+            <view class="question text-black">Q: 拍照识别不准确怎么办？</view>
+            <view class="answer text-gray">A: 可以手动编辑物品信息，确保光线充足，物品清晰可见。</view>
           </view>
           <view class="qa-item">
-            <view class="question">Q: 如何快速找到某个物品？</view>
-            <view class="answer">A: 使用搜索功能输入物品名称，或通过标签筛选快速定位。</view>
+            <view class="question text-black">Q: 如何快速找到某个物品？</view>
+            <view class="answer text-gray">A: 使用搜索功能输入物品名称，或通过标签筛选快速定位。</view>
           </view>
           <view class="qa-item">
-            <view class="question">Q: 可以移动物品到其他袋子吗？</view>
-            <view class="answer">A: 可以，在物品详情页面选择编辑，重新选择存放位置。</view>
+            <view class="question text-black">Q: 可以移动物品到其他袋子吗？</view>
+            <view class="answer text-gray">A: 可以，在物品详情页面选择编辑，重新选择存放位置。</view>
           </view>
           <view class="qa-item">
-            <view class="question">Q: 数据会丢失吗？</view>
-            <view class="answer">A: 数据存储在云端，不会丢失。建议定期备份重要数据。</view>
+            <view class="question text-black">Q: 数据会丢失吗？</view>
+            <view class="answer text-gray">A: 数据存储在云端，不会丢失。建议定期备份重要数据。</view>
           </view>
         </view>
       </view>
     </view>
 
     <!-- 联系支持 -->
-    <view class="support-section">
-      <view class="support-title">需要更多帮助？</view>
-      <view class="support-desc">如果您遇到其他问题，欢迎联系作者：Lord Li</view>
+    <view class="support-section bg-white">
+      <view class="support-title text-black">需要更多帮助？</view>
+      <view class="support-desc text-gray">如果您遇到其他问题，欢迎联系作者：Lord Li</view>
       <view class="support-contact">
-        <text class="cuIcon-message"></text>
-        <text>邮箱：cnPro@163.com</text>
+        <text class="cuIcon-message text-blue"></text>
+        <text class="text-gray">邮箱：cnPro@163.com</text>
       </view>
     </view>
   </view>
