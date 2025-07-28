@@ -192,6 +192,64 @@ def analyze_image_with_ai(image_data: bytes) -> tuple[str, Dict[str, Any]]:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI分析失败: {str(e)}")
 
+def check_user_item_limit(user_id: int, db_manager: DatabaseManager) -> Dict[str, Any]:
+    """
+    检查用户物品数量是否超过限制
+    
+    Args:
+        user_id: 用户ID
+        db_manager: 数据库管理器实例
+        
+    Returns:
+        Dict: 包含用户信息和物品统计的字典
+        
+    Raises:
+        HTTPException: 当物品数量超过限制时抛出异常
+    """
+    # 获取用户信息（包含item_limit）
+    user_query = "SELECT user_id, openid, nickname, item_limit FROM users_summary WHERE user_id = ?"
+    user_info = db_manager.execute_query(user_query, (user_id,), fetch_one=True)
+    
+    if not user_info:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    
+    # 获取用户当前物品总数
+    items_query = """
+    SELECT COUNT(*) as item_count 
+    FROM items_detail id 
+    JOIN bags_summary bs ON id.bag_id = bs.bag_id 
+    JOIN boxes_summary bx ON bs.box_id = bx.box_id 
+    WHERE bx.user_id = ?
+    """
+    
+    item_count_result = db_manager.execute_query(items_query, (user_id,), fetch_one=True)
+    current_item_count = item_count_result['item_count'] if item_count_result else 0
+    
+    # 检查是否超过限制
+    item_limit = user_info['item_limit']
+    
+    if current_item_count >= item_limit:
+        raise HTTPException(
+            status_code=200, 
+            detail={
+                "status": "error",
+                "message": f"物品数量已达到上限！当前已有{current_item_count}个物品，限制为{item_limit}个。请观看广告获取更多存储额度。",
+                "data": {
+                    "current_item_count": current_item_count,
+                    "item_limit": item_limit,
+                    "remaining_slots": 0,
+                    "need_watch_ad": True
+                }
+            }
+        )
+    
+    return {
+        "user_info": dict(user_info),
+        "current_item_count": current_item_count,
+        "item_limit": item_limit,
+        "remaining_slots": item_limit - current_item_count
+    }
+
 def save_image_and_log(image_data: bytes, ai_raw_content: str, ai_result: Dict[str, Any]) -> tuple[str, str]:
     """
     保存图片和AI原始响应日志
@@ -259,6 +317,9 @@ async def upload_image(
             user_id = db_manager.get_user_id_by_openid(openid)
         except ValueError:
             raise HTTPException(status_code=500, detail="用户不存在，请先登录")
+        
+        # 检查用户物品数量限制
+        limit_check_result = check_user_item_limit(user_id, db_manager)
         
         # 验证文件类型
         if not image.content_type or not image.content_type.startswith('image/'):

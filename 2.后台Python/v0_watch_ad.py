@@ -39,7 +39,7 @@ def update_user_ad_reward(openid: str, db_manager: DatabaseManager) -> Dict[str,
     # 更新用户的item_limit、ads_watched_count和last_ad_watched_at
     update_query = """
     UPDATE users_summary 
-    SET item_limit = item_limit + 30,
+    SET item_limit = item_limit + 20,
         ads_watched_count = ads_watched_count + 1,
         last_ad_watched_at = CURRENT_TIMESTAMP,
         updated_at = CURRENT_TIMESTAMP
@@ -88,8 +88,8 @@ async def watch_ad(ad_data: WatchAdRequest = Body(...)):
             "message": "观看广告奖励发放成功",
             "data": {
                 "reward": {
-                    "item_limit_increase": 30,
-                    "description": "恭喜您获得30个物品存储额度！"
+                    "item_limit_increase": 20,
+                    "description": "恭喜您获得20个物品存储额度！"
                 },
                 "user_info": user_info
             }

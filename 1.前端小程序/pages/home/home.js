@@ -587,6 +587,15 @@ Page({
           if (res.statusCode === 200) {
             try {
               const data = JSON.parse(res.data);
+              
+              // 检查是否是物品数量限制错误（后台返回的数据结构是 {detail: {...}}）
+              if (data.detail && data.detail.status === 'error' && data.detail.data && data.detail.data.need_watch_ad) {
+                // 显示物品数量限制提示
+                this.showItemLimitDialog(data.detail);
+                reject(new Error('物品数量已达上限'));
+                return;
+              }
+              
               resolve(data);
             } catch (parseError) {
               console.error('解析响应数据失败:', parseError);
@@ -681,14 +690,13 @@ Page({
         this.adLoadFailed = true;
         this.adErrorCode = err.errCode;
         
-        let errorMessage = '广告加载失败，请稍后重试';
-        if (err.errCode === 1004) {
-          errorMessage = '暂无可用广告，请稍后再试';
-        }
+        // 保存详细的错误信息
+        this.adErrorDetail = err.errDetail || err.errMsg || '广告加载失败，请稍后重试';
         
         wx.showToast({
-          title: errorMessage,
-          icon: 'none'
+          title: this.adErrorDetail,
+          icon: 'none',
+          duration: 3000
         });
       });
       
@@ -714,6 +722,26 @@ Page({
     } else {
       console.warn('当前环境不支持激励视频广告');
     }
+  },
+
+  /*** 显示物品数量限制对话框   */
+  showItemLimitDialog(errorData) {
+    const { message, data } = errorData;
+    const { current_item_count, item_limit } = data;
+    
+    wx.showModal({
+      title: '存储空间不足',
+      content: `${message}\n\n观看广告可获得30个额外存储位置，是否立即观看？`,
+      showCancel: true,
+      cancelText: '稍后再说',
+      confirmText: '观看广告',
+      success: (res) => {
+        if (res.confirm) {
+          // 用户选择观看广告
+          this.onWatchAd();
+        }
+      }
+    });
   },
 
   /*** 观看广告增加物品限制   */
@@ -750,9 +778,10 @@ Page({
       return;
     }
 
-    // 重置广告加载失败标记
+    // 重置广告加载失败标记和错误信息
     this.adLoadFailed = false;
     this.adErrorCode = null;
+    this.adErrorDetail = null;
 
     // 显示广告
     this.videoAd.show().catch(() => {
@@ -761,13 +790,12 @@ Page({
         .then(() => {
           // 检查是否在加载过程中出现错误
           if (this.adLoadFailed) {
-            let errorMessage = '广告加载失败，请稍后重试';
-            if (this.adErrorCode === 1004) {
-              errorMessage = '暂无可用广告，请稍后再试';
-            }
+            // 显示之前保存的详细错误信息
+            let errorMessage = this.adErrorDetail || '广告加载失败，请稍后重试';
             wx.showToast({
               title: errorMessage,
-              icon: 'none'
+              icon: 'none',
+              duration: 3000
             });
             return;
           }
@@ -775,9 +803,12 @@ Page({
         })
         .catch(err => {
           console.error('激励视频广告显示失败', err);
+          // 显示完整的错误信息给用户
+          let errorMessage = err.errDetail || err.errMsg || '广告显示失败，请稍后重试';
           wx.showToast({
-            title: '广告显示失败，请稍后重试',
-            icon: 'none'
+            title: errorMessage,
+            icon: 'none',
+            duration: 3000
           });
         });
     });

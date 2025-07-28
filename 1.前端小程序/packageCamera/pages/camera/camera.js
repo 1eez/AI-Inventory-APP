@@ -232,6 +232,15 @@ Page({
           if (res.statusCode === 200) {
             try {
               const data = JSON.parse(res.data);
+              
+              // 检查是否是物品数量限制错误（后台返回的数据结构是 {detail: {...}}）
+              if (data.detail && data.detail.status === 'error' && data.detail.data && data.detail.data.need_watch_ad) {
+                // 显示物品数量限制提示
+                this.showItemLimitDialog(data.detail);
+                reject(new Error('物品数量已达上限'));
+                return;
+              }
+              
               resolve(data);
             } catch (parseError) {
               console.error('解析响应数据失败:', parseError);
@@ -299,6 +308,27 @@ Page({
       },
       fail: (error) => {
         console.error('选择图片失败:', error);
+      }
+    });
+  },
+
+  /**
+   * 显示物品数量限制对话框
+   */
+  showItemLimitDialog(errorData) {
+    const { message, data } = errorData;
+    const { current_item_count, item_limit } = data;
+    
+    wx.showModal({
+      title: '存储空间不足',
+      content: `${message}\n\n当前物品：${current_item_count || 0}/${item_limit || 0}\n\n观看广告可获得更多存储空间，将为您返回首页。`,
+      showCancel: false,
+      confirmText: '返回首页',
+      success: (res) => {
+        // 强制返回首页
+        wx.switchTab({
+          url: '/pages/home/home'
+        });
       }
     });
   },
