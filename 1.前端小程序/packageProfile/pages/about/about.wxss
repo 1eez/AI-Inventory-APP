@@ -15,7 +15,7 @@
 .app-info-section {
   border-radius: 20rpx;
   padding: 40rpx;
-  margin-bottom: 30rpx;
+  margin: 0 10rpx 10rpx;
   text-align: center;
 }
 
@@ -57,31 +57,6 @@
   line-height: 1.6;
 }
 
-/* 统计信息 */
-.statistics {
-  display: flex;
-  justify-content: space-around;
-  border-top: 1rpx solid #f0f0f0;
-  padding-top: 30rpx;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stat-number {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8rpx;
-}
-
-.stat-label {
-  font-size: 24rpx;
-  color: #999;
-}
 
 /* 通用分组标题 */
 .section-title {
@@ -91,7 +66,7 @@
   font-size: 32rpx;
   font-weight: 600;
   border-radius: 20rpx 20rpx 0 0;
-  margin: 0 30rpx;
+  margin: 0 10rpx;
   margin-top: 30rpx;
 }
 
@@ -113,23 +88,22 @@
 .libs-card,
 .legal-card {
   border-radius: 0 0 20rpx 20rpx;
-  margin: 0 30rpx 30rpx;
+  margin: 0 10rpx 10rpx;
   overflow: hidden;
 }
 
 /* 功能特性 */
 .features-grid {
-  padding: 40rpx;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30rpx;
+  padding: 20rpx;
 }
 
 .feature-item {
-  text-align: center;
-  padding: 30rpx 20rpx;
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 16rpx;
   border-radius: 16rpx;
   transition: all 0.3s ease;
+  margin-bottom: 12rpx;
 }
 
 .feature-item:active {
@@ -137,21 +111,28 @@
 }
 
 .feature-icon {
-  font-size: 48rpx;
-  margin-bottom: 16rpx;
-  display: block;
+  font-size: 40rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.feature-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .feature-title {
   font-size: 28rpx;
   font-weight: 600;
-  margin-bottom: 12rpx;
+  margin-bottom: 4rpx;
   display: block;
 }
 
 .feature-desc {
   font-size: 24rpx;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 /* 开发团队 */
