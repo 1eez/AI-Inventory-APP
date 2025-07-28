@@ -58,6 +58,30 @@
         </view>
       </view>
 
+      <!-- 物品限制信息 -->
+      <view class="item-limit-card card bg-white">
+        <view class="limit-header">
+          <view class="limit-title text-black">收纳物品上限</view>
+          <view class="limit-tip text-orange" bindtap="onWatchAd">
+            <text class="cuIcon-play"></text>
+            <text class="tip-text">看广告增加</text>
+          </view>
+        </view>
+        <view class="limit-content">
+          <view class="limit-progress">
+            <view class="progress-bar bg-gray">
+              <view class="progress-fill bg-blue" style="width: {{(boxesWithItems / itemLimit) * 100}}%;"></view>
+            </view>
+            <view class="progress-text">
+              <text class="current-count text-blue">{{boxesWithItems}}</text>
+              <text class="separator text-gray">/</text>
+              <text class="limit-count text-gray">{{itemLimit}}</text>
+              <text class="unit text-gray">件物品</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
       <!-- 快速操作 -->
       <view class="quick-actions card bg-white">
         <view class="action-title text-black">快速操作</view>

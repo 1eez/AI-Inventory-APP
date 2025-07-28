@@ -2,6 +2,13 @@
 const app = getApp();
 
 Page({
+  /*** 激励视频广告实例   */
+  videoAd: null,
+
+  // 广告相关状态
+  adLoadFailed: false,
+  adErrorCode: null,
+
   /*** 页面的初始数据   */
   data: {
     loading: true,
@@ -10,6 +17,7 @@ Page({
     searchKeyword: '',
     // 用户信息
     userNickname: '', // 用户昵称
+    itemLimit: 30, // 物品存储限制
     // 骨架屏配置
     skeletonLoading: true,
     skeletonItems: [1, 2, 3, 4, 5], // 显示5个骨架屏项目
@@ -30,6 +38,7 @@ Page({
   /*** 生命周期函数--监听页面加载   */
   onLoad(options) {
     console.log('首页加载');
+    this.initRewardedVideoAd();
     this.initPage();
   },
 
@@ -102,14 +111,16 @@ Page({
         };
       });
       
-      // 获取用户昵称
+      // 获取用户昵称和物品限制
       const userNickname = user_info && user_info.nickname ? user_info.nickname : '';
+      const itemLimit = user_info && user_info.item_limit ? user_info.item_limit : 30;
       
       this.setData({
         boxes: processedBoxes,
         totalItems: statistics.total_bags || 0,
         boxesWithItems: statistics.total_items || 0,
-        userNickname: userNickname
+        userNickname: userNickname,
+        itemLimit: itemLimit
       });
       
       console.log('箱子数据加载完成:', {
@@ -648,6 +659,202 @@ Page({
     wx.navigateTo({
       url: `/packageCamera/pages/camera/camera?${queryString}`
     });
+  },
+
+  /*** 初始化激励视频广告   */
+  initRewardedVideoAd() {
+    // 若在开发者工具中无法预览广告，请切换开发者工具中的基础库版本
+    if (wx.createRewardedVideoAd) {
+      this.videoAd = wx.createRewardedVideoAd({
+        adUnitId: 'adunit-6d68dfcbc46e498c'
+      });
+      
+      // 监听广告加载成功
+      this.videoAd.onLoad(() => {
+        console.log('激励视频广告加载成功');
+      });
+      
+      // 监听广告加载失败
+      this.videoAd.onError((err) => {
+        console.error('激励视频广告加载失败', err);
+        // 设置广告加载失败标记
+        this.adLoadFailed = true;
+        this.adErrorCode = err.errCode;
+        
+        let errorMessage = '广告加载失败，请稍后重试';
+        if (err.errCode === 1004) {
+          errorMessage = '暂无可用广告，请稍后再试';
+        }
+        
+        wx.showToast({
+          title: errorMessage,
+          icon: 'none'
+        });
+      });
+      
+      // 监听广告关闭
+      this.videoAd.onClose((res) => {
+        console.log('激励视频广告关闭', res);
+        // 如果广告加载失败，不执行任何操作
+        if (this.adLoadFailed) {
+          return;
+        }
+        
+        if (res && res.isEnded) {
+          // 用户完整观看了广告，调用后端接口发放奖励
+          this.callWatchAdApi();
+        } else {
+          // 用户中途退出，不发放奖励
+          wx.showToast({
+            title: '请完整观看广告才能获得奖励',
+            icon: 'none'
+          });
+        }
+      });
+    } else {
+      console.warn('当前环境不支持激励视频广告');
+    }
+  },
+
+  /*** 观看广告增加物品限制   */
+  onWatchAd() {
+    if (!this.videoAd) {
+      wx.showToast({
+        title: '广告功能暂不可用',
+        icon: 'none'
+      });
+      return;
+    }
+
+    wx.showModal({
+      title: '观看广告',
+      content: '观看完整广告后可增加30个物品存储额度，是否继续？',
+      showCancel: true,
+      cancelText: '取消',
+      confirmText: '观看广告',
+      success: (res) => {
+        if (res.confirm) {
+          this.showRewardedVideoAd();
+        }
+      }
+    });
+  },
+
+  /*** 显示激励视频广告   */
+  showRewardedVideoAd() {
+    if (!this.videoAd) {
+      wx.showToast({
+        title: '广告功能暂不可用',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 重置广告加载失败标记
+    this.adLoadFailed = false;
+    this.adErrorCode = null;
+
+    // 显示广告
+    this.videoAd.show().catch(() => {
+      // 失败重试
+      this.videoAd.load()
+        .then(() => {
+          // 检查是否在加载过程中出现错误
+          if (this.adLoadFailed) {
+            let errorMessage = '广告加载失败，请稍后重试';
+            if (this.adErrorCode === 1004) {
+              errorMessage = '暂无可用广告，请稍后再试';
+            }
+            wx.showToast({
+              title: errorMessage,
+              icon: 'none'
+            });
+            return;
+          }
+          return this.videoAd.show();
+        })
+        .catch(err => {
+          console.error('激励视频广告显示失败', err);
+          wx.showToast({
+            title: '广告显示失败，请稍后重试',
+            icon: 'none'
+          });
+        });
+    });
+  },
+
+  /*** 调用观看广告接口   */
+  async callWatchAdApi() {
+    try {
+      wx.showLoading({
+        title: '正在发放奖励...',
+        mask: true
+      });
+
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+
+      if (!openid) {
+        throw new Error('用户未登录');
+      }
+
+      const response = await new Promise((resolve, reject) => {
+        wx.request({
+          url: `${baseUrl}v0/user/watch_ad`,
+          method: 'POST',
+          header: {
+            'content-type': 'application/json'
+          },
+          data: {
+            openid: openid
+          },
+          success: (res) => {
+            console.log('观看广告接口响应:', res);
+            if (res.statusCode === 200 && res.data) {
+              resolve(res.data);
+            } else {
+              reject(new Error(`接口请求失败: ${res.statusCode}`));
+            }
+          },
+          fail: (error) => {
+            console.error('观看广告接口请求失败:', error);
+            reject(error);
+          }
+        });
+      });
+
+      wx.hideLoading();
+
+      if (response.status === 'success') {
+        // 更新本地数据
+        const newItemLimit = response.data.user_info.item_limit;
+        const reward = response.data.reward;
+        
+        this.setData({
+          itemLimit: newItemLimit
+        });
+
+        // 显示奖励信息
+        wx.showModal({
+          title: '恭喜获得奖励！',
+          content: reward.description || `恭喜您获得${reward.item_limit_increase}个物品存储额度！`,
+          showCancel: false,
+          confirmText: '太棒了'
+        });
+
+        // 刷新页面数据
+        await this.loadBoxes();
+      } else {
+        throw new Error(response.message || '奖励发放失败');
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('观看广告奖励发放失败:', error);
+      wx.showToast({
+        title: error.message || '奖励发放失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   /*** 批量导入   */
