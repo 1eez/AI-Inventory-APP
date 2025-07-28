@@ -79,7 +79,7 @@
       </view>
 
       <!-- 统计信息 -->
-      <view class="stats-card card">
+      <view class="stats-card card bg-white">
         <view class="stats-content">
           <view class="stat-item">
             <text class="stat-number">{{boxInfo.totalBags}}</text>
@@ -94,32 +94,32 @@
       </view>
 
       <!-- 快速操作 -->
-      <view class="quick-actions card">
-        <view class="action-title">快速操作</view>
+      <view class="quick-actions card bg-white">
+        <view class="action-title text-black">快速操作</view>
         <view class="action-buttons">
           <view class="action-btn" bindtap="onAddBag">
             <view class="action-icon bg-blue">
               <text class="cuIcon-add"></text>
             </view>
-            <text class="action-text">新建收纳袋</text>
+            <text class="action-text text-gray">新建收纳袋</text>
           </view>
           <view class="action-btn" bindtap="onQuickScan">
             <view class="action-icon bg-green">
               <text class="cuIcon-camera"></text>
             </view>
-            <text class="action-text">快速拍照</text>
+            <text class="action-text text-gray">快速拍照</text>
           </view>
           <view class="action-btn" bindtap="onBatchMove">
             <view class="action-icon bg-orange">
               <text class="cuIcon-move"></text>
             </view>
-            <text class="action-text">批量移动</text>
+            <text class="action-text text-gray">批量移动</text>
           </view>
           <view class="action-btn" bindtap="onDeleteBox">
             <view class="action-icon bg-red">
               <text class="cuIcon-delete"></text>
             </view>
-            <text class="action-text">删除箱子</text>
+            <text class="action-text text-gray">删除箱子</text>
           </view>
         </view>
       </view>

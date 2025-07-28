@@ -192,7 +192,6 @@
 
 /* 统计信息卡片样式 - 与home页面保持一致 */
 .stats-card {
-  background: #fff;
   border-radius: 16rpx;
   padding: 32rpx;
   margin: 32rpx 0;
@@ -215,13 +214,11 @@
 .stat-number {
   font-size: 48rpx;
   font-weight: 600;
-  color: #333;
   line-height: 1;
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: #666;
   margin-top: 8rpx;
 }
 
@@ -235,6 +232,7 @@
 .quick-actions {
   margin-bottom: 30rpx;
   padding: 30rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
 }
 
 .action-title {
