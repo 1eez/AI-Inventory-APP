@@ -50,20 +50,22 @@
     }
   },
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundTextStyle": "@backgroundTextStyle",
+    "navigationBarBackgroundColor": "@navBackgroundColor",
     "navigationBarTitleText": "物品管理",
-    "navigationBarTextStyle": "black",
-    "backgroundColor": "#f8f9fa",
+    "navigationBarTextStyle": "@navTextStyle",
+    "backgroundColor": "@backgroundColor",
     "enablePullDownRefresh": false,
     "navigationStyle": "custom"
   },
+  "darkmode": true,
+  "themeLocation": "theme.json",
   "tabBar": {
     "custom": false,
-    "color": "#8a8a8a",
-    "selectedColor": "#1296db",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "white",
+    "color": "@tabColor",
+    "selectedColor": "@tabSelectedColor",
+    "backgroundColor": "@tabBackgroundColor",
+    "borderStyle": "@tabBorderStyle",
     "list": [
       {
         "pagePath": "pages/home/home",
