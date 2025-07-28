@@ -257,6 +257,18 @@
   gap: 20rpx;
   padding: 0 30rpx;
   flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ColorUI按钮在暗色模式下的适配 */
+.action-buttons .cu-btn {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .action-btn {
@@ -342,52 +354,75 @@
 /* 深色模式适配 */
 @media (prefers-color-scheme: dark) {
   .page-container {
-    background: #1a202c;
+    background: var(--darkBlack);
   }
   
   .card {
-    background: #2d3748;
+    background: var(--lightGray);
   }
   
   .section-title,
   .form-label,
   .capacity-name {
-    color: #fff;
+    color: var(--darkTitle);
   }
   
   .form-input,
-  .form-textarea {
-    background: #4a5568;
-    border-color: #718096;
-    color: #fff;
+  .form-textarea,
+  .form-textarea-narrow {
+    background: var(--darkGray);
+    border-color: var(--darkDisable);
+    color: var(--darkPrimaryText);
   }
   
   .form-input:focus,
-  .form-textarea:focus {
-    background: #2d3748;
+  .form-textarea:focus,
+  .form-textarea-narrow:focus {
+    background: var(--darkGray);
     border-color: #667eea;
   }
   
   .form-input.error,
-  .form-textarea.error {
+  .form-textarea.error,
+  .form-textarea-narrow.error {
     background: #742a2a;
     border-color: #e74c3c;
   }
   
-
+  .form-input::placeholder,
+  .form-textarea::placeholder,
+  .form-textarea-narrow::placeholder {
+    color: var(--darkSecondaryText);
+  }
+  
+  /* ColorUI按钮在暗色模式下的优化 */
+  .action-buttons .cu-btn.bg-grey {
+    background-color: var(--btnGray) !important;
+    color: var(--darkPrimaryText) !important;
+  }
+  
+  .action-buttons .cu-btn.bg-blue {
+    background-color: #1e3a8a !important;
+    color: #fff !important;
+  }
+  
+  .action-buttons .cu-btn.bg-gradual-green {
+    background-image: var(--darkGradualGreen) !important;
+    color: #fff !important;
+  }
   
   .action-btn.secondary {
-    background: #4a5568;
-    color: #fff;
-    border-color: #718096;
+    background: var(--btnGray);
+    color: var(--darkPrimaryText);
+    border-color: var(--darkDisable);
   }
   
   .action-btn.secondary:active {
-    background: #718096;
+    background: var(--darkGray);
   }
   
   .action-btn.secondary:disabled {
-    background: #4a5568;
-    color: #718096;
+    background: var(--btnGray);
+    color: var(--darkSecondaryText);
   }
 }
