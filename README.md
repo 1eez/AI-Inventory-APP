@@ -5,7 +5,7 @@
 > 扫描下方二维码，立即体验AI驱动的个人物品整理系统
 
 <div align="center">
-  <img src="./mini-prog-qrcode.jpg" alt="小程序二维码" width="200">
+  <img src="./mini-prog-qrcode.jpg" alt="小程序二维码" width="300">
   <p><strong>👆 扫码体验小程序</strong></p>
   <p>支持拍照AI识别、智能分类、快速搜索等功能</p>
 </div>
