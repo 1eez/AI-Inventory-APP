@@ -286,21 +286,16 @@
   right: 30rpx;
   width: 120rpx;
   height: 120rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--secondary-color), #7ed321);
-  color: white;
   font-size: 48rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(57, 181, 74, 0.4);
   z-index: 999;
   transition: all 0.3s ease;
 }
 
 .btn-fab:active {
   transform: scale(0.9);
-  box-shadow: 0 4rpx 12rpx rgba(57, 181, 74, 0.6);
 }
 
 /* 响应式适配 */

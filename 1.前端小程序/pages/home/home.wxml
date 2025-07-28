@@ -148,8 +148,8 @@
   </view>
 
   <!-- 悬浮添加按钮 -->
-  <view class="btn-fab" bindtap="onAddBox" wx:if="{{boxes.length > 0}}">
-    <text class="cuIcon-add"></text>
+  <view class="cu-btn bg-green shadow-blur round btn-fab" bindtap="onAddBox" wx:if="{{boxes.length > 0}}">
+    <text class="cuIcon-add text-white"></text>
   </view>
 
   <!-- 箱子选择浮层 -->
