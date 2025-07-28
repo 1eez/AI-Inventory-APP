@@ -12,6 +12,7 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException, Query
 from typing import Dict, Any
 from common_db import DatabaseManager
+from security_utils import SecurityValidator
 
 # 创建路由器
 router = APIRouter()
@@ -112,10 +113,13 @@ async def get_home_info(openid: str = Query(..., description="微信小程序ope
         Dict: 用户数据或创建结果
     """
     try:
+        # 验证openid的安全性
+        validated_openid = SecurityValidator.validate_openid(openid)
+        
         # 检查用户是否存在
-        if db_manager.user_exists(openid):
+        if db_manager.user_exists(validated_openid):
             # 用户存在，返回完整数据
-            user_data = get_user_data(openid, db_manager)
+            user_data = get_user_data(validated_openid, db_manager)
             return {
                 "status": "existing_user",
                 "message": "用户已存在，返回用户数据",
@@ -123,7 +127,7 @@ async def get_home_info(openid: str = Query(..., description="微信小程序ope
             }
         else:
             # 用户不存在，创建新用户
-            user_id = create_user(openid, db_manager)
+            user_id = create_user(validated_openid, db_manager)
             
             # 返回新创建用户的基本信息
             return {
@@ -132,7 +136,7 @@ async def get_home_info(openid: str = Query(..., description="微信小程序ope
                 "data": {
                     "user_info": {
                         "user_id": user_id,
-                        "openid": openid,
+                        "openid": validated_openid,
                         "nickname": "",
                         "status": 1,
                         "item_limit": 30,

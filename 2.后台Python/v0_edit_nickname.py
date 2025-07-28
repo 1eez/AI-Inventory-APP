@@ -12,6 +12,7 @@ from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel, Field
 from typing import Dict, Any
 from common_db import DatabaseManager
+from security_utils import SecurityValidator
 
 # 创建路由器
 router = APIRouter()
@@ -74,11 +75,15 @@ async def edit_nickname(nickname_data: EditNicknameRequest = Body(...)):
         Dict: 编辑结果
     """
     try:
+        # 验证输入安全性
+        validated_openid = SecurityValidator.validate_openid(nickname_data.openid)
+        validated_nickname = SecurityValidator.validate_string_input(nickname_data.nickname, "昵称", 100)
+        
         # 更新用户昵称
-        update_user_nickname(nickname_data.openid, nickname_data.nickname, db_manager)
+        update_user_nickname(validated_openid, validated_nickname, db_manager)
         
         # 获取更新后的用户信息
-        user_info = get_user_info(nickname_data.openid, db_manager)
+        user_info = get_user_info(validated_openid, db_manager)
         
         return {
             "status": "success",

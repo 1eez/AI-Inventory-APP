@@ -45,24 +45,50 @@ async def lifespan(app: FastAPI):
 config = ConfigParser()
 config.read(r'config.ini', encoding='utf-8')
 
+# 生产环境配置
 app = FastAPI(
     title=config.get('fastapi', 'title'),  # 从同路径的config.ini中，读取配置信息，以下雷同
     description=config.get('fastapi', 'description'),
     version=config.get('fastapi', 'version'),
-    docs_url=config.get('fastapi', 'docs_url', fallback=None),
-    redoc_url=config.get('fastapi', 'redoc_url', fallback=None),
-    debug=config.getboolean('fastapi', 'debug'),
+    docs_url=None,  # 生产环境禁用API文档
+    redoc_url=None,  # 生产环境禁用ReDoc文档
+    debug=False,  # 生产环境关闭调试模式
     timeout=config.getint('fastapi', 'timeout'),
     lifespan=lifespan
 )
 
-# 添加 CORS 中间件，用于在生产环境中，更严苛的控制风险
+# 开发环境配置（已注释）
+# app = FastAPI(
+#     title=config.get('fastapi', 'title'),
+#     description=config.get('fastapi', 'description'),
+#     version=config.get('fastapi', 'version'),
+#     docs_url=config.get('fastapi', 'docs_url', fallback=None),  # 开发环境启用API文档
+#     redoc_url=config.get('fastapi', 'redoc_url', fallback=None),  # 开发环境启用ReDoc文档
+#     debug=config.getboolean('fastapi', 'debug'),  # 开发环境可启用调试模式
+#     timeout=config.getint('fastapi', 'timeout'),
+#     lifespan=lifespan
+# )
+
+# 生产环境CORS配置 - 严格控制访问来源
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允许的来源，这里设置为允许任意来源，实际生产环境中应更严格配置
-    allow_methods=["*"],  # 允许的方法，包括 "OPTIONS"
+    allow_origins=[
+        "https://yourdomain.com",  # 替换为实际的前端域名
+        "https://www.yourdomain.com",  # 替换为实际的前端域名
+        "https://servicewechat.com",  # 微信小程序官方域名
+    ],
+    allow_credentials=True,  # 生产环境允许携带凭证
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # 明确指定允许的方法
     allow_headers=["*"],  # 允许的请求头
 )
+
+# 开发环境CORS配置（已注释）
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  # 开发环境允许任意来源
+#     allow_methods=["*"],  # 开发环境允许所有方法
+#     allow_headers=["*"],  # 开发环境允许所有请求头
+# )
 
 # 配置静态文件服务 - 用于访问photos目录中的图片
 app.mount("/Photos", StaticFiles(directory="Photos"), name="Photos")
@@ -181,5 +207,21 @@ async def read_root():
     return {'Method': 'API Version: '+ app.version +'. Access Denied, Pls contact Lord. ：）'}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # 生产环境启动配置
+    uvicorn.run(
+        app, 
+        host="0.0.0.0", 
+        port=8000,
+        access_log=True,  # 生产环境启用访问日志
+        log_level="info"  # 生产环境日志级别
+    )
+    
+    # 开发环境启动配置（已注释）
+    # uvicorn.run(
+    #     app, 
+    #     host="0.0.0.0", 
+    #     port=8000,
+    #     reload=True,  # 开发环境启用热重载
+    #     log_level="debug"  # 开发环境调试日志级别
+    # )
 

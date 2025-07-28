@@ -8,9 +8,11 @@
 @Version: 3.0
 """
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Body
+from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
 from common_db import DatabaseManager
+from security_utils import SecurityValidator
 
 # 创建路由器
 router = APIRouter()
@@ -188,25 +190,34 @@ async def get_items(
         Dict: 物品信息或物品列表
     """
     try:
+        # 验证输入安全性
+        validated_openid = SecurityValidator.validate_openid(openid)
+        validated_box_id = SecurityValidator.validate_integer_input(box_id, "储物箱ID", 1)
+        validated_bag_id = SecurityValidator.validate_integer_input(bag_id, "袋子ID", 1)
+        if item_id is not None:
+            validated_item_id = SecurityValidator.validate_integer_input(item_id, "物品ID", 1)
+        else:
+            validated_item_id = None
+        
         # 根据openid获取用户ID
         try:
-            user_id = db_manager.get_user_id_by_openid(openid)
+            user_id = db_manager.get_user_id_by_openid(validated_openid)
         except ValueError:
             raise HTTPException(status_code=500, detail="用户不存在，请先登录")
         
         # 验证袋子是否属于该用户的该储物箱
-        if not verify_bag_ownership(user_id, box_id, bag_id, db_manager):
+        if not verify_bag_ownership(user_id, validated_box_id, validated_bag_id, db_manager):
             raise HTTPException(status_code=403, detail="无权限查看此袋子中的物品")
         
         # 获取袋子基本信息
-        bag_info = get_bag_info(bag_id, box_id, user_id, db_manager)
+        bag_info = get_bag_info(validated_bag_id, validated_box_id, user_id, db_manager)
         
         # 获取储物箱基本信息
-        box_info = get_box_info(box_id, user_id, db_manager)
+        box_info = get_box_info(validated_box_id, user_id, db_manager)
         
-        if item_id is not None:
+        if validated_item_id is not None:
             # 获取单个物品信息
-            item_info = get_item_by_id(item_id, bag_id, box_id, user_id, db_manager)
+            item_info = get_item_by_id(validated_item_id, validated_bag_id, validated_box_id, user_id, db_manager)
             return {
                 "status": "success",
                 "message": "物品信息获取成功",
@@ -218,7 +229,7 @@ async def get_items(
             }
         else:
             # 获取袋子中的所有物品
-            items_list = get_items_by_bag(bag_id, db_manager)
+            items_list = get_items_by_bag(validated_bag_id, validated_box_id, user_id, db_manager)
             return {
                 "status": "success",
                 "message": "物品列表获取成功",

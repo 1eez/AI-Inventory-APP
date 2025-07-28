@@ -11,6 +11,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Dict, Any
 from common_db import DatabaseManager
+from security_utils import SecurityValidator
 
 # 创建路由器
 router = APIRouter()
@@ -73,18 +74,22 @@ async def get_box(
         Dict: 储物箱详细信息
     """
     try:
+        # 验证输入安全性
+        validated_openid = SecurityValidator.validate_openid(openid)
+        validated_box_id = SecurityValidator.validate_integer_input(box_id, "储物箱ID", 1)
+        
         # 根据openid获取用户ID
         try:
-            user_id = db_manager.get_user_id_by_openid(openid)
+            user_id = db_manager.get_user_id_by_openid(validated_openid)
         except ValueError:
             raise HTTPException(status_code=500, detail="用户不存在，请先登录")
         
         # 验证储物箱是否属于该用户
-        if not verify_box_ownership(box_id, user_id, db_manager):
+        if not verify_box_ownership(validated_box_id, user_id, db_manager):
             raise HTTPException(status_code=403, detail="无权限访问该储物箱")
         
         # 获取储物箱详细信息
-        box_info = get_box_detail(box_id, db_manager)
+        box_info = get_box_detail(validated_box_id, db_manager)
         
         return {
             "status": "success",

@@ -11,8 +11,8 @@
 from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel, Field
 from typing import Dict, Any
-from datetime import datetime
 from common_db import DatabaseManager
+from security_utils import SecurityValidator
 
 # 创建路由器
 router = APIRouter()
@@ -71,17 +71,20 @@ db_manager = DatabaseManager()
 @router.post("/v0/user/watch_ad")
 async def watch_ad(ad_data: WatchAdRequest = Body(...)):
     """
-    用户观看广告奖励接口
+    观看广告接口
     
     Args:
         ad_data: 观看广告请求数据
         
     Returns:
-        Dict: 奖励结果和用户信息
+        Dict: 奖励结果
     """
     try:
+        # 验证openid安全性
+        validated_openid = SecurityValidator.validate_openid(ad_data.openid)
+        
         # 更新用户观看广告奖励
-        user_info = update_user_ad_reward(ad_data.openid, db_manager)
+        user_info = update_user_ad_reward(validated_openid, db_manager)
         
         return {
             "status": "success",

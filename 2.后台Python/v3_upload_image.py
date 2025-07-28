@@ -19,6 +19,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from PIL import Image
 from zhipuai import ZhipuAI
 from common_db import DatabaseManager
+from security_utils import SecurityValidator
 
 # 创建路由器
 router = APIRouter()
