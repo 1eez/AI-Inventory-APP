@@ -731,7 +731,7 @@ Page({
     
     wx.showModal({
       title: '存储空间不足',
-      content: `${message}\n\n观看广告可获得30个额外存储位置，是否立即观看？`,
+      content: `${message}\n\n观看广告可获得20个额外存储位置，是否立即观看？`,
       showCancel: true,
       cancelText: '稍后再说',
       confirmText: '观看广告',
@@ -756,7 +756,7 @@ Page({
 
     wx.showModal({
       title: '观看广告',
-      content: '观看完整广告后可增加30个物品存储额度，是否继续？',
+      content: '观看完整广告后可增加20个物品存储额度，是否继续？',
       showCancel: true,
       cancelText: '取消',
       confirmText: '观看广告',
