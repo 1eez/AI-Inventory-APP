@@ -124,13 +124,24 @@ def search_items(user_id: int, keyword: str, db_manager: DatabaseManager) -> Dic
     
     # 为每个物品添加标签信息
     if results:
+        # 将Row对象转换为字典，以便可以添加tags字段
+        processed_results = []
         for item in results:
-            item_tags = get_item_tags(item['item_id'], db_manager)
-            item['tags'] = item_tags
+            # 将Row对象转换为字典
+            item_dict = dict(item)
+            # 添加标签信息
+            item_tags = get_item_tags(item_dict['item_id'], db_manager)
+            item_dict['tags'] = item_tags
+            processed_results.append(item_dict)
+        
+        return {
+            "count": len(processed_results),
+            "results": processed_results
+        }
     
     return {
-        "count": len(results) if results else 0,
-        "results": results if results else []
+        "count": 0,
+        "results": []
     }
 
 def get_item_tags(item_id: int, db_manager: DatabaseManager) -> List[Dict[str, Any]]:
