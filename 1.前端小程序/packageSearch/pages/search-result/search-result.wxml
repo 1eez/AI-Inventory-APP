@@ -211,7 +211,7 @@
           <view class="detail-tags" wx:if="{{selectedItem.tags && selectedItem.tags.length > 0}}">
             <view class="tags-title">标签</view>
             <view class="tags-list">
-              <text wx:for="{{selectedItem.tags}}" wx:key="index" class="detail-tag">{{item}}</text>
+              <text wx:for="{{selectedItem.tags}}" wx:key="tag_id" class="detail-tag">{{item.name}}</text>
             </view>
           </view>
         </view>
