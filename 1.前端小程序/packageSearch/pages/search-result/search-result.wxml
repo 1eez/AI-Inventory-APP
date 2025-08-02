@@ -87,44 +87,28 @@
         <text>收纳袋 ({{searchResults.bags.count}})</text>
       </view>
       
-      <view class="bag-list">
-        <view 
-          class="bag-card"
-          wx:for="{{searchResults.bags.results}}"
-          wx:key="bag_id"
-          data-bag="{{item}}"
-          bindtap="onBagTap"
-        >
-          <!-- 袋子信息卡片 -->
-          <view class="bag-info-card-new bg-white">
-            <view class="bag-main-card">
-              <!-- 左侧袋子预览 -->
-              <view class="bag-preview-section">
-                <view class="bag-preview-container">
-                  <view 
-                    class="bag-preview-visual" 
-                    style="background: linear-gradient(135deg, {{item.color}} 0%, {{item.color}}cc 100%)"
-                  >
-                    <view class="bag-icon">
-                      <text class="cuIcon-goods"></text>
-                    </view>
-                  </view>
-                </view>
+      <!-- 袋子列表 -->
+      <view wx:if="{{searchResults.bags.results.length > 0}}" class="bags-section">
+        <view class="section-title">
+          <text class="title-text">袋子列表</text>
+          <text class="title-count">({{searchResults.bags.results.length}})</text>
+        </view>
+        
+        <view class="bags-list">
+          <view 
+            wx:for="{{searchResults.bags.results}}" 
+            wx:key="bag_id"
+            class="bag-item"
+            bindtap="onBagTap"
+            data-id="{{item.bag_id}}"
+          >
+            <view class="bag-preview" style="background: {{item.color}}">
+              <view class="bag-preview-info">
+                <view class="bag-preview-name">{{item.name}}</view>
+                <view class="bag-preview-count">{{item.item_count}}件物品</view>
               </view>
-              
-              <!-- 右侧袋子信息 -->
-              <view class="bag-info-section">
-                <view class="bag-header-info">
-                  <view class="bag-title">{{item.name || '收纳袋名称'}}</view>
-                </view>
-                
-                <!-- 袋子统计信息 -->
-                <view class="bag-stats">
-                  <view class="bag-stat-item" wx:if="{{item.createTime}}">
-                    <text class="stat-icon cuIcon-time"></text>
-                    <text class="stat-text">{{item.createTime}}</text>
-                  </view>
-                </view>
+              <view class="bag-menu" bindtap="onBagMenu" data-id="{{item.bag_id}}" catchtap="true">
+                <text class="cuIcon-more"></text>
               </view>
             </view>
           </view>
