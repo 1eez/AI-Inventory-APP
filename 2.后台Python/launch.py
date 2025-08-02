@@ -195,6 +195,14 @@ from v3_edit_item import router as EditItemRouter
 app.include_router(EditItemRouter)
 
 # -----------------------------------------------------------
+# 【 -- v4版本 - 通用搜索接口 -- 】
+# -----------------------------------------------------------
+# 接口：/v4/search  -- 请求方式GET
+# 【搜索】通用搜索接口
+from v4_search import router as SearchRouter
+app.include_router(SearchRouter)
+
+# -----------------------------------------------------------
 # 【 -- 测试模块 -- 】
 # -----------------------------------------------------------
 # 接口：/v0/testAI/  -- 请求方式POST
