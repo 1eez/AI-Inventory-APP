@@ -213,9 +213,25 @@ Page({
    * 点击收纳袋
    */
   onBagTap(e) {
-    const { bag } = e.currentTarget.dataset;
+    const bagId = e.currentTarget.dataset.id;
+    console.log('点击袋子，bagId:', bagId);
+    
+    // 使用bag_id字段查找袋子数据
+    const bag = this.data.searchResults.bags.results.find(item => item.bag_id == bagId || item.id == bagId);
+    console.log('找到的袋子数据:', bag);
+    
+    if (!bag) {
+      console.error('未找到袋子数据，bagId:', bagId, '袋子列表:', this.data.searchResults.bags.results);
+      wx.showToast({
+        title: '袋子信息错误',
+        icon: 'error'
+      });
+      return;
+    }
+    
+    // 跳转到袋子详情页
     wx.navigateTo({
-      url: `/packageStorage/pages/bag-detail/bag-detail?bagId=${bag.bag_id}&boxId=${bag.box_id}`
+      url: `/packageStorage/pages/bag-detail/bag-detail?box_id=${bag.box_id}&bag_id=${bagId}&bagName=${encodeURIComponent(bag.name)}`
     });
   },
 
