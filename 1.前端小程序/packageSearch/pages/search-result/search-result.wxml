@@ -60,13 +60,8 @@
             
             <!-- 卡片内容 -->
             <view class="box-content">
-              <view class="box-header">
-                <view class="box-title text-black">{{item.name}}</view>
-              </view>
-              
-              <view class="box-info">
-                <view class="box-desc text-gray" wx:if="{{item.description}}">{{item.description}}</view>
-              </view>
+              <view class="box-title text-black">{{item.name}}</view>
+              <view class="box-desc text-gray" wx:if="{{item.description}}">{{item.description}}</view>
               
               <view class="box-footer">
                 <view class="box-location text-gray" wx:if="{{item.location}}">
