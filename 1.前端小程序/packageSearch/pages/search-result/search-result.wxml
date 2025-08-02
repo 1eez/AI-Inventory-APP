@@ -62,9 +62,6 @@
             <view class="box-content">
               <view class="box-header">
                 <view class="box-title text-black">{{item.name}}</view>
-                <view class="box-menu text-gray" bindtap="onBoxMenu" data-id="{{item.id}}" catchtap="true">
-                  <text class="cuIcon-more"></text>
-                </view>
               </view>
               
               <view class="box-info">
@@ -72,7 +69,7 @@
               </view>
               
               <view class="box-footer">
-                  <view class="box-location text-gray" wx:if="{{item.location && item.location.length > 0}}">
+                <view class="box-location text-gray" wx:if="{{item.location}}">
                   <text class="cuIcon-locationfill location-icon text-gray">{{item.location}}</text>
                 </view>
                 <view class="box-count" style="color: {{item.color}}">{{item.bag_count}} / {{item.item_count}}</view>
