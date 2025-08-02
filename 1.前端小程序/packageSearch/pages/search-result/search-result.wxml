@@ -89,11 +89,6 @@
       
       <!-- 袋子列表 -->
       <view wx:if="{{searchResults.bags.results.length > 0}}" class="bags-section">
-        <view class="section-title">
-          <text class="title-text">袋子列表</text>
-          <text class="title-count">({{searchResults.bags.results.length}})</text>
-        </view>
-        
         <view class="bags-list">
           <view 
             wx:for="{{searchResults.bags.results}}" 

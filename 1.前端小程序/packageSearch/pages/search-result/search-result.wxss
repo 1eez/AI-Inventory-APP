@@ -231,17 +231,15 @@
 }
 
 .result-section {
-  margin-bottom: 40rpx;
+  margin-bottom: 10rpx;
 }
 
 .section-title {
   display: flex;
   align-items: center;
   gap: 15rpx;
-  padding: 20rpx 0;
-  font-size: 30rpx;
+  padding: 10rpx 0;
   font-weight: 600;
-  color: #333;
 }
 
 .section-title .cuIcon-goods,
@@ -277,30 +275,20 @@
   width: 100%;
 }
 
-/* 卡片内容 */
-.box-content {
-  padding: 24rpx;
-}
 
 /* 箱子头部 */
 .box-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20rpx;
 }
 
 .box-title {
   font-size: 32rpx;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 0.1;
   flex: 1;
   margin-right: 16rpx;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .box-menu {
@@ -317,31 +305,22 @@
 
 /* 箱子信息 */
 .box-info {
-  margin-bottom: 20rpx;
+  margin-top: 20rpx;
 }
 
 .box-desc {
-  font-size: 24rpx;
-  line-height: 1.4;
-  margin-bottom: 12rpx;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
+  margin-bottom: 22rpx;
 }
 
 .box-location {
   display: flex;
   align-items: center;
-  font-size: 22rpx;
 }
 
 .location-icon {
   font-size: 20rpx;
   margin-right: 6rpx;
 }
-
-
 
 /* 箱子底部 */
 .box-footer {
