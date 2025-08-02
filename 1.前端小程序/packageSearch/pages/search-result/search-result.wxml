@@ -119,7 +119,7 @@
           wx:for="{{searchResults.items.results}}" 
           wx:key="item_id" 
           class="photo-item"
-          bindtap="onItemTap"
+          bindtap="onShowItemDetail"
           data-item="{{item}}"
         >
           <image 
@@ -130,12 +130,14 @@
           ></image>
           
           <view class="photo-item-overlay">
-            <!-- 物品标题 -->
-            <view class="photo-item-title">{{item.title}}</view>
+            <!-- 数量标识 -->
+            <view class="photo-item-quantity" wx:if="{{item.quantity > 1}}">
+              <text>×{{item.quantity}}</text>
+            </view>
             
-            <!-- 标签显示 -->
-            <view class="photo-item-tags" wx:if="{{item.tags && item.tags.length > 0}}">
-              <text class="photo-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="tag_id">{{tag.name}}</text>
+            <!-- 更多操作按钮 -->
+            <view class="photo-item-menu" bindtap="onItemMenu" data-id="{{item.id}}" catchtap="true">
+              <text class="cuIcon-more"></text>
             </view>
           </view>
         </view>
@@ -150,5 +152,82 @@
     </view>
     <view class="empty-text">未找到相关结果</view>
     <view class="empty-desc">试试其他关键词</view>
+  </view>
+
+  <!-- 物品详情弹窗 -->
+  <view class="item-detail-modal {{showItemDetail ? 'show' : ''}}" bindtap="onHideItemDetail">
+    <view class="modal-content" catchtap="stopPropagation">
+      <!-- 弹窗头部 -->
+      <view class="modal-header">
+        <view class="modal-title">物品详情</view>
+        <view class="modal-close" bindtap="onHideItemDetail">
+          <text class="cuIcon-close"></text>
+        </view>
+      </view>
+      
+      <!-- 弹窗内容 -->
+      <view class="modal-body" wx:if="{{selectedItem}}">
+        <!-- 物品图片 -->
+        <view class="detail-image-container">
+          <image 
+            class="detail-image" 
+            src="{{selectedItem.image}}" 
+            mode="aspectFit"
+            bindtap="onPreviewImage"
+            data-url="{{selectedItem.image}}"
+          ></image>
+        </view>
+        
+        <!-- 物品信息 -->
+        <view class="detail-info">
+          <view class="detail-title">{{selectedItem.name}}</view>
+          
+          <view class="detail-description" wx:if="{{selectedItem.description}}">
+            {{selectedItem.description}}
+          </view>
+          
+          <!-- 详细信息列表 -->
+          <view class="detail-list">
+            <view class="detail-item">
+              <view class="detail-label">
+                <text class="cuIcon-goods detail-icon"></text>
+                <text>分类</text>
+              </view>
+              <view class="detail-value">{{selectedItem.category || '未分类'}}</view>
+            </view>
+            
+            <view class="detail-item" wx:if="{{selectedItem.createTime}}">
+              <view class="detail-label">
+                <text class="cuIcon-time detail-icon"></text>
+                <text>添加时间</text>
+              </view>
+              <view class="detail-value">{{selectedItem.createTime}}</view>
+            </view>
+            
+
+          </view>
+          
+          <!-- 物品标签 -->
+          <view class="detail-tags" wx:if="{{selectedItem.tags && selectedItem.tags.length > 0}}">
+            <view class="tags-title">标签</view>
+            <view class="tags-list">
+              <text wx:for="{{selectedItem.tags}}" wx:key="index" class="detail-tag">{{item}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 弹窗底部操作 -->
+      <view class="modal-footer">
+        <button class="cu-btn line-blue" bindtap="onEditItem" data-id="{{selectedItem.id}}">
+          <text class="cuIcon-edit margin-right-xs"></text>
+          编辑
+        </button>
+        <button class="cu-btn bg-red" bindtap="onDeleteItem" data-id="{{selectedItem.id}}">
+          <text class="cuIcon-delete margin-right-xs"></text>
+          删除
+        </button>
+      </view>
+    </view>
   </view>
 </view>
