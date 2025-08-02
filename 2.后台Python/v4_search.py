@@ -46,9 +46,31 @@ def search_boxes(user_id: int, keyword: str, db_manager: DatabaseManager) -> Dic
     
     results = db_manager.execute_query(query, params)
     
+    # 为每个箱子添加袋子数量和物品数量
+    if results:
+        processed_results = []
+        for box in results:
+            # 将Row对象转换为字典
+            box_dict = dict(box)
+            
+            # 获取箱子中的袋子数量
+            box_bags_query = "SELECT COUNT(*) as bag_count FROM bags_summary WHERE box_id = ?"
+            box_dict['bag_count'] = db_manager.execute_query(box_bags_query, (box_dict['box_id'],), fetch_one=True)['bag_count']
+            
+            # 获取箱子中的物品数量
+            box_items_query = "SELECT COUNT(*) as item_count FROM items_detail id JOIN bags_summary bs ON id.bag_id = bs.bag_id WHERE bs.box_id = ?"
+            box_dict['item_count'] = db_manager.execute_query(box_items_query, (box_dict['box_id'],), fetch_one=True)['item_count']
+            
+            processed_results.append(box_dict)
+        
+        return {
+            "count": len(processed_results),
+            "results": processed_results
+        }
+    
     return {
-        "count": len(results) if results else 0,
-        "results": results if results else []
+        "count": 0,
+        "results": []
     }
 
 def search_bags(user_id: int, keyword: str, db_manager: DatabaseManager) -> Dict[str, Any]:
@@ -77,9 +99,27 @@ def search_bags(user_id: int, keyword: str, db_manager: DatabaseManager) -> Dict
     
     results = db_manager.execute_query(query, params)
     
+    # 为每个袋子添加物品数量
+    if results:
+        processed_results = []
+        for bag in results:
+            # 将Row对象转换为字典
+            bag_dict = dict(bag)
+            
+            # 获取袋子中的物品数量
+            bag_items_query = "SELECT COUNT(*) as item_count FROM items_detail WHERE bag_id = ?"
+            bag_dict['item_count'] = db_manager.execute_query(bag_items_query, (bag_dict['bag_id'],), fetch_one=True)['item_count']
+            
+            processed_results.append(bag_dict)
+        
+        return {
+            "count": len(processed_results),
+            "results": processed_results
+        }
+    
     return {
-        "count": len(results) if results else 0,
-        "results": results if results else []
+        "count": 0,
+        "results": []
     }
 
 def search_items(user_id: int, keyword: str, db_manager: DatabaseManager) -> Dict[str, Any]:

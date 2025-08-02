@@ -227,9 +227,9 @@ Page({
       return;
     }
     
-    // 跳转到搜索页面
+    // 跳转到搜索结果页面
     wx.navigateTo({
-      url: `/packageSearch/pages/search/search?keyword=${encodeURIComponent(keyword)}`
+      url: `/packageSearch/pages/search-result/search-result?keyword=${encodeURIComponent(keyword)}`
     });
   },
 

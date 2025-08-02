@@ -1,5 +1,7 @@
 // packageSearch/pages/search-result/search-result.js
 
+const app = getApp();
+
 /**
  * 搜索结果页面
  * 显示搜索到的物品、收纳盒、收纳袋等结果
@@ -13,36 +15,14 @@ Page({
     keyword: '',
     // 搜索结果
     searchResults: {
-      items: [],
-      boxes: [],
-      bags: [],
-      total: 0
+      boxes: { count: 0, results: [] },
+      bags: { count: 0, results: [] },
+      items: { count: 0, results: [] }
     },
-    // 当前选中的标签
-    activeTab: 'all',
-    // 标签列表
-    tabs: [
-      { key: 'all', name: '全部', count: 0 },
-      { key: 'items', name: '物品', count: 0 },
-      { key: 'boxes', name: '收纳盒', count: 0 },
-      { key: 'bags', name: '收纳袋', count: 0 }
-    ],
     // 加载状态
-    loading: false,
-    // 是否已加载完成
-    finished: false,
-    // 当前页码
-    currentPage: 1,
-    // 每页数量
-    pageSize: 20,
-    // 排序方式
-    sortType: 'relevance', // relevance: 相关度, time: 时间, name: 名称
-    // 筛选条件
-    filters: {
-      category: '', // 分类
-      location: '', // 位置
-      dateRange: '' // 时间范围
-    },
+    loading: true,
+    // 骨架屏显示状态
+    showSkeleton: true,
     // 是否显示筛选面板
     showFilter: false
   },
@@ -53,153 +33,251 @@ Page({
   onLoad(options) {
     console.log('搜索结果页面加载', options);
     
-    const keyword = options.keyword || '';
-    const category = options.category || '';
+    // 解码URL编码的关键词
+    const keyword = options.keyword ? decodeURIComponent(options.keyword) : '';
     
     this.setData({
-      keyword,
-      'filters.category': category
+      keyword
     });
     
     if (keyword) {
       this.performSearch();
+    } else {
+      // 如果没有关键词，隐藏骨架屏
+      this.setData({
+        loading: false,
+        showSkeleton: false
+      });
     }
   },
 
   /**
    * 执行搜索
    */
-  async performSearch(loadMore = false) {
-    if (this.data.loading) return;
+  async performSearch() {
+    if (this.data.loading && !this.data.showSkeleton) return;
     
     try {
-      this.setData({ loading: true });
+      this.setData({ 
+        loading: true,
+        showSkeleton: true
+      });
       
-      const { keyword, filters, sortType, currentPage, pageSize } = this.data;
+      const { keyword } = this.data;
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
       
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // 模拟搜索结果
-      const mockResults = this.generateMockResults(keyword, currentPage, pageSize);
-      
-      if (loadMore) {
-        // 加载更多
-        const { searchResults } = this.data;
-        this.setData({
-          searchResults: {
-            items: [...searchResults.items, ...mockResults.items],
-            boxes: [...searchResults.boxes, ...mockResults.boxes],
-            bags: [...searchResults.bags, ...mockResults.bags],
-            total: mockResults.total
-          },
-          currentPage: currentPage + 1,
-          finished: mockResults.items.length < pageSize
-        });
-      } else {
-        // 新搜索
-        this.setData({
-          searchResults: mockResults,
-          currentPage: 1,
-          finished: mockResults.items.length < pageSize
-        });
+      if (!openid) {
+        throw new Error('用户未登录');
       }
       
-      // 更新标签计数
-      this.updateTabCounts();
+      // 调用搜索API
+      const searchResults = await this.callSearchAPI(baseUrl, openid, keyword);
+      
+      // 处理搜索结果数据
+      const processedResults = this.processSearchResults(searchResults);
+      
+      this.setData({
+        searchResults: processedResults,
+        loading: false,
+        showSkeleton: false
+      });
       
     } catch (error) {
       console.error('搜索失败:', error);
       wx.showToast({
         title: '搜索失败，请重试',
-        icon: 'error'
+        icon: 'none'
       });
-    } finally {
-      this.setData({ loading: false });
+      
+      this.setData({
+        loading: false,
+        showSkeleton: false
+      });
     }
   },
-
+  
   /**
-   * 生成模拟搜索结果
+   * 调用搜索API
    */
-  generateMockResults(keyword, page, pageSize) {
-    const items = [];
-    const boxes = [];
-    const bags = [];
-    
-    // 模拟物品数据
-    for (let i = 0; i < Math.min(pageSize, 15); i++) {
-      items.push({
-        id: `item_${page}_${i}`,
-        name: `${keyword}相关物品${i + 1}`,
-        description: `这是一个与${keyword}相关的物品描述`,
-        image: '/images/placeholder.png',
-        category: '电子设备',
-        location: '书房 > 电子设备盒 > 数据线袋',
-        tags: ['重要', '常用'],
-        addTime: '2024-01-15',
-        boxId: 'box_1',
-        bagId: 'bag_1'
+  callSearchAPI(baseUrl, openid, keyword) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `${baseUrl}v4/search`,
+        method: 'GET',
+        data: {
+          openid: openid,
+          keyword: keyword
+        },
+        success: (res) => {
+          console.log('搜索API响应:', res);
+          if (res.statusCode === 200 && res.data.code === 200) {
+            resolve(res.data.data);
+          } else {
+            reject(new Error(res.data.message || '搜索失败'));
+          }
+        },
+        fail: (error) => {
+          console.error('搜索API请求失败:', error);
+          reject(error);
+        }
       });
-    }
+    });
+  },
+  
+  /**
+   * 处理搜索结果数据
+   */
+  processSearchResults(data) {
+    const baseUrl = app.globalData.baseUrl;
     
-    // 模拟收纳盒数据
-    for (let i = 0; i < Math.min(5, 8); i++) {
-      boxes.push({
-        id: `box_${page}_${i}`,
-        name: `${keyword}收纳盒${i + 1}`,
-        description: `专门存放${keyword}相关物品的收纳盒`,
-        color: '#4facfe',
-        location: '书房书桌下方',
-        itemCount: 12 + i,
-        bagCount: 3 + i,
-        capacity: 'large'
-      });
-    }
-    
-    // 模拟收纳袋数据
-    for (let i = 0; i < Math.min(3, 6); i++) {
-      bags.push({
-        id: `bag_${page}_${i}`,
-        name: `${keyword}收纳袋${i + 1}`,
-        description: `存放${keyword}相关小物件的收纳袋`,
-        color: '#43e97b',
-        type: 'electronics',
-        itemCount: 8 + i,
-        boxId: 'box_1',
-        boxName: '电子设备收纳盒'
-      });
-    }
-    
-    return {
-      items,
-      boxes,
-      bags,
-      total: items.length + boxes.length + bags.length
+    // 处理箱子数据 - 逐字段映射API返回的数据
+    const boxes = {
+      count: data.boxes?.count || 0,
+      results: (data.boxes?.results || []).map(box => {
+        console.log('原始箱子数据:', box); // 调试日志
+        const processedBox = {
+          // 原始字段
+          box_id: box.box_id,
+          user_id: box.user_id,
+          sort_id: box.sort_id,
+          name: box.name,
+          description: box.description,
+          color: box.color,
+          location: box.location, // 直接使用原始location字段
+          created_at: box.created_at,
+          bag_count: box.bag_count,
+          item_count: box.item_count,
+          // 映射字段
+          id: box.box_id, // 映射box_id到id字段供WXML使用
+          icon: 'cuIcon-box',
+          itemCount: box.item_count || 0,
+          createTime: this.formatDate(box.created_at)
+        };
+        console.log('处理后箱子数据:', processedBox); // 调试日志
+        return processedBox;
+      })
     };
-  },
-
-  /**
-   * 更新标签计数
-   */
-  updateTabCounts() {
-    const { searchResults } = this.data;
-    const tabs = [
-      { key: 'all', name: '全部', count: searchResults.total },
-      { key: 'items', name: '物品', count: searchResults.items.length },
-      { key: 'boxes', name: '收纳盒', count: searchResults.boxes.length },
-      { key: 'bags', name: '收纳袋', count: searchResults.bags.length }
-    ];
     
-    this.setData({ tabs });
+    // 处理袋子数据
+    const bags = {
+      count: data.bags?.count || 0,
+      results: (data.bags?.results || []).map(bag => ({
+        // 原始字段
+        bag_id: bag.bag_id,
+        user_id: bag.user_id,
+        box_id: bag.box_id,
+        name: bag.name,
+        description: bag.description,
+        color: bag.color,
+        created_at: bag.created_at,
+        item_count: bag.item_count,
+        // 处理字段
+        createTime: this.formatDate(bag.created_at)
+      }))
+    };
+    
+    // 处理物品数据
+    const photosBaseUrl = `${baseUrl}Photos/`; // 图片基础URL
+    const items = {
+      count: data.items?.count || 0,
+      results: (data.items?.results || []).map(item => ({
+        // 原始字段
+        item_id: item.item_id,
+        user_id: item.user_id,
+        bag_id: item.bag_id,
+        name: item.name,
+        description: item.description,
+        image_filename: item.image_filename,
+        created_at: item.created_at,
+        // 处理字段
+        image: item.image_filename ? `${photosBaseUrl}${item.image_filename}` : '/assets/images/default-item.png',
+        createTime: this.formatDate(item.created_at)
+      }))
+    };
+    
+    return { boxes, bags, items };
+  },
+  
+  /**
+   * 格式化日期
+   */
+  formatDate(dateString) {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = now - date;
+    
+    // 小于1分钟
+    if (diff < 60000) {
+      return '刚刚';
+    }
+    // 小于1小时
+    if (diff < 3600000) {
+      return `${Math.floor(diff / 60000)}分钟前`;
+    }
+    // 小于1天
+    if (diff < 86400000) {
+      return `${Math.floor(diff / 3600000)}小时前`;
+    }
+    // 小于7天
+    if (diff < 604800000) {
+      return `${Math.floor(diff / 86400000)}天前`;
+    }
+    
+    // 超过7天显示具体日期
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  },
+  /**
+   * 切换筛选面板显示状态
+   */
+  toggleFilter() {
+    this.setData({
+      showFilter: !this.data.showFilter
+    });
   },
 
   /**
-   * 切换标签
+   * 点击物品
    */
-  onTabChange(e) {
-    const { tab } = e.currentTarget.dataset;
-    this.setData({ activeTab: tab });
+  onItemTap(e) {
+    const { item } = e.currentTarget.dataset;
+    // 跳转到物品详情页
+    wx.navigateTo({
+      url: `/packageStorage/pages/item-detail/item-detail?itemId=${item.item_id}`
+    });
+  },
+
+  /**
+   * 点击收纳盒
+   */
+  onBoxTap(e) {
+    const { box } = e.currentTarget.dataset;
+    // 跳转到收纳盒详情页
+    wx.navigateTo({
+      url: `/packageStorage/pages/box-detail/box-detail?boxId=${box.box_id}`
+    });
+  },
+
+  /**
+   * 箱子菜单
+   */
+  onBoxMenu(e) {
+    const id = e.currentTarget.dataset.id;
+    // 这里可以添加菜单功能，暂时留空
+    console.log('Box menu clicked:', id);
+  },
+
+  /**
+   * 点击收纳袋
+   */
+  onBagTap(e) {
+    const { bag } = e.currentTarget.dataset;
+    // 跳转到收纳袋详情页
+    wx.navigateTo({
+      url: `/packageStorage/pages/bag-detail/bag-detail?bagId=${bag.bag_id}&boxId=${bag.box_id}`
+    });
   },
 
   /**
@@ -223,11 +301,6 @@ Page({
       return;
     }
     
-    this.setData({
-      currentPage: 1,
-      finished: false
-    });
-    
     this.performSearch();
   },
 
@@ -238,119 +311,10 @@ Page({
     this.setData({
       keyword: '',
       searchResults: {
-        items: [],
-        boxes: [],
-        bags: [],
-        total: 0
-      },
-      activeTab: 'all'
-    });
-    this.updateTabCounts();
-  },
-
-  /**
-   * 切换排序方式
-   */
-  onSortChange(e) {
-    const { sort } = e.currentTarget.dataset;
-    this.setData({ 
-      sortType: sort,
-      currentPage: 1,
-      finished: false
-    });
-    this.performSearch();
-  },
-
-  /**
-   * 显示筛选面板
-   */
-  onShowFilter() {
-    this.setData({ showFilter: true });
-  },
-
-  /**
-   * 隐藏筛选面板
-   */
-  onHideFilter() {
-    this.setData({ showFilter: false });
-  },
-
-  /**
-   * 应用筛选
-   */
-  onApplyFilter(e) {
-    const { filters } = e.detail;
-    this.setData({
-      filters,
-      showFilter: false,
-      currentPage: 1,
-      finished: false
-    });
-    this.performSearch();
-  },
-
-  /**
-   * 点击物品
-   */
-  onItemTap(e) {
-    const { item } = e.currentTarget.dataset;
-    wx.navigateTo({
-      url: `/packageStorage/pages/item-detail/item-detail?itemId=${item.id}`
-    });
-  },
-
-  /**
-   * 点击收纳盒
-   */
-  onBoxTap(e) {
-    const { box } = e.currentTarget.dataset;
-    wx.navigateTo({
-      url: `/packageStorage/pages/box-detail/box-detail?boxId=${box.id}`
-    });
-  },
-
-  /**
-   * 点击收纳袋
-   */
-  onBagTap(e) {
-    const { bag } = e.currentTarget.dataset;
-    wx.navigateTo({
-      url: `/packageStorage/pages/bag-detail/bag-detail?bagId=${bag.id}`
-    });
-  },
-
-  /**
-   * 查看物品位置
-   */
-  onViewLocation(e) {
-    const { item } = e.currentTarget.dataset;
-    wx.showModal({
-      title: '物品位置',
-      content: item.location,
-      showCancel: false
-    });
-  },
-
-  /**
-   * 页面上拉触底事件
-   */
-  onReachBottom() {
-    if (!this.data.finished && !this.data.loading) {
-      this.performSearch(true);
-    }
-  },
-
-  /**
-   * 下拉刷新
-   */
-  onPullDownRefresh() {
-    this.setData({
-      currentPage: 1,
-      finished: false
-    });
-    
-    this.performSearch().finally(() => {
-      wx.stopPullDownRefresh();
+        boxes: { count: 0, results: [] },
+        bags: { count: 0, results: [] },
+        items: { count: 0, results: [] }
+      }
     });
   },
 

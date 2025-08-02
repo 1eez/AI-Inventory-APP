@@ -6,6 +6,71 @@
   background: #f5f7fa;
 }
 
+/* 骨架屏样式 */
+.skeleton-container {
+  padding: 20rpx;
+}
+
+.skeleton-item {
+  background: white;
+  border-radius: 16rpx;
+  padding: 25rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  gap: 20rpx;
+}
+
+.skeleton-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  background: #f0f0f0;
+  border-radius: 12rpx;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+.skeleton-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.skeleton-title {
+  height: 32rpx;
+  background: #f0f0f0;
+  border-radius: 4rpx;
+  width: 60%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+.skeleton-desc {
+  height: 24rpx;
+  background: #f0f0f0;
+  border-radius: 4rpx;
+  width: 80%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+.skeleton-meta {
+  height: 20rpx;
+  background: #f0f0f0;
+  border-radius: 4rpx;
+  width: 40%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* 搜索栏 */
 .search-bar {
   background: white;
@@ -185,21 +250,252 @@
   font-size: 32rpx;
 }
 
-/* 物品列表 */
-.item-list {
+/* 箱子网格布局 */
+.boxes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.box-item {
+  transition: all 0.3s ease;
+}
+
+.box-item:active {
+  transform: scale(0.98);
+}
+
+/* 箱子卡片样式 */
+.box-card {
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+/* 顶部色彩条 */
+.box-color-bar {
+  height: 12rpx;
+  width: 100%;
+}
+
+/* 卡片内容 */
+.box-content {
+  padding: 24rpx;
+}
+
+/* 箱子头部 */
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.box-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  line-height: 1.3;
+  flex: 1;
+  margin-right: 16rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.box-menu {
+  padding: 8rpx;
+  font-size: 20rpx;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.box-menu:active {
+  opacity: 0.7;
+}
+
+/* 箱子信息 */
+.box-info {
+  margin-bottom: 20rpx;
+}
+
+.box-desc {
+  font-size: 24rpx;
+  line-height: 1.4;
+  margin-bottom: 12rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.box-location {
+  display: flex;
+  align-items: center;
+  font-size: 22rpx;
+}
+
+.location-icon {
+  font-size: 20rpx;
+  margin-right: 6rpx;
+}
+
+
+
+/* 箱子底部 */
+.box-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+}
+
+.box-footer .box-location {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  max-width: calc(100% - 80rpx);
+}
+
+.box-count {
+  font-size: 38rpx;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* 收纳袋样式 */
+.bag-list {
   display: flex;
   flex-direction: column;
+  gap: 20rpx;
+}
+
+.bag-card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 25rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.bag-preview-visual {
+  width: 80rpx;
+  height: 100rpx;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.15);
+}
+
+.bag-icon {
+  color: #fff;
+  font-size: 32rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+}
+
+.bag-info {
+  flex: 1;
+}
+
+.bag-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.bag-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 物品网格样式 */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20rpx;
 }
 
 .item-card {
   background: white;
   border-radius: 16rpx;
-  padding: 25rpx;
+  padding: 20rpx;
   display: flex;
-  gap: 20rpx;
+  flex-direction: column;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s;
+}
+
+.item-image {
+  width: 100%;
+  height: 200rpx;
+  border-radius: 12rpx;
+  object-fit: cover;
+  margin-bottom: 15rpx;
+}
+
+.item-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.item-tag {
+  background: #f0f4ff;
+  color: #667eea;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #e0e8ff;
+}
+
+/* 空状态样式 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  color: #e0e0e0;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #ccc;
+  line-height: 1.5;
 }
 
 .item-card:active {
