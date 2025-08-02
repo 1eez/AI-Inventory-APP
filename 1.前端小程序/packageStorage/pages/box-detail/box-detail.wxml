@@ -5,7 +5,7 @@
     <view slot="backText">返回</view>
     <view slot="content" class="nav-title">{{boxInfo.name || '箱子详情'}}</view>
     <view slot="right" class="nav-right">
-      <text class="cuIcon-shop nav-icon" bindtap="onEditBox"></text>
+      <text class="cuIcon-edit nav-icon" bindtap="onEditBox"></text>
     </view>
   </cu-custom>
 

@@ -2,6 +2,7 @@
 <view class="page-container">
   <!-- 自定义导航栏 -->
   <cu-custom bgColor="bg-white" isBack="{{true}}">
+    <view slot="backText">返回</view>
     <view slot="content" class="nav-title">{{bagInfo.name || '袋子详情'}}</view>
     <view slot="right" class="nav-right">
       <text class="cuIcon-edit nav-icon" bindtap="onEditBag"></text>
