@@ -173,26 +173,25 @@ Page({
       // 获取box和bag信息，兼容新旧参数格式
       const boxId = options.boxId || options.box_id || '';
       const bagId = options.bagId || options.bag_id || '';
-      const boxName = decodeURIComponent(options.boxName || options.box_name || '');
-      const boxColor = decodeURIComponent(options.boxColor || options.box_color || '#1296db');
-      const boxLocation = decodeURIComponent(options.boxLocation || options.box_location || '');
-      const bagName = decodeURIComponent(options.bagName || options.bag_name || '');
-      const bagColor = decodeURIComponent(options.bagColor || options.bag_color || '#1296db');
       
       // 调用后台API获取物品详情
       const itemData = await this.requestItemDetail(itemId, boxId, bagId);
       
-      // 设置物品信息
+      // 从接口响应中获取box_info和bag_info
+      const boxInfo = itemData.box_info || {};
+      const bagInfo = itemData.bag_info || {};
+      
+      // 设置物品信息，使用接口返回的位置信息
       const itemInfo = {
         name: itemData.title || '',
         description: itemData.description || '',
         category: itemData.category || '',
         tags: itemData.tags || [],
         location: {
-          boxId: boxId,
-          bagId: bagId,
-          boxName: boxName,
-          bagName: bagName
+          boxId: boxInfo.box_id || boxId,
+          bagId: bagInfo.bag_id || bagId,
+          boxName: boxInfo.name || '',
+          bagName: bagInfo.name || ''
         }
       };
       
@@ -200,15 +199,15 @@ Page({
         itemInfo,
         imagePath: itemData.image_url || '',
         boxInfo: {
-          id: boxId,
-          name: boxName,
-          color: boxColor,
-          location: boxLocation
+          id: boxInfo.box_id || boxId,
+          name: boxInfo.name || '',
+          color: boxInfo.color || '#1296db',
+          location: boxInfo.location || ''
         },
         bagInfo: {
-          id: bagId,
-          name: bagName,
-          color: bagColor
+          id: bagInfo.bag_id || bagId,
+          name: bagInfo.name || '',
+          color: bagInfo.color || '#1296db'
         }
       });
       
@@ -408,7 +407,9 @@ Page({
                 description: itemData.description || '',
                 category: itemData.category || '',
                 tags: tags,
-                image_url: imageUrl
+                image_url: imageUrl,
+                box_info: responseData.box_info || {},
+                bag_info: responseData.bag_info || {}
               });
             } else {
               console.error('物品信息不存在:', responseData);
