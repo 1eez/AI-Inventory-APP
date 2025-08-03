@@ -76,13 +76,4 @@ Page({
     this.setData({ sections });
   },
 
-  /**
-   * 分享功能
-   */
-  onShareAppMessage() {
-    return {
-      title: '使用帮助',
-      path: '/packageProfile/pages/help/help'
-    };
-  }
 });

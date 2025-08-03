@@ -444,13 +444,4 @@ Page({
     });
   },
 
-  /**
-   * 分享页面
-   */
-  onShareAppMessage() {
-    return {
-      title: '应用设置 - 物品管理',
-      path: '/packageProfile/pages/settings/settings'
-    };
-  }
 });

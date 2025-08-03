@@ -453,13 +453,4 @@ Page({
     });
   },
 
-  /**
-   * 分享页面
-   */
-  onShareAppMessage() {
-    return {
-      title: '添加收纳盒 - 物品管理',
-      path: '/packageStorage/pages/add-box/add-box'
-    };
-  }
 });

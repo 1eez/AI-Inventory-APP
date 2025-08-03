@@ -622,13 +622,5 @@ Page({
     }
   },
 
-  /**
-   * 分享页面
-   */
-  onShareAppMessage() {
-    return {
-      title: '物品识别确认 - 物品管理',
-      path: '/packageCamera/pages/item-confirm/item-confirm'
-    };
-  }
+
 });

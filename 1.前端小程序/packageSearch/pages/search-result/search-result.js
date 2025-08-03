@@ -475,14 +475,4 @@ Page({
     });
   },
 
-  /**
-   * 分享页面
-   */
-  onShareAppMessage() {
-    const { keyword } = this.data;
-    return {
-      title: `搜索"${keyword}" - 物品管理`,
-      path: `/packageSearch/pages/search-result/search-result?keyword=${keyword}`
-    };
-  }
 });

@@ -733,14 +733,4 @@ Page({
     }
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-    return {
-      title: `我的${this.data.boxInfo?.name || '储物箱'}`,
-      path: `/packageStorage/pages/box-detail/box-detail?id=${this.boxId}&name=${encodeURIComponent(this.data.boxInfo?.name || '')}`,
-      imageUrl: '/assets/images/share-box.jpg'
-    };
-  }
 });

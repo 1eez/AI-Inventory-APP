@@ -12,9 +12,9 @@ Page({
     // 应用信息
     appInfo: {
       name: '智能物品管理',
-      version: '1.0.0',
-      buildNumber: '20250718',
-      releaseDate: '2025-07-18',
+      version: '1.1.0',
+      buildNumber: '20250803',
+      releaseDate: '2025-08-03',
       description: '一款个人物品收纳整理应用，帮助您轻松管理和查找物品。'
     },
     
@@ -61,6 +61,14 @@ Page({
     
     // 版本历史
     versionHistory: [
+      {
+        version: '1.1.0',
+        date: '2025-08-03',
+        changes: [
+          '完成基础搜索功能',
+          '修改大量bug'
+        ]
+      },
       {
         version: '1.0.0',
         date: '2025-07-27',
@@ -343,14 +351,4 @@ Page({
     });
   },
 
-  /**
-   * 分享页面
-   */
-  onShareAppMessage() {
-    return {
-      title: '智能物品管理 - 让收纳更简单',
-      path: '/packageProfile/pages/about/about',
-      imageUrl: '/images/share-cover.png'
-    };
-  }
 });

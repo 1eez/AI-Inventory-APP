@@ -777,20 +777,4 @@ Page({
     });
   },
 
-  // 分享
-  onShareAppMessage() {
-    return {
-      title: `我的${this.data.bagInfo.name}`,
-      path: `/packageStorage/pages/bag-detail/bag-detail?id=${this.data.bagId}&boxId=${this.data.boxId}`,
-      imageUrl: '/images/share-bag.png'
-    };
-  },
-
-  // 分享到朋友圈
-  onShareTimeline() {
-    return {
-      title: `我的${this.data.bagInfo.name} - 个人物品管理`,
-      imageUrl: '/images/share-bag.png'
-    };
-  }
 });

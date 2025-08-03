@@ -426,12 +426,4 @@ Page({
     });
   },
 
-  // 分享
-  onShareAppMessage() {
-    return {
-      title: '个人物品管理 - 智能搜索',
-      path: '/packageSearch/pages/search/search',
-      imageUrl: '/images/share-search.png'
-    };
-  }
 });

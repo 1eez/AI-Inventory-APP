@@ -427,9 +427,9 @@ Page({
   // 分享
   onShareAppMessage() {
     return {
-      title: '个人物品管理系统',
-      path: '/pages/home/home',
-      imageUrl: '/images/share-app.png'
+      title: '相信我，你需要她帮你收纳整理',
+      path: '/pages/splash/splash',
+      imageUrl: '/assets/images/share-cover.jpg'
     };
   },
 
@@ -437,7 +437,8 @@ Page({
   onShareTimeline() {
     return {
       title: '个人物品管理系统 - 智能收纳助手',
-      imageUrl: '/images/share-app.png'
+      path: '/pages/splash/splash',
+      imageUrl: '/assets/images/share-cover.jpg'
     };
   }
 });

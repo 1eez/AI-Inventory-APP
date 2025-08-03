@@ -340,13 +340,4 @@ Page({
     wx.navigateBack();
   },
 
-  /**
-   * 分享页面
-   */
-  onShareAppMessage() {
-    return {
-      title: '智能扫描 - 物品管理',
-      path: '/packageCamera/pages/camera/camera'
-    };
-  }
 });

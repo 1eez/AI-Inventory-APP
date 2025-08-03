@@ -963,5 +963,14 @@ Page({
       path: '/pages/splash/splash',
       imageUrl: '/assets/images/share-cover.jpg'
     };
+  },
+
+  // 分享到朋友圈
+  onShareTimeline() {
+    return {
+      title: '个人物品管理系统 - 智能收纳助手',
+      path: '/pages/splash/splash',
+      imageUrl: '/assets/images/share-cover.jpg'
+    };
   }
 });

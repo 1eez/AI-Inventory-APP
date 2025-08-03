@@ -371,19 +371,6 @@ Page({
   },
 
   /**
-   * 分享物品
-   */
-  onShareAppMessage() {
-    const { itemInfo } = this.data;
-    
-    return {
-      title: `${itemInfo.name} - 物品详情`,
-      path: `/packageStorage/pages/item-detail/item-detail?itemId=${itemInfo.id}`,
-      imageUrl: itemInfo.images[0]
-    };
-  },
-
-  /**
    * 下拉刷新
    */
   onPullDownRefresh() {

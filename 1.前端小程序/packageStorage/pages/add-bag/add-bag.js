@@ -404,13 +404,4 @@ Page({
     });
   },
 
-  /**
-   * 分享页面
-   */
-  onShareAppMessage() {
-    return {
-      title: '添加收纳袋 - 物品管理',
-      path: `/packageStorage/pages/add-bag/add-bag?boxId=${this.data.formData.boxId}`
-    };
-  }
 });

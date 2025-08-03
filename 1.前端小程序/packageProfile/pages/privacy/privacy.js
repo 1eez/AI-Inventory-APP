@@ -33,13 +33,4 @@ Page({
     });
   },
 
-  /**
-   * 分享功能
-   */
-  onShareAppMessage() {
-    return {
-      title: '隐私政策',
-      path: '/packageProfile/pages/privacy/privacy'
-    };
-  }
 });
