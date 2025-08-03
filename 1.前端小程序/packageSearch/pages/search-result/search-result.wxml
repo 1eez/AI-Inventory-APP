@@ -196,6 +196,29 @@
               <view class="detail-value">{{selectedItem.category || '未分类'}}</view>
             </view>
             
+            <!-- 箱子信息 -->
+            <view class="detail-item" wx:if="{{selectedItem.boxName}}">
+              <view class="detail-label">
+                <text class="cuIcon-box detail-icon"></text>
+                <text>箱子</text>
+              </view>
+              <view class="detail-value">
+                <text style="color: {{selectedItem.boxColor || '#333'}}">{{selectedItem.boxName}}</text>
+                (<text class="cuIcon-locationfill location-icon text-gray" wx:if="{{selectedItem.boxLocation}}">{{selectedItem.boxLocation}}</text>)
+              </view>
+            </view>
+            
+            <!-- 袋子信息 -->
+            <view class="detail-item" wx:if="{{selectedItem.bagName}}">
+              <view class="detail-label">
+                <text class="cuIcon-bag detail-icon"></text>
+                <text>袋子</text>
+              </view>
+              <view class="detail-value">
+                <text style="color: {{selectedItem.bagColor || '#333'}}">{{selectedItem.bagName}}</text>
+              </view>
+            </view>
+            
             <view class="detail-item" wx:if="{{selectedItem.createTime}}">
               <view class="detail-label">
                 <text class="cuIcon-time detail-icon"></text>
