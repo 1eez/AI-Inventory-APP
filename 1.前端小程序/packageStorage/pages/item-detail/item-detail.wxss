@@ -182,9 +182,6 @@
 }
 
 /* 基本信息卡片 */
-.info-card {
-  /* 继承 card 样式 */
-}
 
 .item-header {
   display: flex;
@@ -256,9 +253,6 @@
 }
 
 /* 位置信息卡片 */
-.location-card {
-  /* 继承 card 样式 */
-}
 
 .location-path {
   display: flex;
@@ -293,9 +287,6 @@
 }
 
 /* 规格参数卡片 */
-.specs-card {
-  /* 继承 card 样式 */
-}
 
 .specs-list {
   display: flex;
@@ -331,9 +322,6 @@
 }
 
 /* 备注信息卡片 */
-.notes-card {
-  /* 继承 card 样式 */
-}
 
 .notes-content {
   font-size: 28rpx;
@@ -346,9 +334,6 @@
 }
 
 /* 相关物品卡片 */
-.related-card {
-  /* 继承 card 样式 */
-}
 
 .related-scroll {
   width: 100%;
@@ -404,9 +389,6 @@
 }
 
 /* 操作历史卡片 */
-.history-card {
-  /* 继承 card 样式 */
-}
 
 .history-list {
   display: flex;
