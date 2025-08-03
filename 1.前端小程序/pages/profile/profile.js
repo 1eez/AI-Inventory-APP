@@ -20,13 +20,6 @@ Page({
         color: '#4facfe'
       },
       {
-        id: 'about',
-        title: '关于',
-        subtitle: '版本信息',
-        icon: 'cuIcon-info',
-        color: '#4facfe'
-      },
-      {
         id: 'contact',
         title: '联系客服',
         subtitle: '获取帮助支持',
@@ -49,6 +42,13 @@ Page({
         title: '使用帮助',
         subtitle: '使用指南和常见问题',
         icon: 'cuIcon-question',
+        color: '#4facfe'
+      },
+      {
+        id: 'about',
+        title: '关于',
+        subtitle: '版本信息',
+        icon: 'cuIcon-info',
         color: '#4facfe'
       }
     ],
@@ -304,9 +304,6 @@ Page({
       case 'update':
         this.handleUpdate();
         break;
-      case 'about':
-        this.handleAbout();
-        break;
       case 'contact':
         this.handleContact();
         break;
@@ -329,6 +326,9 @@ Page({
         break;
       case 'help':
         this.handleHelp();
+        break;
+      case 'about':
+        this.handleAbout();
         break;
       default:
         wx.showToast({
