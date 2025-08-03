@@ -11,10 +11,10 @@
 
   <!-- 搜索栏 -->
   <view class="search-container">
-    <view class="search-box" bindtap="onSearch">
-      <text class="cuIcon-search search-icon"></text>
+    <view class="search-box bg-white" bindtap="onSearch">
+      <text class="cuIcon-search search-icon text-gray"></text>
       <input 
-        class="search-input" 
+        class="search-input text-black" 
         placeholder="在此袋子中搜索物品" 
         value="{{searchKeyword}}"
         bindinput="onSearchInput"

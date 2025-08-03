@@ -366,11 +366,9 @@ Page({
       return;
     }
     
-    // TODO: 实现搜索逻辑
-    console.log('搜索物品:', keyword);
-    wx.showToast({
-      title: '搜索功能开发中',
-      icon: 'none'
+    // 跳转到搜索结果页面，限定在当前袋子内搜索
+    wx.navigateTo({
+      url: `/packageSearch/pages/search-result/search-result?keyword=${encodeURIComponent(keyword)}&boxId=${this.data.boxId}&bagId=${this.data.bagId}`
     });
   },
 

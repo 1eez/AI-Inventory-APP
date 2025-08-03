@@ -1,7 +1,7 @@
 <!--packageCamera/pages/item-confirm/item-confirm.wxml-->
 
 <!-- 自定义导航栏 -->
-<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+<cu-custom bgColor="bg-white" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">{{isEdit ? '编辑物品信息' : '确认物品信息'}}</view>
 </cu-custom>

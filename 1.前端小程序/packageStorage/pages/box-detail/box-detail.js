@@ -392,9 +392,9 @@ Page({
       return;
     }
     
-    // 跳转到搜索页面，限定在当前箱子内搜索
+    // 跳转到搜索结果页面，限定在当前箱子内搜索
     wx.navigateTo({
-      url: `/packageSearch/pages/search/search?keyword=${encodeURIComponent(keyword)}&boxId=${this.boxId}`
+      url: `/packageSearch/pages/search-result/search-result?keyword=${encodeURIComponent(keyword)}&boxId=${this.boxId}`
     });
   },
 
