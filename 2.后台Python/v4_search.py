@@ -137,10 +137,15 @@ def search_items(user_id: int, keyword: str, db_manager: DatabaseManager) -> Dic
     # 构建搜索SQL，分两部分：
     # 1. 直接匹配物品的title、description、category字段
     # 2. 通过标签匹配的物品（即使物品本身字段不匹配关键字，但标签匹配也要返回）
+    # 同时通过JOIN获取箱子和袋子的相关信息
     query = """
     SELECT DISTINCT i.item_id, i.user_id, i.box_id, i.bag_id, i.sort_id, 
-           i.title, i.description, i.category, i.image_filename, i.created_at
+           i.title, i.description, i.category, i.image_filename, i.created_at,
+           b.name as box_name, b.location as box_location, b.color as box_color,
+           bg.name as bag_name, bg.color as bag_color
     FROM items_detail i
+    LEFT JOIN boxes_summary b ON i.box_id = b.box_id
+    LEFT JOIN bags_summary bg ON i.bag_id = bg.bag_id
     WHERE i.user_id = ? AND (
         -- 物品字段匹配
         i.title LIKE ? OR 
@@ -162,13 +167,19 @@ def search_items(user_id: int, keyword: str, db_manager: DatabaseManager) -> Dic
     
     results = db_manager.execute_query(query, params)
     
-    # 为每个物品添加标签信息
+    # 为每个物品添加标签信息和重命名字段
     if results:
         # 将Row对象转换为字典，以便可以添加tags字段
         processed_results = []
         for item in results:
             # 将Row对象转换为字典
             item_dict = dict(item)
+            # 重命名字段以符合要求的格式
+            item_dict['boxName'] = item_dict.pop('box_name', '')
+            item_dict['boxLocation'] = item_dict.pop('box_location', '')
+            item_dict['boxColor'] = item_dict.pop('box_color', '#1296db')
+            item_dict['bagName'] = item_dict.pop('bag_name', '')
+            item_dict['bagColor'] = item_dict.pop('bag_color', '#1296db')
             # 添加标签信息
             item_tags = get_item_tags(item_dict['item_id'], db_manager)
             item_dict['tags'] = item_tags
