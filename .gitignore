@@ -216,3 +216,4 @@ coverage
 
 *.tsbuildinfo
 2.后台Python/data/database.sqlite
+1.前端小程序/project.config.json
