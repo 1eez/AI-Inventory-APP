@@ -177,7 +177,7 @@ Page({
           location: boxData.location,
           icon: boxData.icon || 'cuIcon-goods',
           createTime: this.formatDate(boxData.created_at),
-          totalBags: this.data.boxInfo?.totalBags || 0, // 保持当前袋子数量
+          totalBags: (this.data.boxInfo && this.data.boxInfo.totalBags) || 0, // 保持当前袋子数量
           totalItems: boxData.item_count || 0,
           tags: [] // TODO: 从后台获取标签信息
         };
@@ -429,7 +429,7 @@ Page({
    */
   onAddBag() {
     wx.navigateTo({
-      url: `/packageStorage/pages/add-bag/add-bag?boxId=${this.boxId}&boxName=${encodeURIComponent(this.data.boxInfo?.name || '')}&boxLocation=${encodeURIComponent(this.data.boxInfo?.location || '')}&boxColor=${encodeURIComponent(this.data.boxInfo?.color || '#1296db')}`
+      url: `/packageStorage/pages/add-bag/add-bag?boxId=${this.boxId}&boxName=${encodeURIComponent((this.data.boxInfo && this.data.boxInfo.name) || '')}&boxLocation=${encodeURIComponent((this.data.boxInfo && this.data.boxInfo.location) || '')}&boxColor=${encodeURIComponent((this.data.boxInfo && this.data.boxInfo.color) || '#1296db')}`
     });
   },
 
@@ -457,7 +457,7 @@ Page({
   onDeleteBox() {
     wx.showModal({
       title: '确认删除',
-      content: `确定要删除箱子"${this.data.boxInfo?.name || ''}"吗？箱子内的所有袋子和物品也将被删除。`,
+      content: `确定要删除箱子"${(this.data.boxInfo && this.data.boxInfo.name) || ''}"吗？箱子内的所有袋子和物品也将被删除。`,
       confirmText: '删除',
       confirmColor: '#e54d42',
       success: (res) => {
@@ -483,7 +483,7 @@ Page({
         throw new Error('用户身份信息缺失');
       }
       
-      if (!this.data.boxInfo?.id) {
+      if (!(this.data.boxInfo && this.data.boxInfo.id)) {
         throw new Error('箱子ID缺失');
       }
       

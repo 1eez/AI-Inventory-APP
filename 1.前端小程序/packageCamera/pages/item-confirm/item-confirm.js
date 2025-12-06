@@ -109,7 +109,7 @@ Page({
       const recognitionResult = JSON.parse(resultStr);
       
       // 从后台返回的嵌套数据结构中提取分析结果
-      const analysisResult = recognitionResult.data?.analysis_result || recognitionResult.analysis_result || recognitionResult;
+      const analysisResult = (recognitionResult.data && recognitionResult.data.analysis_result) || recognitionResult.analysis_result || recognitionResult;
       
       // 处理tags数据结构，将对象数组转换为字符串数组
       let tags = [];
@@ -616,7 +616,7 @@ Page({
           if (res.statusCode === 200 && res.data && res.data.status === 'success') {
             resolve(res.data);
           } else {
-            reject(new Error(res.data?.message || '添加失败'));
+            reject(new Error((res.data && res.data.message) || '添加失败'));
           }
         },
         fail: (error) => {
@@ -646,7 +646,7 @@ Page({
           if (res.statusCode === 200 && res.data && res.data.status === 'success') {
             resolve(res.data);
           } else {
-            reject(new Error(res.data?.message || '编辑失败'));
+            reject(new Error((res.data && res.data.message) || '编辑失败'));
           }
         },
         fail: (error) => {
@@ -723,7 +723,7 @@ Page({
         }, baseUrl);
       } else {
         // 添加模式：调用添加接口
-        const imageFilename = recognitionResult?.data?.image_filename || recognitionResult?.image_filename || '';
+        const imageFilename = (recognitionResult && recognitionResult.data && recognitionResult.data.image_filename) || (recognitionResult && recognitionResult.image_filename) || '';
         
         result = await this.addItemToServer({
           openid: openid,

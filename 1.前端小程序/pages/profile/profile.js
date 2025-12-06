@@ -284,7 +284,7 @@ Page({
           if (res.statusCode === 200 && res.data && res.data.status === 'success') {
             resolve(res.data);
           } else {
-            reject(new Error(res.data?.message || '修改昵称失败'));
+            reject(new Error((res.data && res.data.message) || '修改昵称失败'));
           }
         },
         fail: (error) => {

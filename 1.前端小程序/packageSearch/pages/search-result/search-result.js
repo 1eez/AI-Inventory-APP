@@ -111,8 +111,8 @@ Page({
     
     // 处理箱子数据
     const boxes = {
-      count: data.boxes?.count || 0,
-      results: (data.boxes?.results || []).map(box => ({
+      count: (data.boxes && data.boxes.count) || 0,
+      results: ((data.boxes && data.boxes.results) || []).map(box => ({
         ...box,
         id: box.box_id,
         icon: 'cuIcon-box',
@@ -123,8 +123,8 @@ Page({
     
     // 处理袋子数据
     const bags = {
-      count: data.bags?.count || 0,
-      results: (data.bags?.results || []).map(bag => ({
+      count: (data.bags && data.bags.count) || 0,
+      results: ((data.bags && data.bags.results) || []).map(bag => ({
         ...bag,
         createTime: this.formatDate(bag.created_at)
       }))
@@ -132,8 +132,8 @@ Page({
     
     // 处理物品数据
     const items = {
-      count: data.items?.count || 0,
-      results: (data.items?.results || []).map(item => ({
+      count: (data.items && data.items.count) || 0,
+      results: ((data.items && data.items.results) || []).map(item => ({
         ...item,
         image: item.image_filename ? `${photosBaseUrl}${item.image_filename}` : '/assets/images/default-item.png',
         createTime: this.formatDate(item.created_at)

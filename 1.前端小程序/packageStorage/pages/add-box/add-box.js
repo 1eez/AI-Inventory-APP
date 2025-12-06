@@ -280,7 +280,7 @@ Page({
             if (res.data && res.data.success !== false) {
               resolve(res.data);
             } else {
-              reject(new Error(res.data?.message || '创建失败'));
+              reject(new Error((res.data && res.data.message) || '创建失败'));
             }
           } else {
             reject(new Error(`服务器错误 (${res.statusCode})`));
@@ -439,7 +439,7 @@ Page({
             if (res.data && res.data.status === 'success') {
               resolve(res.data);
             } else {
-              reject(new Error(res.data?.message || '编辑失败'));
+              reject(new Error((res.data && res.data.message) || '编辑失败'));
             }
           } else {
             reject(new Error(`服务器错误 (${res.statusCode})`));

@@ -321,7 +321,7 @@ Page({
     
     wx.showModal({
       title: '预览效果',
-      content: `名称：${formData.name}\n颜色：${formData.color}\n所属收纳盒：${this.data.boxInfo?.name}`,
+      content: `名称：${formData.name}\n颜色：${formData.color}\n所属收纳盒：${(this.data.boxInfo && this.data.boxInfo.name) || ''}`,
       showCancel: false
     });
   },
