@@ -24,6 +24,8 @@ class EditItemRequest(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=200, description="物品标题")
     description: Optional[str] = Field(None, max_length=1000, description="物品描述")
     category: Optional[str] = Field(None, max_length=100, description="物品分类")
+    box_id: Optional[int] = Field(None, description="所属盒子ID")
+    bag_id: Optional[int] = Field(None, description="所属袋子ID")
     tags: Optional[List[str]] = Field(None, description="物品标签列表")
 
 def verify_item_ownership(item_id: int, user_id: int, db_manager: DatabaseManager) -> bool:
@@ -111,6 +113,14 @@ def update_item(item_id: int, item_data: EditItemRequest, db_manager: DatabaseMa
     if item_data.category is not None:
         update_fields.append("category = ?")
         update_values.append(item_data.category)
+    
+    if item_data.box_id is not None:
+        update_fields.append("box_id = ?")
+        update_values.append(item_data.box_id)
+
+    if item_data.bag_id is not None:
+        update_fields.append("bag_id = ?")
+        update_values.append(item_data.bag_id)
     
     # 检查是否有字段需要更新或者有标签需要更新
     if not update_fields and item_data.tags is None:
