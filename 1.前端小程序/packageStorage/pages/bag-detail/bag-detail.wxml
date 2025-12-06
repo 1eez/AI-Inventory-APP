@@ -182,7 +182,7 @@
           </view>
           <view class="batch-actions">
             <button class="cu-btn line-blue sm" bindtap="onToggleSelectAll">{{selectAllChecked ? '全不选' : '全选'}}</button>
-            <button class="cu-btn bg-gradual-green lg" bindtap="onOpenLocationPicker">选择目标位置</button>
+            <button class="cu-btn bg-blue lg" bindtap="onOpenLocationPicker">选择目标位置</button>
           </view>
         </view>
 
@@ -191,7 +191,7 @@
           <view 
             wx:for="{{items}}" 
             wx:key="id" 
-            class="photo-item {{selectedItemIds.indexOf(item.id) >= 0 ? 'is-selected' : ''}}"
+            class="photo-item {{selectedItemIds.indexOf(item.id) >= 0 ? 'selected' : ''}}"
             bindtap="onPhotoItemTap"
             data-item="{{item}}"
             data-id="{{item.id}}"
@@ -203,21 +203,21 @@
               lazy-load="{{true}}"
             ></image>
             
-            <view class="photo-item-overlay">
-              <!-- 数量标识 -->
-              <view class="photo-item-quantity" wx:if="{{item.quantity > 1}}">
-                <text>×{{item.quantity}}</text>
+            <!-- 选中遮罩层 (批量模式下显示) -->
+            <view class="selection-overlay" wx:if="{{batchMode}}">
+              <view class="selection-check {{selectedItemIds.indexOf(item.id) >= 0 ? 'checked' : ''}}">
+                <text class="cuIcon-check" wx:if="{{selectedItemIds.indexOf(item.id) >= 0}}"></text>
               </view>
-              
-              <!-- 更多操作按钮 -->
-              <view class="photo-item-menu" bindtap="onItemMenu" data-id="{{item.id}}" catchtap="stopPropagation">
-                <text class="cuIcon-more"></text>
-              </view>
+            </view>
 
-              <!-- 批量选择勾选框（批量模式显示） -->
-              <view wx:if="{{batchMode}}" class="batch-checkbox {{selectedItemIds.indexOf(item.id) >= 0 ? 'checked' : ''}}" catchtap="stopPropagation" bindtap="onToggleItemSelect" data-id="{{item.id}}">
-                <text class="{{selectedItemIds.indexOf(item.id) >= 0 ? 'cuIcon-check' : 'cuIcon-round'}}"></text>
-              </view>
+            <!-- 数量标识 (仅在非批量模式或未选中时显示，避免视觉干扰) -->
+            <view class="photo-item-quantity" wx:if="{{item.quantity > 1 && (!batchMode || selectedItemIds.indexOf(item.id) < 0)}}">
+              <text>×{{item.quantity}}</text>
+            </view>
+            
+            <!-- 更多操作按钮 (仅非批量模式显示) -->
+            <view class="photo-item-menu" wx:if="{{!batchMode}}" bindtap="onItemMenu" data-id="{{item.id}}" catchtap="stopPropagation">
+              <text class="cuIcon-more"></text>
             </view>
           </view>
         </view>
@@ -238,50 +238,86 @@
   </view>
 
   <!-- 位置选择弹窗（批量移动目标） -->
-  <view class="location-picker-modal {{showLocationPicker ? 'show' : ''}}" bindtap="onHideLocationPicker">
-    <view class="picker-content" catchtap="onPickerPanelTap">
+  <view class="location-picker-modal {{showLocationPicker ? 'show' : ''}}" bindtap="onHideLocationPicker" catchtouchmove="true">
+    <view class="picker-content" catchtap="stopPropagation">
       <view class="picker-header">
         <text class="picker-title">选择目标位置</text>
-      </view>
-      <view class="picker-section">
-        <text class="picker-section-title">位置</text>
-        <view class="picker-list">
-          <view wx:for="{{storageOptions.locations}}" wx:key="*this" class="picker-item {{selectedLocation === item ? 'selected' : ''}}" bindtap="onSelectLocation" data-location="{{item}}">
-            <text class="picker-item-text">{{item}}</text>
-          </view>
+        <view class="picker-close" bindtap="onHideLocationPicker">
+          <text class="cuIcon-close"></text>
         </view>
       </view>
-      <view class="picker-section">
-        <text class="picker-section-title">收纳盒</text>
-        <view class="picker-card-grid">
-          <view wx:for="{{filteredBoxes}}" wx:key="id" class="picker-card {{(selectedBox && (selectedBox.id || selectedBox.box_id)) === (item.id || item.box_id) ? 'selected' : ''}}" bindtap="onSelectBox" data-box="{{item}}" style="background: {{item.color || '#1296db'}}">
-            <view class="picker-card-title">{{item.name}}</view>
-            <view class="picker-card-sub">{{item.location}}</view>
-            <view class="picker-card-check" wx:if="{{(selectedBox && (selectedBox.id || selectedBox.box_id)) === (item.id || item.box_id)}}">
-              <text class="cuIcon-check"></text>
+      
+      <scroll-view scroll-y class="picker-scroll">
+        <!-- 1. 选择位置 -->
+        <view class="picker-section">
+          <text class="picker-section-title">位置</text>
+          <view class="picker-tags">
+            <view 
+              wx:for="{{storageOptions.locations}}" 
+              wx:key="*this" 
+              class="picker-tag {{selectedLocation === item ? 'selected' : ''}}" 
+              bindtap="onSelectLocation" 
+              data-location="{{item}}"
+            >
+              {{item}}
             </view>
           </view>
         </view>
-      </view>
-      <view class="picker-section">
-        <text class="picker-section-title">收纳袋</text>
-        <view class="picker-card-grid">
-          <view wx:for="{{storageOptions.bags}}" wx:key="bag_id" class="picker-card {{(selectedBag && selectedBag.bag_id) === item.bag_id ? 'selected' : ''}}" bindtap="onSelectBag" data-bag="{{item}}" style="background: {{item.color || '#1296db'}}">
-            <view class="picker-card-title">{{item.name}}</view>
-            <view class="picker-card-check" wx:if="{{(selectedBag && selectedBag.bag_id) === item.bag_id}}">
-              <text class="cuIcon-check"></text>
+
+        <!-- 2. 选择收纳盒 -->
+        <view class="picker-section" wx:if="{{filteredBoxes.length > 0}}">
+          <text class="picker-section-title">收纳盒</text>
+          <view class="picker-grid">
+            <view 
+              wx:for="{{filteredBoxes}}" 
+              wx:key="id" 
+              class="picker-card {{(selectedBox && (selectedBox.id || selectedBox.box_id)) === (item.id || item.box_id) ? 'selected' : ''}}" 
+              bindtap="onSelectBox" 
+              data-box="{{item}}"
+            >
+              <view class="picker-color-strip" style="background: {{item.color || '#1296db'}}"></view>
+              <view class="picker-card-content">
+                <view class="picker-card-title">{{item.name}}</view>
+                <view class="picker-card-sub">{{item.location}}</view>
+              </view>
+              <view class="picker-check" wx:if="{{(selectedBox && (selectedBox.id || selectedBox.box_id)) === (item.id || item.box_id)}}">
+                <text class="cuIcon-check"></text>
+              </view>
             </view>
           </view>
         </view>
-      </view>
-      <view class="picker-footer">
-        <button class="cu-btn bg-gradual-green lg" bindtap="onConfirmTargetBag">确认并开始移动</button>
+
+        <!-- 3. 选择收纳袋 -->
+        <view class="picker-section" wx:if="{{storageOptions.bags.length > 0}}">
+          <text class="picker-section-title">收纳袋</text>
+          <view class="picker-grid">
+            <view 
+              wx:for="{{storageOptions.bags}}" 
+              wx:key="bag_id" 
+              class="picker-card {{(selectedBag && selectedBag.bag_id) === item.bag_id ? 'selected' : ''}}" 
+              bindtap="onSelectBag" 
+              data-bag="{{item}}"
+            >
+              <view class="picker-color-strip" style="background: {{item.color || '#1296db'}}"></view>
+              <view class="picker-card-content">
+                <view class="picker-card-title">{{item.name}}</view>
+              </view>
+              <view class="picker-check" wx:if="{{(selectedBag && selectedBag.bag_id) === item.bag_id}}">
+                <text class="cuIcon-check"></text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="picker-footer safe-area-bottom">
+        <button class="cu-btn bg-blue lg block" bindtap="onConfirmTargetBag" disabled="{{!selectedBag}}">确认移动到此处</button>
       </view>
     </view>
   </view>
 
   <!-- 批量移动进度弹窗 -->
-  <view class="progress-modal {{movingProgress.running ? 'show' : ''}}">
+  <view wx:if="{{movingProgress.running}}" class="progress-modal show">
     <view class="progress-content">
       <text class="progress-title">批量移动进行中</text>
       <view class="progress-bar">
@@ -297,7 +333,7 @@
   </view>
 
   <!-- 结果汇总Modal（手动关闭） -->
-  <view class="result-modal {{showResultModal ? 'show' : ''}}" bindtap="onCloseResultModal">
+  <view wx:if="{{showResultModal}}" class="result-modal show" bindtap="onCloseResultModal">
     <view class="result-content" catchtap="stopPropagation">
       <view class="result-header">
         <text class="result-title">批量移动完成</text>
