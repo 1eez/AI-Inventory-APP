@@ -48,7 +48,44 @@ Page({
     
     // 页面参数
     bagId: '',
-    boxId: ''
+    boxId: '',
+
+    /**
+     * 批量模式相关状态
+     * @desc 控制批量选择的开关与已选物品ID集合
+     */
+    batchMode: false,
+    selectedItemIds: [],
+    selectAllChecked: false,
+
+    /**
+     * 位置选择器相关状态
+     * @desc 内联位置选择弹窗的数据，包括位置、盒子与袋子列表
+     */
+    showLocationPicker: false,
+    storageOptions: {
+      locations: [],
+      boxes: [],
+      bags: []
+    },
+    filteredBoxes: [],
+    selectedLocation: '',
+    selectedBox: null,
+    selectedBag: null,
+
+    /**
+     * 批量移动进度
+     * @desc 展示顺序移动的总数、已处理数、成功/跳过/失败与百分比
+     */
+    movingProgress: {
+      total: 0,
+      processed: 0,
+      success: 0,
+      skipped: 0,
+      failed: 0,
+      percent: 0,
+      running: false
+    }
   },
 
   onLoad(options) {
@@ -493,11 +530,345 @@ Page({
     });
   },
 
-  // 批量操作
+  /**
+   * 进入批量操作模式
+   * @desc 打开批量选择，重置选择状态
+   */
   onBatchOperation() {
-    // TODO: 进入批量操作模式
+    // 进入批量模式，重置选择状态
+    this.setData({
+      batchMode: true,
+      selectedItemIds: [],
+      selectAllChecked: false
+    });
+  },
+
+  /**
+   * 退出批量模式
+   * @desc 关闭批量选择并清空状态
+   */
+  onExitBatchMode() {
+    this.setData({
+      batchMode: false,
+      selectedItemIds: [],
+      selectAllChecked: false
+    });
+  },
+
+  /**
+   * 网格项点击
+   * @desc 批量模式下切换选中，否则打开详情弹窗
+   * @param {Object} e - 事件对象，包含 item id
+   */
+  onPhotoItemTap(e) {
+    if (this.data.batchMode) {
+      const id = e.currentTarget.dataset.id;
+      this.onToggleItemSelect({ currentTarget: { dataset: { id } } });
+      return;
+    }
+    this.onShowItemDetail(e);
+  },
+
+  /**
+   * 切换单项选中
+   * @desc 将指定物品加入或移出选中集合
+   * @param {Object} e - 事件对象，dataset.id 为物品ID
+   */
+  onToggleItemSelect(e) {
+    const id = e.currentTarget.dataset.id;
+    const selected = this.data.selectedItemIds.slice();
+    const idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({
+      selectedItemIds: selected,
+      selectAllChecked: selected.length === this.data.items.length
+    });
+  },
+
+  /**
+   * 全选/全不选
+   * @desc 当已全选时清空选择，否则选择全部物品
+   */
+  onToggleSelectAll() {
+    const { selectAllChecked, items } = this.data;
+    if (selectAllChecked) {
+      this.setData({ selectedItemIds: [], selectAllChecked: false });
+    } else {
+      const allIds = (items || []).map(it => it.id);
+      this.setData({ selectedItemIds: allIds, selectAllChecked: true });
+    }
+  },
+
+  /**
+   * 打开位置选择器
+   * @desc 校验已选择物品，必要时加载位置与盒子数据
+   */
+  onOpenLocationPicker() {
+    if (!(this.data.selectedItemIds && this.data.selectedItemIds.length)) {
+      wx.showToast({ title: '请先选择物品', icon: 'none' });
+      return;
+    }
+    if (!this.data.storageOptions.boxes.length) {
+      this.loadStorageOptions().then(() => {
+        this.setData({ showLocationPicker: true });
+      });
+    } else {
+      this.setData({ showLocationPicker: true });
+    }
+  },
+
+  /**
+   * 隐藏位置选择器
+   * @desc 关闭位置选择弹窗
+   */
+  onHideLocationPicker() {
+    this.setData({ showLocationPicker: false });
+  },
+
+  onPickerPanelTap() {
+    // 阻止冒泡到遮罩层
+  },
+
+  /**
+   * 加载收纳位置选项
+   * @desc 拉取首页信息，归一化盒子并生成位置列表
+   * @returns {Promise<void>}
+   */
+  async loadStorageOptions() {
+    try {
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      const homeInfo = await this.requestHomeInfo(baseUrl, openid);
+      const boxes = (homeInfo && homeInfo.data && Array.isArray(homeInfo.data.boxes)) ? homeInfo.data.boxes : [];
+      const normalized = boxes.map(b => ({
+        id: b.box_id,
+        name: b.name,
+        color: b.color || '#1296db',
+        location: b.location || '未设置位置'
+      }));
+      const locations = Array.from(new Set(normalized.map(b => b.location)));
+      this.setData({
+        'storageOptions.boxes': normalized,
+        'storageOptions.locations': locations,
+        filteredBoxes: [],
+        selectedLocation: '',
+        selectedBox: null,
+        selectedBag: null,
+        'storageOptions.bags': []
+      });
+    } catch (error) {
+      wx.showToast({ title: '位置加载失败', icon: 'error' });
+    }
+  },
+
+  requestHomeInfo(baseUrl, openid) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `${baseUrl}v0/home/info?openid=${openid}`,
+        method: 'GET',
+        header: { 'content-type': 'application/json' },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: () => {
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
+  },
+
+  /**
+   * 选择位置
+   * @desc 根据位置过滤可选盒子并重置后续选择
+   * @param {Object} e - 事件对象，dataset.location 为位置名称
+   */
+  onSelectLocation(e) {
+    const { location } = e.currentTarget.dataset;
+    const allBoxes = this.data.storageOptions.boxes || [];
+    const filtered = allBoxes.filter(b => (b.location || '未设置位置') === location);
+    this.setData({
+      selectedLocation: location,
+      filteredBoxes: filtered,
+      selectedBox: null,
+      selectedBag: null,
+      'storageOptions.bags': []
+    });
+  },
+
+  /**
+   * 选择盒子并加载袋子
+   * @desc 设置选中盒子并请求该盒子的袋子列表
+   * @param {Object} e - 事件对象，dataset.box 为盒子对象
+   */
+  onSelectBox(e) {
+    const { box } = e.currentTarget.dataset;
+    this.setData({
+      selectedBox: box,
+      selectedBag: null
+    });
+    this.loadBagsByBoxId(box.id || box.box_id);
+  },
+
+  loadBagsByBoxId(boxId) {
+    const baseUrl = app.globalData.baseUrl;
+    const openid = app.globalData.openid;
+    return this.requestBagList(baseUrl, { openid: openid, box_id: parseInt(boxId) })
+      .then((bagData) => {
+        const bags = bagData && bagData.data && Array.isArray(bagData.data.bags) ? bagData.data.bags : [];
+        this.setData({ 'storageOptions.bags': bags });
+        if (bags.length === 0) {
+          wx.showToast({ title: '该盒子下暂无收纳袋', icon: 'none' });
+        }
+      })
+      .catch(() => {
+        wx.showToast({ title: '袋子加载失败', icon: 'error' });
+      });
+  },
+
+  requestBagList(baseUrl, params) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v2/bag/get',
+        method: 'GET',
+        data: params,
+        header: { 'content-type': 'application/json' },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: () => {
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
+  },
+
+  /**
+   * 选择袋子
+   * @desc 设置选中袋子
+   * @param {Object} e - 事件对象，dataset.bag 为袋子对象
+   */
+  onSelectBag(e) {
+    const { bag } = e.currentTarget.dataset;
+    this.setData({ selectedBag: bag });
+  },
+
+  /**
+   * 确认目标袋并开始移动
+   * @desc 校验选择并启动顺序批量移动
+   */
+  onConfirmTargetBag() {
+    const { selectedBox, selectedBag, selectedItemIds } = this.data;
+    if (!selectedBox || !selectedBag) {
+      wx.showToast({ title: '请先选择袋子', icon: 'none' });
+      return;
+    }
+    if (!selectedItemIds.length) {
+      wx.showToast({ title: '请先选择物品', icon: 'none' });
+      return;
+    }
+    this.setData({ showLocationPicker: false });
+    this.startSequentialMove({
+      targetBoxId: parseInt(selectedBox.id || selectedBox.box_id),
+      targetBagId: parseInt(selectedBag.bag_id)
+    });
+  },
+
+  /**
+   * 编辑物品到服务器
+   * @desc 调用后端编辑接口以变更物品位置
+   * @param {Object} requestData - 请求体（openid、item_id、box_id、bag_id）
+   * @param {string} baseUrl - 基础URL
+   * @returns {Promise<any>} - 接口响应
+   */
+  editItemToServer(requestData, baseUrl) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v3/item/edit',
+        method: 'POST',
+        header: { 'content-type': 'application/json' },
+        data: requestData,
+        success: (res) => {
+          if (res.statusCode === 200 && res.data && res.data.status === 'success') {
+            resolve(res.data);
+          } else {
+            reject(new Error((res.data && res.data.message) || '编辑失败'));
+          }
+        },
+        fail: (error) => {
+          reject(error);
+        }
+      });
+    });
+  },
+
+  /**
+   * 顺序批量移动（并发上限1）
+   * @desc 逐个调用编辑接口并更新进度；目标与当前一致时跳过
+   * @param {Object} target - 目标位置（targetBoxId、targetBagId）
+   */
+  async startSequentialMove(target) {
+    const baseUrl = app.globalData.baseUrl;
+    const openid = app.globalData.openid;
+    const ids = this.data.selectedItemIds.slice();
+    const total = ids.length;
+    this.setData({
+      movingProgress: { total, processed: 0, success: 0, skipped: 0, failed: 0, percent: 0, running: true }
+    });
+
+    for (let i = 0; i < ids.length; i++) {
+      const itemId = parseInt(ids[i]);
+      const currentBoxId = parseInt(this.data.boxId);
+      const currentBagId = parseInt(this.data.bagId);
+      if (target.targetBoxId === currentBoxId && target.targetBagId === currentBagId) {
+        // 跳过：目标与当前一致
+        const mp = this.data.movingProgress;
+        const processed = mp.processed + 1;
+        const skipped = mp.skipped + 1;
+        const percent = Math.round(processed * 100 / total);
+        this.setData({ movingProgress: { ...mp, processed, skipped, percent } });
+        continue;
+      }
+
+      try {
+        await this.editItemToServer({
+          openid: openid,
+          item_id: itemId,
+          box_id: target.targetBoxId,
+          bag_id: target.targetBagId
+        }, baseUrl);
+        const mp = this.data.movingProgress;
+        const processed = mp.processed + 1;
+        const success = mp.success + 1;
+        const percent = Math.round(processed * 100 / total);
+        this.setData({ movingProgress: { ...mp, processed, success, percent } });
+      } catch (e) {
+        const mp = this.data.movingProgress;
+        const processed = mp.processed + 1;
+        const failed = mp.failed + 1;
+        const percent = Math.round(processed * 100 / total);
+        this.setData({ movingProgress: { ...mp, processed, failed, percent } });
+      }
+    }
+
+    // 完成，刷新并反馈
+    const summary = this.data.movingProgress;
+    this.setData({ movingProgress: { ...summary, running: false } });
+    await this.loadItems();
+    this.onExitBatchMode();
     wx.showToast({
-      title: '批量操作功能开发中',
+      title: `移动成功${summary.success}，跳过${summary.skipped}，失败${summary.failed}`,
       icon: 'none'
     });
   },

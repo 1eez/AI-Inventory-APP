@@ -174,15 +174,27 @@
           <text class="title-text">物品列表</text>
           <text class="title-count">({{items.length}})</text>
         </view>
-        
+
+        <!-- 批量工具栏（批量模式下显示） -->
+        <view wx:if="{{batchMode}}" class="batch-toolbar">
+          <view class="batch-left">
+            <text class="batch-count">已选 {{selectedItemIds.length}}</text>
+          </view>
+          <view class="batch-actions">
+            <button class="btn-text" bindtap="onToggleSelectAll">{{selectAllChecked ? '全不选' : '全选'}}</button>
+            <button class="btn-primary" bindtap="onOpenLocationPicker">选择目标位置</button>
+          </view>
+        </view>
+
         <!-- 简洁的图片网格 -->
         <view class="photos-grid">
           <view 
             wx:for="{{items}}" 
             wx:key="id" 
             class="photo-item"
-            bindtap="onShowItemDetail"
+            bindtap="onPhotoItemTap"
             data-item="{{item}}"
+            data-id="{{item.id}}"
           >
             <image 
               class="photo-item-image" 
@@ -201,6 +213,11 @@
               <view class="photo-item-menu" bindtap="onItemMenu" data-id="{{item.id}}" catchtap="true">
                 <text class="cuIcon-more"></text>
               </view>
+
+              <!-- 批量选择勾选框（批量模式显示） -->
+              <view wx:if="{{batchMode}}" class="batch-checkbox" catchtap="true" bindtap="onToggleItemSelect" data-id="{{item.id}}">
+                <text class="{{selectedItemIds.indexOf(item.id) >= 0 ? 'cuIcon-check' : 'cuIcon-round'}}"></text>
+              </view>
             </view>
           </view>
         </view>
@@ -218,6 +235,58 @@
   <!-- 悬浮添加按钮 -->
   <view class="btn-fab" bindtap="onQuickScan" wx:if="{{items.length > 0}}">
     <text class="cuIcon-add"></text>
+  </view>
+
+  <!-- 位置选择弹窗（批量移动目标） -->
+  <view class="location-picker-modal {{showLocationPicker ? 'show' : ''}}" bindtap="onHideLocationPicker">
+    <view class="picker-content" catchtap="onPickerPanelTap">
+      <view class="picker-header">
+        <text class="picker-title">选择目标位置</text>
+      </view>
+      <view class="picker-section">
+        <text class="picker-section-title">位置</text>
+        <view class="picker-list">
+          <view wx:for="{{storageOptions.locations}}" wx:key="*this" class="picker-item" bindtap="onSelectLocation" data-location="{{item}}">
+            <text class="picker-item-text">{{item}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="picker-section">
+        <text class="picker-section-title">收纳盒</text>
+        <view class="picker-list">
+          <view wx:for="{{filteredBoxes}}" wx:key="id" class="picker-item" bindtap="onSelectBox" data-box="{{item}}">
+            <text class="picker-item-text">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="picker-section">
+        <text class="picker-section-title">收纳袋</text>
+        <view class="picker-list">
+          <view wx:for="{{storageOptions.bags}}" wx:key="bag_id" class="picker-item" bindtap="onSelectBag" data-bag="{{item}}">
+            <text class="picker-item-text">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="picker-footer">
+        <button class="btn-primary" bindtap="onConfirmTargetBag">确认并开始移动</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 批量移动进度弹窗 -->
+  <view class="progress-modal {{movingProgress.running ? 'show' : ''}}">
+    <view class="progress-content">
+      <text class="progress-title">批量移动进行中</text>
+      <view class="progress-bar">
+        <view class="progress-bar-inner" style="width: {{movingProgress.percent}}%"></view>
+      </view>
+      <view class="progress-stats">
+        <text>进度：{{movingProgress.processed}} / {{movingProgress.total}}（{{movingProgress.percent}}%）</text>
+        <text>成功：{{movingProgress.success}}</text>
+        <text>跳过：{{movingProgress.skipped}}</text>
+        <text>失败：{{movingProgress.failed}}</text>
+      </view>
+    </view>
   </view>
 
   <!-- 物品详情弹窗 -->
