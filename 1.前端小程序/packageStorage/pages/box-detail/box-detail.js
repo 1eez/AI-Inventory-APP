@@ -15,7 +15,21 @@ Page({
     skeletonItems: [1, 2, 3, 4],
     // 袋子选择浮层
     showBagSelector: false, // 是否显示袋子选择浮层
-    selectorBags: [] // 浮层中的袋子列表
+    selectorBags: [], // 浮层中的袋子列表
+    // 批量模式（袋子）
+    batchModeBags: false,
+    selectedBagIds: [],
+    selectAllChecked: false,
+    // 两层位置选择器
+    showMovePicker: false,
+    storageOptions: { locations: [], boxes: [] },
+    filteredBoxes: [],
+    selectedLocation: '',
+    selectedBox: null,
+    // 批量移动进度与结果
+    movingProgress: { total: 0, processed: 0, success: 0, skipped: 0, failed: 0, percent: 0, running: false },
+    showResultModal: false,
+    resultSummary: { success: 0, skipped: 0, failed: 0 }
   },
 
   /**
@@ -346,6 +360,39 @@ Page({
   },
 
   /**
+   * 加载位置与盒子选项
+   */
+  async loadStorageOptions() {
+    const openid = app.globalData.openid;
+    const baseUrl = app.globalData.baseUrl;
+    const homeInfo = await this.requestHomeInfo(baseUrl, openid);
+    const boxes = (homeInfo && homeInfo.data && Array.isArray(homeInfo.data.boxes)) ? homeInfo.data.boxes : [];
+    const normalized = boxes.map(b => ({ id: b.box_id, name: b.name, color: b.color || '#1296db', location: b.location || '未设置位置' }));
+    const locations = Array.from(new Set(normalized.map(b => b.location)));
+    this.setData({ 'storageOptions.boxes': normalized, 'storageOptions.locations': locations, filteredBoxes: [], selectedLocation: '', selectedBox: null });
+  },
+
+  requestHomeInfo(baseUrl, openid) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `${baseUrl}v0/home/info?openid=${openid}`,
+        method: 'GET',
+        header: { 'content-type': 'application/json' },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: () => {
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
+  },
+
+  /**
    * 处理加载错误
    */
   handleLoadError(error) {
@@ -631,6 +678,117 @@ Page({
   },
 
   /**
+   * 批量移动入口
+   */
+  onBatchMove() {
+    if (this.data.bags.length === 0) {
+      wx.showToast({ title: '暂无可移动的袋子', icon: 'none' });
+      return;
+    }
+    this.setData({ batchModeBags: true, selectedBagIds: [], selectAllChecked: false });
+  },
+
+  /**
+   * 退出批量模式
+   */
+  onExitBatchMode() {
+    this.setData({ batchModeBags: false, selectedBagIds: [], selectAllChecked: false });
+  },
+
+  /**
+   * 袋子项点击（批量切换/进入详情）
+   */
+  onBagItemTap(e) {
+    if (this.data.batchModeBags) {
+      const id = e.currentTarget.dataset.id;
+      this.onToggleBagSelect({ currentTarget: { dataset: { id } } });
+      return;
+    }
+    this.onBagTap(e);
+  },
+
+  /**
+   * 切换袋子选中
+   */
+  onToggleBagSelect(e) {
+    const id = e.currentTarget.dataset.id;
+    const selected = this.data.selectedBagIds.slice();
+    const idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({
+      selectedBagIds: selected,
+      selectAllChecked: selected.length === this.data.bags.length
+    });
+  },
+
+  /**
+   * 全选/全不选
+   */
+  onToggleSelectAll() {
+    const { selectAllChecked, bags } = this.data;
+    if (selectAllChecked) {
+      this.setData({ selectedBagIds: [], selectAllChecked: false });
+    } else {
+      const allIds = (bags || []).map(b => b.bag_id);
+      this.setData({ selectedBagIds: allIds, selectAllChecked: true });
+    }
+  },
+
+  /**
+   * 打开两层位置选择器
+   */
+  async onOpenMovePicker() {
+    if (!(this.data.selectedBagIds && this.data.selectedBagIds.length)) {
+      wx.showToast({ title: '请先选择袋子', icon: 'none' });
+      return;
+    }
+    if (!this.data.storageOptions.boxes.length) {
+      try {
+        await this.loadStorageOptions();
+      } catch (e) {}
+    }
+    this.setData({ showMovePicker: true });
+  },
+
+  onHideMovePicker() {
+    this.setData({ showMovePicker: false });
+  },
+
+  onSelectLocation(e) {
+    const { location } = e.currentTarget.dataset;
+    const allBoxes = this.data.storageOptions.boxes || [];
+    const filtered = allBoxes.filter(b => (b.location || '未设置位置') === location);
+    this.setData({ selectedLocation: location, filteredBoxes: filtered, selectedBox: null });
+  },
+
+  onSelectBox(e) {
+    const { box } = e.currentTarget.dataset;
+    this.setData({ selectedBox: box });
+  },
+
+  onConfirmTargetBox() {
+    const { selectedBox, selectedBagIds } = this.data;
+    if (!selectedBox) {
+      wx.showToast({ title: '请先选择收纳盒', icon: 'none' });
+      return;
+    }
+    if (!selectedBagIds.length) {
+      wx.showToast({ title: '请先选择袋子', icon: 'none' });
+      return;
+    }
+    this.setData({ showMovePicker: false });
+    this.startSequentialBagMove(parseInt(selectedBox.id || selectedBox.box_id));
+  },
+
+  onCloseResultModal() {
+    this.setData({ showResultModal: false });
+  },
+
+  /**
    * 袋子菜单操作
    */
   onBagMenu(e) {
@@ -713,6 +871,63 @@ Page({
     } finally {
       wx.stopPullDownRefresh();
     }
+  },
+
+  async startSequentialBagMove(targetBoxId) {
+    const baseUrl = app.globalData.baseUrl;
+    const openid = app.globalData.openid;
+    const ids = this.data.selectedBagIds.slice();
+    const total = ids.length;
+    this.setData({ movingProgress: { total, processed: 0, success: 0, skipped: 0, failed: 0, percent: 0, running: true } });
+    for (let i = 0; i < ids.length; i++) {
+      const bagId = parseInt(ids[i]);
+      const currentBoxId = parseInt(this.boxId);
+      if (targetBoxId === currentBoxId) {
+        const mp = this.data.movingProgress;
+        const processed = mp.processed + 1;
+        const skipped = mp.skipped + 1;
+        const percent = Math.round(processed * 100 / total);
+        this.setData({ movingProgress: { ...mp, processed, skipped, percent } });
+        continue;
+      }
+      try {
+        await this.moveBagToServer({ openid, bag_id: bagId, box_id: targetBoxId }, baseUrl);
+        const mp = this.data.movingProgress;
+        const processed = mp.processed + 1;
+        const success = mp.success + 1;
+        const percent = Math.round(processed * 100 / total);
+        this.setData({ movingProgress: { ...mp, processed, success, percent } });
+      } catch (e) {
+        const mp = this.data.movingProgress;
+        const processed = mp.processed + 1;
+        const failed = mp.failed + 1;
+        const percent = Math.round(processed * 100 / total);
+        this.setData({ movingProgress: { ...mp, processed, failed, percent } });
+      }
+    }
+    const summary = this.data.movingProgress;
+    this.setData({ movingProgress: { ...summary, running: false }, showResultModal: true, resultSummary: { success: summary.success, skipped: summary.skipped, failed: summary.failed } });
+    await this.loadBags();
+    this.onExitBatchMode();
+  },
+
+  moveBagToServer(requestData, baseUrl) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v2/bag/edit',
+        method: 'POST',
+        header: { 'content-type': 'application/json' },
+        data: requestData,
+        success: (res) => {
+          if (res.statusCode === 200 && res.data) {
+            resolve(res.data);
+          } else {
+            reject(new Error((res.data && res.data.message) || '编辑失败'));
+          }
+        },
+        fail: (error) => { reject(error); }
+      });
+    });
   },
 
   /**
