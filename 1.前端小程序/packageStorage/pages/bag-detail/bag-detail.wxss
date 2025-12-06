@@ -1323,26 +1323,14 @@
   transition: all 0.2s;
 }
 
-.selection-check {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 50%;
-  border: 4rpx solid #fff;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: transparent;
-  transition: all 0.2s;
-  backdrop-filter: blur(4px);
+.selection-icon {
+  font-size: 80rpx;
+  text-shadow: 0 2rpx 10rpx rgba(0,0,0,0.3);
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.selection-check.checked {
-  background: #1976d2;
-  color: #fff;
+.selection-icon.cuIcon-roundcheckfill {
   transform: scale(1.1);
-  box-shadow: 0 4rpx 12rpx rgba(25, 118, 210, 0.3);
-  border-color: #1976d2;
 }
 
 /* Old Quantity Style - Keep but simplified */

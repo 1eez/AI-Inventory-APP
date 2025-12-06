@@ -1,4 +1,12 @@
 <!--packageStorage/pages/bag-detail/bag-detail.wxml-->
+<wxs module="utils">
+  function includes(arr, item) {
+    return arr.indexOf(item) > -1;
+  }
+  module.exports = {
+    includes: includes
+  };
+</wxs>
 <view class="page-container">
   <!-- 自定义导航栏 -->
   <cu-custom bgColor="bg-white" isBack="{{true}}">
@@ -191,7 +199,7 @@
           <view 
             wx:for="{{items}}" 
             wx:key="id" 
-            class="photo-item {{selectedItemIds.indexOf(item.id) >= 0 ? 'selected' : ''}}"
+            class="photo-item {{utils.includes(selectedItemIds, item.id) ? 'selected' : ''}}"
             bindtap="onPhotoItemTap"
             data-item="{{item}}"
             data-id="{{item.id}}"
@@ -205,13 +213,11 @@
             
             <!-- 选中遮罩层 (批量模式下显示) -->
             <view class="selection-overlay" wx:if="{{batchMode}}">
-              <view class="selection-check {{selectedItemIds.indexOf(item.id) >= 0 ? 'checked' : ''}}">
-                <text class="cuIcon-check" wx:if="{{selectedItemIds.indexOf(item.id) >= 0}}"></text>
-              </view>
+              <text class="selection-icon {{utils.includes(selectedItemIds, item.id) ? 'cuIcon-roundcheckfill text-blue' : 'cuIcon-round text-white'}}"></text>
             </view>
 
             <!-- 数量标识 (仅在非批量模式或未选中时显示，避免视觉干扰) -->
-            <view class="photo-item-quantity" wx:if="{{item.quantity > 1 && (!batchMode || selectedItemIds.indexOf(item.id) < 0)}}">
+            <view class="photo-item-quantity" wx:if="{{item.quantity > 1 && (!batchMode || !utils.includes(selectedItemIds, item.id))}}">
               <text>×{{item.quantity}}</text>
             </view>
             
