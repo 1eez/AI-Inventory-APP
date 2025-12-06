@@ -101,6 +101,10 @@
             <view class="feature-title text-black">分类建议</view>
             <view class="feature-desc text-gray">• 按物品类型分类（如：电子产品、服装等）\n• 按使用频率分类（如：常用、备用等）\n• 按季节分类（如：春夏、秋冬等）</view>
           </view>
+          <view class="feature-item">
+            <view class="feature-title text-black">批量移动袋子</view>
+            <view class="feature-desc text-gray">• 在储物箱详情页点击"批量移动"\n• 勾选需要移动的多个收纳袋\n• 选择新的目标储物箱完成迁移</view>
+          </view>
         </view>
       </view>
 
@@ -131,6 +135,10 @@
           <view class="feature-item">
             <view class="feature-title text-black">删除物品</view>
             <view class="feature-desc text-gray">• 在物品详情中选择删除\n• 支持批量删除操作\n• 删除前会确认提示</view>
+          </view>
+          <view class="feature-item">
+            <view class="feature-title text-black">批量移动物品</view>
+            <view class="feature-desc text-gray">• 在收纳袋详情页点击"批量操作"\n• 支持全选或手动勾选多个物品\n• 指定目标位置（箱/袋）快速整理</view>
           </view>
         </view>
       </view>
