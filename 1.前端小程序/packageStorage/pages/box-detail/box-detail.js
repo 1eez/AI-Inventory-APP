@@ -758,6 +758,10 @@ Page({
     this.setData({ showMovePicker: false });
   },
 
+  preventBubble() {
+    // 阻止事件冒泡
+  },
+
   onSelectLocation(e) {
     const { location } = e.currentTarget.dataset;
     const allBoxes = this.data.storageOptions.boxes || [];

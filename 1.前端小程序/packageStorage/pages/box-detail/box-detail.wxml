@@ -233,7 +233,7 @@
 
   <!-- 位置选择弹窗（批量移动目标，仅两层） -->
   <view class="location-picker-modal {{showMovePicker ? 'show' : ''}}" bindtap="onHideMovePicker" catchtouchmove="true">
-    <view class="picker-content" catchtap="">
+    <view class="picker-content" catchtap="preventBubble">
       <view class="picker-header">
         <text class="picker-title">选择目标位置</text>
         <view class="picker-close" bindtap="onHideMovePicker">
