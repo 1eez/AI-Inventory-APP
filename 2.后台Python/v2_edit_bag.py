@@ -23,6 +23,7 @@ class EditBagRequest(BaseModel):
     bag_id: int = Field(..., description="袋子ID")
     name: Optional[str] = Field(None, min_length=1, max_length=100, description="袋子名称")
     color: Optional[str] = Field(None, max_length=20, description="袋子颜色")
+    box_id: Optional[int] = Field(None, description="所属盒子ID")
 
 def verify_bag_ownership(bag_id: int, user_id: int, db_manager: DatabaseManager) -> bool:
     """
@@ -60,6 +61,10 @@ def update_bag(bag_id: int, bag_data: EditBagRequest, db_manager: DatabaseManage
     if bag_data.color is not None:
         update_fields.append("color = ?")
         update_values.append(bag_data.color)
+
+    if bag_data.box_id is not None:
+        update_fields.append("box_id = ?")
+        update_values.append(bag_data.box_id)
     
     if not update_fields:
         raise HTTPException(status_code=400, detail="没有提供需要更新的字段")
