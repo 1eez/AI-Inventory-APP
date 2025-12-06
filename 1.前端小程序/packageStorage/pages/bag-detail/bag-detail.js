@@ -85,7 +85,11 @@ Page({
       failed: 0,
       percent: 0,
       running: false
-    }
+    },
+
+    // 结果汇总弹窗
+    showResultModal: false,
+    resultSummary: { success: 0, skipped: 0, failed: 0 }
   },
 
   onLoad(options) {
@@ -862,15 +866,22 @@ Page({
       }
     }
 
-    // 完成，刷新并反馈
+    // 完成，刷新并展示结果Modal
     const summary = this.data.movingProgress;
-    this.setData({ movingProgress: { ...summary, running: false } });
+    this.setData({
+      movingProgress: { ...summary, running: false },
+      showResultModal: true,
+      resultSummary: { success: summary.success, skipped: summary.skipped, failed: summary.failed }
+    });
     await this.loadItems();
     this.onExitBatchMode();
-    wx.showToast({
-      title: `移动成功${summary.success}，跳过${summary.skipped}，失败${summary.failed}`,
-      icon: 'none'
-    });
+  },
+
+  /**
+   * 关闭结果汇总Modal
+   */
+  onCloseResultModal() {
+    this.setData({ showResultModal: false });
   },
 
   // 编辑物品
