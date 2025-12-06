@@ -155,20 +155,39 @@
 
 <!-- 位置选择器 -->
 <view class="location-picker-mask" wx:if="{{showLocationPicker}}" bindtap="onHideLocationPicker">
-  <view class="location-picker-panel" catchtap="">
+  <view class="location-picker-panel" catchtap="onPickerPanelTap">
     <view class="picker-header">
       <text class="picker-title">选择存放位置</text>
       <text class="cuIcon-close" bindtap="onHideLocationPicker"></text>
     </view>
     
     <view class="picker-content">
+      <!-- 位置选择 -->
+      <view class="picker-section">
+        <view class="picker-label">位置</view>
+        <view class="box-list">
+          <view
+            class="box-item {{selectedLocation === item ? 'selected' : ''}}"
+            wx:for="{{storageOptions.locations}}"
+            wx:key="*this"
+            data-location="{{item}}"
+            bindtap="onSelectLocation"
+          >
+            <view class="box-info">
+              <view class="box-name">{{item}}</view>
+            </view>
+            <text class="cuIcon-check text-green" wx:if="{{selectedLocation === item}}"></text>
+          </view>
+        </view>
+      </view>
+
       <!-- 收纳盒选择 -->
       <view class="picker-section">
         <view class="picker-label">收纳盒</view>
         <view class="box-list">
           <view 
-            class="box-item {{itemInfo.location.boxId === item.id ? 'selected' : ''}}"
-            wx:for="{{storageOptions.boxes}}"
+            class="box-item {{(selectedBox && (selectedBox.id || selectedBox.box_id)) === item.id ? 'selected' : ''}}"
+            wx:for="{{filteredBoxes}}"
             wx:key="id"
             data-box="{{item}}"
             bindtap="onSelectBox"
@@ -178,8 +197,31 @@
               <view class="box-name">{{item.name}}</view>
               <view class="box-location">{{item.location}}</view>
             </view>
-            <text class="cuIcon-check text-green" wx:if="{{itemInfo.location.boxId === item.id}}"></text>
+            <text class="cuIcon-check text-green" wx:if="{{(selectedBox && (selectedBox.id || selectedBox.box_id)) === item.id}}"></text>
           </view>
+          <view class="location-placeholder" wx:if="{{selectedLocation && filteredBoxes.length === 0}}">该位置下暂无收纳盒</view>
+        </view>
+      </view>
+
+      <!-- 收纳袋选择 -->
+      <view class="picker-section">
+        <view class="picker-label">收纳袋</view>
+        <view class="box-list">
+          <view wx:if="{{loadingBags}}" class="location-placeholder">加载中...</view>
+          <view 
+            class="box-item {{(selectedBag && selectedBag.bag_id) === item.bag_id ? 'selected' : ''}}"
+            wx:for="{{storageOptions.bags}}"
+            wx:key="bag_id"
+            data-bag="{{item}}"
+            bindtap="onSelectBag"
+          >
+            <view class="box-color" style="background: {{item.color || '#1296db'}}"></view>
+            <view class="box-info">
+              <view class="box-name">{{item.name}}</view>
+            </view>
+            <text class="cuIcon-check text-green" wx:if="{{(selectedBag && selectedBag.bag_id) === item.bag_id}}"></text>
+          </view>
+          <view class="location-placeholder" wx:if="{{!loadingBags && selectedBox && storageOptions.bags.length === 0}}">该盒子下暂无收纳袋</view>
         </view>
       </view>
       
@@ -187,7 +229,7 @@
     </view>
     
     <view class="picker-actions">
-      <button class="cu-btn bg-blue lg" bindtap="onConfirmLocation">确认</button>
+      <button class="cu-btn bg-blue lg" bindtap="onConfirmLocation" disabled="{{!selectedBag}}">确认</button>
     </view>
   </view>
 </view>

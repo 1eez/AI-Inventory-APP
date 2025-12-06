@@ -45,9 +45,18 @@ Page({
     ],
     // 收纳位置选项
     storageOptions: {
+      locations: [],
       boxes: [],
       bags: []
     },
+    // 已筛选的盒子（按位置）
+    filteredBoxes: [],
+    // 选择器当前选择
+    selectedLocation: '',
+    selectedBox: null,
+    selectedBag: null,
+    // 加载袋子中
+    loadingBags: false,
     // 提交状态
     submitting: false,
     // 显示位置选择器
@@ -320,6 +329,10 @@ Page({
    * 显示位置选择器
    */
   onShowLocationPicker() {
+    const { storageOptions } = this.data;
+    if (!storageOptions.boxes || storageOptions.boxes.length === 0) {
+      this.loadStorageOptions();
+    }
     this.setData({ showLocationPicker: true });
   },
 
@@ -330,20 +343,23 @@ Page({
     this.setData({ showLocationPicker: false });
   },
 
+  onPickerPanelTap() {
+    // 阻止冒泡到遮罩层
+  },
+
   /**
    * 选择收纳盒
    */
   onSelectBox(e) {
     const { box } = e.currentTarget.dataset;
-    
     this.setData({
-      'itemInfo.location.boxId': box.id,
-      'itemInfo.location.boxName': box.name,
+      selectedBox: box,
+      selectedBag: null,
+      loadingBags: true,
       'itemInfo.location.bagId': '',
       'itemInfo.location.bagName': ''
     });
-    
-
+    this.loadBagsByBoxId(box.id || box.box_id);
   },
 
 
@@ -352,7 +368,38 @@ Page({
    * 确认位置选择
    */
   onConfirmLocation() {
-    this.setData({ showLocationPicker: false });
+    const { selectedBox, selectedBag } = this.data;
+    if (!selectedBox || !selectedBag) {
+      wx.showToast({ title: '请先选择袋子', icon: 'none' });
+      return;
+    }
+    this.setData({
+      'itemInfo.location.boxId': selectedBox.id || selectedBox.box_id,
+      'itemInfo.location.boxName': selectedBox.name,
+      'itemInfo.location.bagId': selectedBag.bag_id,
+      'itemInfo.location.bagName': selectedBag.name,
+      boxInfo: {
+        id: selectedBox.id || selectedBox.box_id,
+        name: selectedBox.name,
+        color: selectedBox.color || '#1296db',
+        location: selectedBox.location || ''
+      },
+      showLocationPicker: false
+    });
+
+    if (this.data.isEdit) {
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      this.editItemToServer({
+        openid: openid,
+        item_id: parseInt(this.data.itemId),
+        box_id: parseInt(selectedBox.id || selectedBox.box_id),
+        bag_id: parseInt(selectedBag.bag_id)
+      }, baseUrl).catch(() => {
+        wx.showToast({ title: '位置更新失败', icon: 'error' });
+      });
+    }
   },
 
   /**
@@ -433,15 +480,112 @@ Page({
    */
   async loadStorageOptions() {
     try {
-
-      
+      const app = getApp();
+      const baseUrl = app.globalData.baseUrl;
+      const openid = app.globalData.openid;
+      const homeInfo = await this.requestHomeInfo(baseUrl, openid);
+      const boxes = (homeInfo && homeInfo.data && Array.isArray(homeInfo.data.boxes)) ? homeInfo.data.boxes : [];
+      const normalized = boxes.map(b => ({
+        id: b.box_id,
+        name: b.name,
+        color: b.color || '#1296db',
+        location: b.location || '未设置位置'
+      }));
+      const locations = Array.from(new Set(normalized.map(b => b.location)));
       this.setData({
-        'storageOptions.boxes': mockBoxes
+        'storageOptions.boxes': normalized,
+        'storageOptions.locations': locations,
+        filteredBoxes: [],
+        selectedLocation: '',
+        selectedBox: null,
+        selectedBag: null,
+        'storageOptions.bags': []
       });
-      
     } catch (error) {
       console.error('加载收纳位置失败:', error);
+      wx.showToast({ title: '位置加载失败', icon: 'error' });
     }
+  },
+
+  requestHomeInfo(baseUrl, openid) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `${baseUrl}v0/home/info?openid=${openid}`,
+        method: 'GET',
+        header: { 'content-type': 'application/json' },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
+  },
+
+  onSelectLocation(e) {
+    const { location } = e.currentTarget.dataset;
+    const allBoxes = this.data.storageOptions.boxes || [];
+    const filtered = allBoxes.filter(b => (b.location || '未设置位置') === location);
+    this.setData({
+      selectedLocation: location,
+      filteredBoxes: filtered,
+      selectedBox: null,
+      selectedBag: null,
+      'storageOptions.bags': []
+    });
+  },
+
+  loadBagsByBoxId(boxId) {
+    const app = getApp();
+    const baseUrl = app.globalData.baseUrl;
+    const openid = app.globalData.openid;
+    this.requestBagList(baseUrl, { openid: openid, box_id: parseInt(boxId) })
+      .then((bagData) => {
+        const bags = bagData && bagData.data && Array.isArray(bagData.data.bags) ? bagData.data.bags : [];
+        this.setData({
+          'storageOptions.bags': bags,
+          loadingBags: false
+        });
+        if (bags.length === 0) {
+          wx.showToast({ title: '该盒子下暂无收纳袋', icon: 'none' });
+        }
+      })
+      .catch((error) => {
+        this.setData({ loadingBags: false });
+        wx.showToast({ title: '袋子加载失败', icon: 'error' });
+      });
+  },
+
+  requestBagList(baseUrl, params) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + 'v2/bag/get',
+        method: 'GET',
+        data: params,
+        header: { 'content-type': 'application/json' },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            resolve(res.data);
+          } else {
+            reject(new Error(`请求失败，状态码: ${res.statusCode}`));
+          }
+        },
+        fail: (error) => {
+          reject(new Error('网络请求失败'));
+        }
+      });
+    });
+  },
+
+  onSelectBag(e) {
+    const { bag } = e.currentTarget.dataset;
+    this.setData({ selectedBag: bag });
+    this.onConfirmLocation();
   },
 
 
@@ -566,13 +710,15 @@ Page({
       let result;
       
       if (isEdit) {
-        // 编辑模式：调用编辑接口
+        // 编辑模式：调用编辑接口（包含位置变更）
         result = await this.editItemToServer({
           openid: openid,
           item_id: parseInt(itemId),
           title: itemInfo.name.trim(),
           description: itemInfo.description || '',
           category: itemInfo.category || '',
+          box_id: parseInt(itemInfo.location.boxId),
+          bag_id: parseInt(itemInfo.location.bagId),
           tags: itemInfo.tags || []
         }, baseUrl);
       } else {
